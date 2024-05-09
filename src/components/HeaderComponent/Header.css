@@ -1,0 +1,14 @@
+.autocomplete-input {
+    position: relative;
+  }
+  
+  .popup-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    z-index: 10; /* Đảm bảo popup hiển thị trên banner */
+  }
+  
