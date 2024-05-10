@@ -1,3 +1,11 @@
-body{
-    background-color: #ccc;
+@import url("https://fonts.googleapis.com/css2?family=Freeman&family=Poetsen+One&display=swap");
+body {
+  background-color: #ccc;
+  font-family: "Freeman", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }

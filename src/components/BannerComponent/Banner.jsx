@@ -6,21 +6,25 @@ const bannerArr = [
   "/src/assets/image/banner3.jpg",
 ];
 
-export default function Banner() {
+const Banner = () => {
   return (
-    <Carousel interval={5000} style={{ height: "400px" }}>
-      {bannerArr.map((image, index) => (
-        <CarouselItem key={index}>
-          <img
-            className="d-block w-100"
-            src={image}
-            alt={`Banner ${index + 1}`}
-            style={{
-              height:"500px"
-            }}
-          />
-        </CarouselItem>
-      ))}
-    </Carousel>
+    <div>
+      <Carousel interval={5000}>
+        {bannerArr.map((image, index) => (
+          <CarouselItem key={index}>
+            <img
+              className="d-block w-100"
+              src={image}
+              alt={`Banner ${index + 1}`}
+              style={{
+                height: "500px",
+              }}
+            />
+          </CarouselItem>
+        ))}
+      </Carousel>
+    </div>
   );
-}
+};
+
+export default Banner;
