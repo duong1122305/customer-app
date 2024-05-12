@@ -1,4 +1,3 @@
-import "./Footer.css";
 import { Container, Row, Col, Image } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -9,9 +8,10 @@ const Footer = () => {
       style={{
         backgroundColor: "#fff",
         color: "black",
+        marginTop:"50px"
       }}
     >
-      <Row style={{ marginTop: "10px" }}>
+      <Row style={{ marginTop: "10px", height:"auto" }}>
         <Col
           className="d-flex"
           style={{
@@ -25,6 +25,7 @@ const Footer = () => {
               className="d-flex"
               style={{
                 alignItems: "center",
+                marginTop:"20px"
               }}
             >
               <Image
@@ -45,7 +46,7 @@ const Footer = () => {
             style={{
               fontSize: "20px",
               letterSpacing: "20px",
-              marginTop: "10px",
+              marginTop: "30px",
             }}
           >
             <span>
@@ -93,13 +94,13 @@ const Footer = () => {
         <Col
           style={{
             lineHeight: "30px",
-            marginTop: "10px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
+            width:"400px"
           }}
           xs
-          lg="3"
+          lg="5"
         >
           <Row>
             <h5>THÔNG TIN LIÊN HỆ:</h5>
@@ -127,7 +128,7 @@ const Footer = () => {
             <span>www.petshopmew.com.vn</span>
           </Row>
         </Col>
-        <Col style={{ lineHeight: "50px", marginTop: "30px" }} xs lg="5">
+        <Col style={{ lineHeight: "50px", marginTop: "50px", }} xs lg="4">
           <Row>
             <h5>THỜI GIAN LÀM VIỆC:</h5>
           </Row>
@@ -148,7 +149,6 @@ const Footer = () => {
             width: "100%",
             maxWidth: "600px",
             margin: "auto",
-            marginTop: "10px",
           }}
         />
         <div

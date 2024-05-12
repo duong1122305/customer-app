@@ -107,7 +107,7 @@ export default function Header() {
           <Button
             variant="outline-dark"
             onClick={showOffCanvas}
-            style={{ display: isVisible ? "block" : "none", width:"80px" }}
+            style={{ display: isVisible ? "block" : "none", width: "80px" }}
           >
             <i className="fa-solid fa-bars"></i>
           </Button>
@@ -132,11 +132,14 @@ export default function Header() {
               </Nav>
               <Nav
                 style={{
+                  border: "1px",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
+                  borderColor: "black",
                 }}
+                roundedCircle
               >
                 <i className="fa-solid fa-user"></i>
                 <NavDropdown title="Tài khoản">
@@ -150,7 +153,23 @@ export default function Header() {
           </Offcanvas>
         </Container>
       </Navbar>
-
+      <Nav as="ul" className="justify-content-center" style={{height:"40px"}} variant="underline">
+        <Nav.Item as="li">
+          <Nav.Link href="#">Giới thiệu</Nav.Link>
+        </Nav.Item>
+        <Nav.Item as="li">
+          <Nav.Link href="#">Dịch vụ</Nav.Link>
+        </Nav.Item>
+        <Nav.Item as="li">
+          <Nav.Link href="#">Tuyển dụng</Nav.Link>
+        </Nav.Item>
+        <Nav.Item as="li">
+          <Nav.Link href="#">Liên hệ</Nav.Link>
+        </Nav.Item>
+        <Nav.Item as="li">
+          <Nav.Link href="#">Đặt lịch</Nav.Link>
+        </Nav.Item>
+      </Nav>
       <Banner />
     </>
   );

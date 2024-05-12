@@ -1,11 +1,39 @@
 @import url("https://fonts.googleapis.com/css2?family=Freeman&family=Poetsen+One&display=swap");
-body {
-  background-color: #ccc;
-  font-family: "Freeman", sans-serif;
-}
 
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  font: inherit;
+}
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+input,
+select,
+textarea {
+  background-color: transparent;
+  outline: none;
+}
+button {
+  cursor: pointer;
+  background-color: transparent;
+  outline: none;
+  border: 0;
+}
+body {
+  min-height: 100vh;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+  background-color: #ccc;
+  font-family: "Freeman", sans-serif;
 }
