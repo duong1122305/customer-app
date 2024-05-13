@@ -30,6 +30,7 @@ export default function Header() {
   const [isVisible, setIsVisible] = useState(false);
   const [isToggleVisible, setIsToggleVisible] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [results, setResults] = useState([]);
 
   //handle button offcanvas
   const showOffCanvas = () => setShow(true);
@@ -38,6 +39,7 @@ export default function Header() {
   const handleShowLogin = () => setLoginShow(true);
   const handleOffcanvasShow = () => setShow(false);
   const handleSearchShow = () => setSearchShow(true);
+  const handleSearchClose = () => setSearchShow(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -250,7 +252,7 @@ export default function Header() {
       </Navbar>
       <Register show={registerShow} onHide={() => setRegisterShow(false)} />
       <Login show={loginShow} onHide={() => setLoginShow(false)} />
-      <Search show={searchShow} onHide={() => setSearchShow(false)}/>
+      <Search show={searchShow} results={results} setresult={setResults} onHide={handleSearchClose}/>
       <div>
         <Routes>
           <Route path="/" element={<GioiThieu />} />
