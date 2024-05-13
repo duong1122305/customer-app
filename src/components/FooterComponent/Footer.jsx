@@ -1,5 +1,6 @@
 import { Container, Row, Col, Image } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./Footer.css";
 
 const Footer = () => {
   return (
@@ -10,6 +11,7 @@ const Footer = () => {
         color: "black",
         marginTop:"50px"
       }}
+      className="footer"
     >
       <Row style={{ marginTop: "10px", height:"auto" }}>
         <Col
@@ -29,7 +31,7 @@ const Footer = () => {
               }}
             >
               <Image
-                src="/src/assets/image/logo.png"
+                src="/src/assets/image/logo.jpg"
                 style={{ height: "130px" }}
               />
               <h5>Pet Mew</h5>
@@ -117,7 +119,7 @@ const Footer = () => {
               className="fa-solid fa-location-dot"
               style={{ color: "red" }}
             ></i>
-            <p>Số 16b, lô A, quận 12, thành phố Hồ Chí Minh</p>
+            <span>Số 16b, lô A, quận 12, thành phố Hồ Chí Minh</span>
           </Row>
           <Row>
             <i className="fa-regular fa-envelope"></i>
