@@ -8,7 +8,7 @@ const Search = (props) => {
   const [input, setInput] = useState("");
 
   const fetchData = (value) => {
-    fetch("https://jsonplaceholder.typicode.com/users")
+    fetch("https://localhost:7019/api/SinhViens")
       .then((response) => response.json())
       .then((json) => {
         const results = json.filter((user) => {
