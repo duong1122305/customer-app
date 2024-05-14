@@ -1,4 +1,5 @@
 import { Carousel, CarouselItem } from "react-bootstrap";
+import PropTypes from 'prop-types';
 
 const bannerArr = [
   "/src/assets/image/banner1.jpg",
@@ -6,9 +7,9 @@ const bannerArr = [
   "/src/assets/image/banner3.jpg",
 ];
 
-const Banner = () => {
+const Banner = (props) => {
   return (
-    <div>
+    <div className={props.className}>
       <Carousel interval={5000}>
         {bannerArr.map((image, index) => (
           <CarouselItem key={index}>
@@ -26,5 +27,9 @@ const Banner = () => {
     </div>
   );
 };
+
+Banner.propTypes = {
+  className: PropTypes.string
+}
 
 export default Banner;

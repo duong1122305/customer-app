@@ -1,0 +1,108 @@
+.containerGt {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.banner {
+  width: 100%;
+}
+
+.gtBody {
+  width: 100%;
+  height: 100%;
+  padding-bottom: 50px;
+}
+
+.gtBody .row-1 {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.gtBody .row-content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.hr {
+  border: 1px solid black;
+}
+
+p {
+  line-height: 30px;
+}
+
+.content {
+  height: 100%;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.content h2{
+    margin-top: 10px;
+}
+
+.figure {
+  height: auto;
+  max-height: 100%;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  margin-left: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.figure img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  transition: filter 0.6s, opacity 0.6s, transform 0.6s, box-shadow 0.3s;
+  border-radius: 10px;
+
+}
+
+.figure img:hover {
+  transform: scale(1.1);
+  opacity: 0.9;
+}
+
+.camket {
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+}
+
+.camket h3 {
+  margin-top: 5px;
+}
+
+.camket .row-camket {
+  display: flex;
+}
+
+.camket .row-camket .col-camket {
+  border: 1px solid transparent;
+  background-color: rgb(0, 32, 91);
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  text-wrap: wrap;
+  color: #fff;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

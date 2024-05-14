@@ -8,8 +8,7 @@ const Footer = () => {
       fluid
       style={{
         backgroundColor: "#fff",
-        color: "black",
-        marginTop:"50px"
+        color: "black"
       }}
       className="footer"
     >
