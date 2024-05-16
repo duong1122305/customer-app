@@ -1,0 +1,51 @@
+.booking {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+}
+
+.booking .child-booking {
+    width: 60%;
+    height: 80%;
+    line-height: 30px;
+    border: 1px solid black;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    background-image: linear-gradient(90deg, #015aad 0%, #05a955 100%);
+}
+
+.booking .child-booking h6 {
+    font-size: 150%;
+    text-align: center;
+    color: #fff;
+}
+
+.booking .child-booking .form-label {
+    font-size: 100%;
+    color: #fff;
+}
+
+.booking .child-booking .form-control {
+    width: 100%;
+    background-color: transparent;
+    border: solid #fff;
+}
+
+.booking .child-booking button {
+    width: 100%;
+    margin-top: 30px;
+    background-color: burlywood;
+    outline: none;
+    border: none;
+}
+
+.booking .child-booking button:horver{
+    background-color: aqua;
+}

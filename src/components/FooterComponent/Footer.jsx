@@ -1,4 +1,5 @@
 import { Container, Row, Col, Image } from "react-bootstrap";
+import PropTypes from "prop-types";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Footer.css";
 
@@ -8,11 +9,11 @@ const Footer = () => {
       fluid
       style={{
         backgroundColor: "#fff",
-        color: "black"
+        color: "black",
       }}
       className="footer"
     >
-      <Row style={{ marginTop: "10px", height:"auto" }}>
+      <Row style={{ height: "auto" }}>
         <Col
           className="d-flex"
           style={{
@@ -26,7 +27,7 @@ const Footer = () => {
               className="d-flex"
               style={{
                 alignItems: "center",
-                marginTop:"20px"
+                marginTop: "20px",
               }}
             >
               <Image
@@ -98,7 +99,7 @@ const Footer = () => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            width:"400px"
+            width: "400px",
           }}
           xs
           lg="5"
@@ -129,7 +130,7 @@ const Footer = () => {
             <span>www.petshopmew.com.vn</span>
           </Row>
         </Col>
-        <Col style={{ lineHeight: "50px", marginTop: "50px", }} xs lg="4">
+        <Col style={{ lineHeight: "50px", marginTop: "50px" }} xs lg="4">
           <Row>
             <h5>THỜI GIAN LÀM VIỆC:</h5>
           </Row>
@@ -173,6 +174,10 @@ const Footer = () => {
       </Row>
     </Container>
   );
+};
+
+Footer.propTypes = {
+  show: PropTypes.bool,
 };
 
 export default Footer;

@@ -13,11 +13,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Header.css";
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import GioiThieu from "../../pages/GioiThieu/GioiThieu";
-import DichVu from "../../pages/DichVu";
 import Register from "../../pages/Register";
 import Login from "../../pages/Login";
 import Search from "../SearchComponent/Search";
+import GioiThieu from "../../pages/GioiThieu/GioiThieu";
+import DichVu from "../../pages/DichVu";
+import DatLich from "../../pages/DatLich/DatLich";
 
 export default function Header() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -112,7 +113,11 @@ export default function Header() {
               </Nav.Item>
             </div>
             <Nav className="me-auto"></Nav>
-            <Button style={{backgroundColor:"#fff", color:"black"}} variant="outline-light" onClick={handleSearchShow}>
+            <Button
+              style={{ backgroundColor: "#fff", color: "black" }}
+              variant="outline-light"
+              onClick={handleSearchShow}
+            >
               <i className="fa-solid fa-magnifying-glass"></i>
             </Button>
             <Nav style={{ display: isLogin ? "none" : "flex" }}>
@@ -131,12 +136,18 @@ export default function Header() {
                 alignItems: "center",
               }}
             >
-              <i className="fa-solid fa-user" style={{color:"#fff"}}></i>
+              <i className="fa-solid fa-user" style={{ color: "#fff" }}></i>
               <NavDropdown title="Tài khoản" className="dropdown">
-                <NavDropdown.Item as={Link} to="/">Thông tin</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/">Đổi mật khẩu</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/">
+                  Thông tin
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/">
+                  Đổi mật khẩu
+                </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item as={Link} to="/">Đăng xuất</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/">
+                  Đăng xuất
+                </NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
@@ -149,7 +160,12 @@ export default function Header() {
             <i className="fa-solid fa-bars"></i>
           </Button>
 
-          <Offcanvas className="offcanvas" show={show} onHide={closeOffCanvas} placement="end">
+          <Offcanvas
+            className="offcanvas"
+            show={show}
+            onHide={closeOffCanvas}
+            placement="end"
+          >
             <Offcanvas.Header closeButton>
               <Offcanvas.Title>DANH MỤC</Offcanvas.Title>
             </Offcanvas.Header>
@@ -252,11 +268,17 @@ export default function Header() {
       </Navbar>
       <Register show={registerShow} onHide={() => setRegisterShow(false)} />
       <Login show={loginShow} onHide={() => setLoginShow(false)} />
-      <Search show={searchShow} results={results} setresult={setResults} onHide={handleSearchClose}/>
+      <Search
+        show={searchShow}
+        results={results}
+        setresult={setResults}
+        onHide={handleSearchClose}
+      />
       <div>
         <Routes>
           <Route path="/" element={<GioiThieu />} />
           <Route path="/services" element={<DichVu />} />
+          <Route path="/booking" element={<DatLich />} />
         </Routes>
       </div>
     </BrowserRouter>

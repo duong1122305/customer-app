@@ -106,3 +106,9 @@ p {
   flex-direction: column;
   justify-content: center;
 }
+
+.location {
+  margin-top: 10px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+}
