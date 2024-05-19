@@ -31,7 +31,7 @@ export default function Header() {
   const [isVisible, setIsVisible] = useState(false);
   const [isToggleVisible, setIsToggleVisible] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  const [results, setResults] = useState([]);
+  // const [results, setResults] = useState([]);
 
   //handle button offcanvas
   const showOffCanvas = () => setShow(true);
@@ -270,8 +270,8 @@ export default function Header() {
       <Login show={loginShow} onHide={() => setLoginShow(false)} />
       <Search
         show={searchShow}
-        results={results}
-        setresult={setResults}
+        // results={results}
+        // setresult={setResults}
         onHide={handleSearchClose}
       />
       <div>

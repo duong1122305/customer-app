@@ -1,4 +1,4 @@
-.input-wrapper {
+.form-control {
   background-color: white;
   width: 100%;
   border-radius: 10px;
@@ -10,18 +10,7 @@
   position: relative;
 }
 
-input {
-  background-color: transparent;
-  border: none;
-  height: 100%;
-  font-size: 1.25rem;
-  width: 100%;
-  margin-left: 5px;
-}
 
-input:focus{
-  outline: none;
-}
 
 .results-list{
   position: absolute;
@@ -36,4 +25,13 @@ input:focus{
   overflow-y: scroll;
   top: 50px;
   left: 0;
+}
+
+.text-input {
+  position: relative;
+  left: 98%;
+}
+
+.input-group-text {
+  width: 5%;
 }

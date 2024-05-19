@@ -1,19 +1,19 @@
 import PropTypes from "prop-types";
 import "./SearchResult.css";
 
-const SearchResult = ({ results }) => {
+const SearchResult = ({ result }) => {
   return (
     <div
       className="search-result"
-      onClick={() => alert(`Click on ${results.name}`)}
+      onClick={() => alert(`Click on ${result.name}`)}
     >
-      {results.name}
+      {result.name}
     </div>
   );
 };
 
 SearchResult.propTypes = {
-    results: PropTypes.object,
+    result: PropTypes.object,
 }
 
 export default SearchResult;

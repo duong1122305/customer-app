@@ -1,32 +1,53 @@
-import { useState } from "react";
-import { Modal } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import {
+  Modal,
+  InputGroup,
+  Spinner,
+  CloseButton,
+  Form
+} from "react-bootstrap";
+import axios from "axios";
 import PropTypes from "prop-types";
 import "./Search.css";
 import SearchResult from "./SearchResult";
 
 const Search = (props) => {
   const [input, setInput] = useState("");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const fetchData = (value) => {
-    fetch("")
-      .then((response) => response.json())
-      .then((json) => {
-        const results = json.filter((user) => {
-          return (
-            value &&
-            user &&
-            user.name &&
-            user.name.toLowerCase().includes(value)
-          );
-        });
-        props.setresult(results);
-      });
-  };
+  useEffect(() => {
+    if (input.length === 0) {
+      setResults([]);
+      setLoading(false);
+      return;
+    }
 
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `https://localhost:7019/api/SinhViens/get-by-name/${input}`
+        );
 
-  const handleChange = (value) => {
-    setInput(value);
-    fetchData(value);
+        setResults(Array.isArray(res.data) ? res.data : []);
+      } catch (error) {
+        setResults([]);
+        console.log(error);
+      }
+      setLoading(false);
+    };
+
+    const delayDebounceFn = setTimeout(() => {
+      fetchData();
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [input]);
+
+  const handleClear = () => {
+    setInput("");
+    setResults([]);
   };
 
   return (
@@ -53,16 +74,27 @@ const Search = (props) => {
             color: "#fff",
           }}
         >
-          <div className="input-wrapper">
-            <input
-              autoFocus={true}
-              placeholder="Tìm dịch vụ bạn cần ....."
-              value={input}
-              onChange={(e) => handleChange(e.target.value)}
-            />
+          <div>
+            <InputGroup>
+              <Form.Control
+                type="text"
+                placeholder="Search..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+              />
+              <InputGroup.Text>
+                {loading ? (
+                  <Spinner animation="border" size="sm" variant="primary"/>
+                ) : (
+                  input && (
+                    <CloseButton onClick={handleClear}/>
+                  )
+                )}
+              </InputGroup.Text>
+            </InputGroup>
             <div className="results-list">
-              {props.results.map((results, id) => {
-                return <SearchResult results={results} key={id} />;
+              {results.map((result, id) => {
+                return <SearchResult result={result} key={id} />;
               })}
             </div>
           </div>
@@ -73,7 +105,7 @@ const Search = (props) => {
 };
 
 Search.propTypes = {
-  setresult: PropTypes.func,
+  setResult: PropTypes.func,
   results: PropTypes.array,
 };
 
