@@ -13,11 +13,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Header.css";
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Register from "../../pages/Register";
-import Login from "../../pages/Login";
+import Register from "../../pages/Register/Register";
+import Login from "../../pages/Login/Login";
 import Search from "../SearchComponent/Search";
 import GioiThieu from "../../pages/GioiThieu/GioiThieu";
-import DichVu from "../../pages/DichVu";
+import DichVu from "../../pages/DichVu/DichVu";
 import DatLich from "../../pages/DatLich/DatLich";
 
 export default function Header() {
