@@ -111,6 +111,11 @@ export default function Header() {
                   Đặt lịch
                 </Nav.Link>
               </Nav.Item>
+              <Nav.Item>
+                <Nav.Link as={Link} to="/blog">
+                  Tin tức
+                </Nav.Link>
+              </Nav.Item>
             </div>
             <Nav className="me-auto"></Nav>
             <Button

@@ -84,7 +84,7 @@ const Search = (props) => {
               />
               <InputGroup.Text>
                 {loading ? (
-                  <Spinner animation="border" size="sm" variant="primary"/>
+                  <Spinner animation="border" size="sm" variant="dark"/>
                 ) : (
                   input && (
                     <CloseButton onClick={handleClear}/>
