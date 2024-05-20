@@ -1,6 +1,7 @@
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import ButtonCustom from "../../components/ButtonComponent/ButtonCustom";
 
 const Login = (props) => {
   return (
@@ -34,9 +35,7 @@ const Login = (props) => {
               Quên mật khẩu
             </Link>
           </Form.Group>
-          <Button className="mt-3" variant="primary" type="submit">
-            Đăng nhập
-          </Button>
+          <ButtonCustom content="Đăng nhập"/>
         </Form>
       </Modal.Body>
     </Modal>

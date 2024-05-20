@@ -19,6 +19,7 @@ import Search from "../SearchComponent/Search";
 import GioiThieu from "../../pages/GioiThieu/GioiThieu";
 import DichVu from "../../pages/DichVu/DichVu";
 import DatLich from "../../pages/DatLich/DatLich";
+import LienHe from "../../pages/LienHe/LienHe";
 
 export default function Header() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -72,7 +73,10 @@ export default function Header() {
       <Navbar collapseOnSelect expand="lg" className="header" sticky="top">
         <Container>
           <Navbar.Brand className="m-0 p-0">
-            <Image style={{ width: "70px" }} src="/src/assets/image/logo.jpg" />
+            <Image
+              style={{ width: "100px", height: "80px" }}
+              src="/src/assets/image/logo_new.png"
+            />
           </Navbar.Brand>
           <Navbar.Toggle
             aria-controls="responsive-navbar-nav"
@@ -279,6 +283,7 @@ export default function Header() {
           <Route path="/" element={<GioiThieu />} />
           <Route path="/services" element={<DichVu />} />
           <Route path="/booking" element={<DatLich />} />
+          <Route path="/contact" element={<LienHe />} />
         </Routes>
       </div>
     </BrowserRouter>
