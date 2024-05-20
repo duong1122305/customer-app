@@ -31,7 +31,7 @@ const Footer = () => {
               }}
             >
               <Image
-                src="/src/assets/image/logo_new.png"
+                src="/src/assets/image/logo.jpg"
                 style={{ height: "130px" }}
               />
               <h5>Pet Mew</h5>
