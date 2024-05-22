@@ -1,4 +1,6 @@
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Form } from "react-bootstrap";
+import ButtonCustom from "../../components/ButtonCustomComponent/ButtonCustom";
+
 import PropTypes from 'prop-types';
 
 const Register = (props) => {
@@ -25,12 +27,8 @@ const Register = (props) => {
         <Form.Label>Password</Form.Label>
         <Form.Control type="password" placeholder="Password" />
       </Form.Group>
-      <Button variant="primary" type="submit">
-        Đăng ký
-      </Button>
-      <Button style={{marginLeft:"10px"}} variant="primary" type="reset">
-        Nhập lại
-      </Button>
+      <ButtonCustom content="Đăng ký" type="submit"/>
+      <ButtonCustom content="Nhập lại" type="reset"/>
     </Form>
       </Modal.Body>
     </Modal>

@@ -19,6 +19,7 @@ import Search from "../SearchComponent/Search";
 import GioiThieu from "../../pages/GioiThieu/GioiThieu";
 import DichVu from "../../pages/DichVu/DichVu";
 import DatLich from "../../pages/DatLich/DatLich";
+import LienHe from "../../pages/LienHe/LienHe";
 
 export default function Header() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -88,27 +89,27 @@ export default function Header() {
             >
               <Nav.Item>
                 <Nav.Link as={Link} to="/">
-                  Giới thiệu
+                  Giới thiệu |
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link as={Link} to="/services">
-                  Dịch vụ
+                  Dịch vụ |
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link as={Link} to="/employ">
-                  Tuyển dụng
+                  Tuyển dụng |
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link as={Link} to="/contact">
-                  Liên hệ
+                  Liên hệ |
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link as={Link} to="/booking">
-                  Đặt lịch
+                  Đặt lịch |
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
@@ -284,6 +285,7 @@ export default function Header() {
           <Route path="/" element={<GioiThieu />} />
           <Route path="/services" element={<DichVu />} />
           <Route path="/booking" element={<DatLich />} />
+          <Route path="/contact" element={<LienHe />} />
         </Routes>
       </div>
     </BrowserRouter>
