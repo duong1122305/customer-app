@@ -36,4 +36,5 @@ body {
   line-height: 1;
   background-color: #ccc;
   font-family: "Freeman", sans-serif;
+  scroll-behavior: smooth;
 }

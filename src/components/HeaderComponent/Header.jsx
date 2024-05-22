@@ -55,7 +55,7 @@ export default function Header() {
       setIsVisible(false);
     }
 
-    if (screenWidth <= 1900) {
+    if (screenWidth <= 1900 || screenWidth <= 1800) {
       setIsToggleVisible(true);
       // console.log("re render toggle");
     } else {
@@ -177,7 +177,7 @@ export default function Header() {
             <Offcanvas.Body style={{ display: "block" }}>
               <Nav className="me-auto">
                 <InputGroup className="mb-3">
-                  <InputGroup.Text id="basic-addon1">
+                  <InputGroup.Text id="basic-addon1" style={{width:"40px"}}>
                     <i className="fa-solid fa-magnifying-glass"></i>
                   </InputGroup.Text>
                   <Form.Control
