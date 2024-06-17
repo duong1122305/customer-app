@@ -32,9 +32,8 @@ const Footer = () => {
             >
               <Image
                 src="/src/assets/image/logo.jpg"
-                style={{ height: "130px" }}
+                style={{ height: "120px" }}
               />
-              <h5>Pet Mew</h5>
             </Col>
           </Row>
           <Row style={{ width: "300px" }}>

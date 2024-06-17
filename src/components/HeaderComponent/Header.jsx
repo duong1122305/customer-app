@@ -49,14 +49,14 @@ export default function Header() {
     };
     window.addEventListener("resize", handleResize);
 
-    if (screenWidth <= 916) {
+    if (screenWidth <= 961 ) {
       setIsVisible(true);
       // console.log("re render offcanvas");
     } else {
       setIsVisible(false);
     }
 
-    if (screenWidth <= 1900 || screenWidth <= 1800) {
+    if (screenWidth <= 1900 || screenWidth <= 1800 || screenWidth <= 1980 || screenWidth <= 3200 || screenWidth <= 3900 || screenWidth <= 2160) {
       setIsToggleVisible(true);
       // console.log("re render toggle");
     } else {
@@ -73,7 +73,7 @@ export default function Header() {
       <Navbar collapseOnSelect expand="lg" className="header" sticky="top">
         <Container>
           <Navbar.Brand className="m-0 p-0">
-            <Image style={{ width: "70px" }} src="/src/assets/image/logo.jpg" />
+            <Image style={{ width: "50px" }} src="/src/assets/image/logo.jpg" />
           </Navbar.Brand>
           <Navbar.Toggle
             aria-controls="responsive-navbar-nav"
@@ -85,47 +85,40 @@ export default function Header() {
           >
             <div
               className="thea"
-              style={{ display: "flex", marginLeft: "10px" }}
+              style={{ display: "flex", marginLeft: "30px" }}
             >
-              <Nav.Item>
+              <Nav.Item style={{marginRight:20}}>
                 <Nav.Link as={Link} to="/">
-                  Giới thiệu |
+                  Giới thiệu
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item>
+              <Nav.Item style={{marginRight:20}}>
                 <Nav.Link as={Link} to="/services">
-                  Dịch vụ |
+                  Dịch vụ
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item>
+              <Nav.Item style={{marginRight:20}}>
                 <Nav.Link as={Link} to="/employ">
-                  Tuyển dụng |
+                  Tuyển dụng
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item>
+              <Nav.Item style={{marginRight:20}}>
                 <Nav.Link as={Link} to="/contact">
-                  Liên hệ |
+                  Liên hệ
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item>
+              <Nav.Item style={{marginRight:20}}>
                 <Nav.Link as={Link} to="/booking">
-                  Đặt lịch |
+                  Đặt lịch
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item>
+              <Nav.Item style={{marginRight:20}}>
                 <Nav.Link as={Link} to="/blog">
                   Tin tức
                 </Nav.Link>
               </Nav.Item>
             </div>
             <Nav className="me-auto"></Nav>
-            <Button
-              style={{ backgroundColor: "#fff", color: "black" }}
-              variant="outline-light"
-              onClick={handleSearchShow}
-            >
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </Button>
             <Nav style={{ display: isLogin ? "none" : "flex" }}>
               <Nav.Item onClick={handleShowRegister}>
                 <Nav.Link>Đăng ký</Nav.Link>
