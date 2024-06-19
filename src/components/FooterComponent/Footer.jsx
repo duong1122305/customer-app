@@ -30,27 +30,19 @@ const Footer = () => {
                 marginTop: "20px",
               }}
             >
-              <Image
-                src="/src/assets/image/logo.jpg"
-                style={{ height: "120px" }}
-              />
             </Col>
           </Row>
-          <Row style={{ width: "300px" }}>
-            <span>
-              Pet shop MewMew là trung tâm dịch vụ chăm sóc thú cưng chất lượng
-              cao. Chúng tôi cung cấp các giải pháp và dịch vụ chăm sóc thú cưng
-              toàn diện, chuyên nghiệp TOP đầu tại Hà Nội.
-            </span>
+          <Row style={{ width: "300px", textAlign:"justify", marginTop:"40px" }}>
           </Row>
+          <h5>MẠNG XÃ HỘI</h5>
           <Col
             style={{
-              fontSize: "20px",
+              fontSize: "30px",
               letterSpacing: "20px",
               marginTop: "30px",
             }}
           >
-            <span>
+            <span title="Facebook">
               <a href="#">
                 <i
                   className="fa-brands fa-facebook"
@@ -58,15 +50,15 @@ const Footer = () => {
                 ></i>
               </a>
             </span>
-            <span>
+            <span title="Instagram">
               <a href="#">
                 <i
                   className="fa-brands fa-instagram"
-                  style={{ color: "palevioletred", cursor: "pointer" }}
+                  style={{ color: "yellow", cursor: "pointer" }}
                 ></i>
               </a>
             </span>
-            <span>
+            <span title="Tiktok">
               <a href="#">
                 <i
                   className="fa-brands fa-tiktok"
@@ -74,7 +66,7 @@ const Footer = () => {
                 ></i>
               </a>
             </span>
-            <span>
+            <span title="Youtube">
               <a href="#">
                 <i
                   className="fa-brands fa-youtube"
@@ -82,7 +74,7 @@ const Footer = () => {
                 ></i>
               </a>
             </span>
-            <span>
+            <span title="Email">
               <a>
                 <i
                   className="fa-solid fa-envelope"
@@ -98,46 +90,48 @@ const Footer = () => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            width: "400px",
+            width: "500px",
+            marginTop: "50px"
           }}
           xs
           lg="5"
         >
           <Row>
-            <h5>THÔNG TIN LIÊN HỆ:</h5>
+            <h5>THÔNG TIN LIÊN HỆ</h5>
           </Row>
           <Row>
-            <i
+            <span>  <i className="fa-regular fa-envelope"></i> petshopmew@gmail.com</span>
+          </Row>
+          <Row>
+            <span> 
+            <i className="fa-solid fa-globe" style={{ color: "white" }}></i> www.petshopmew.com.vn</span>
+          </Row>
+          <Row>
+            <span><i
               className="fa-solid fa-building"
-              style={{ color: "#584c47" }}
-            ></i>
-            <span>CỬA HÀNG CHĂM SÓC THÚ CƯNG MEWMEW</span>
+              style={{ color: "white" }}
+            ></i> NHÓM SD-33</span>
           </Row>
           <Row>
-            <i
+           
+            <span>  <i
               className="fa-solid fa-location-dot"
-              style={{ color: "red" }}
-            ></i>
-            <span>Số 16b, lô A, quận 12, thành phố Hồ Chí Minh</span>
+              style={{ color: "white" }}
+            ></i> Mỹ Đình, Hà Nội</span>
           </Row>
-          <Row>
-            <i className="fa-regular fa-envelope"></i>
-            <span>petshopmew@gmail.com</span>
-          </Row>
-          <Row>
-            <i className="fa-solid fa-globe" style={{ color: "blue" }}></i>
-            <span>www.petshopmew.com.vn</span>
-          </Row>
+
         </Col>
-        <Col style={{ lineHeight: "50px", marginTop: "50px" }} xs lg="4">
+        <Col style={{ lineHeight: "30px", marginTop: "50px" }} xs lg="4">
           <Row>
-            <h5>THỜI GIAN LÀM VIỆC:</h5>
+            <h5>THỜI GIAN LÀM VIỆC</h5>
           </Row>
           <Row>
-            <span>Cửa hàng làm việc tất cả các ngày trong tuần</span>
+            <span>Các ngày trong tuần</span>
+            
           </Row>
           <Row>
-            <span>Khung giờ mở cửa: 08:00 - 21:00</span>
+          <span><span> Mở cửa:</span> 08:00 </span>
+          <span><span>Đóng cửa:</span> 21:00 </span>
           </Row>
         </Col>
       </Row>
@@ -150,6 +144,7 @@ const Footer = () => {
             width: "100%",
             maxWidth: "600px",
             margin: "auto",
+            marginTop:"20px"
           }}
         />
         <div
@@ -171,7 +166,7 @@ const Footer = () => {
           <span>COPYRIGHT © 2024 PETMEW. ALL RIGHTS RESERVED.</span>
         </div>
       </Row>
-    </Container>
+    </Container>  
   );
 };
 

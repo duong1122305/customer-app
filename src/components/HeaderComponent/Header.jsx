@@ -32,16 +32,6 @@ export default function Header() {
   const [isVisible, setIsVisible] = useState(false);
   const [isToggleVisible, setIsToggleVisible] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  // const [results, setResults] = useState([]);
-
-  //handle button offcanvas
-  const showOffCanvas = () => setShow(true);
-  const closeOffCanvas = () => setShow(false);
-  const handleShowRegister = () => setRegisterShow(true);
-  const handleShowLogin = () => setLoginShow(true);
-  const handleOffcanvasShow = () => setShow(false);
-  const handleSearchShow = () => setSearchShow(true);
-  const handleSearchClose = () => setSearchShow(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -49,24 +39,31 @@ export default function Header() {
     };
     window.addEventListener("resize", handleResize);
 
-    if (screenWidth <= 961 ) {
-      setIsVisible(true);
-      // console.log("re render offcanvas");
-    } else {
-      setIsVisible(false);
-    }
+    // Set isVisible to false when screenWidth is greater than 961px
+    setIsVisible(screenWidth <= 961);
 
-    if (screenWidth <= 1900 || screenWidth <= 1800 || screenWidth <= 1980 || screenWidth <= 3200 || screenWidth <= 3900 || screenWidth <= 2160) {
-      setIsToggleVisible(true);
-      // console.log("re render toggle");
-    } else {
-      setIsToggleVisible(false);
-    }
+    // Set isToggleVisible based on your desired screen widths
+    setIsToggleVisible(
+      screenWidth <= 1900 ||
+        screenWidth <= 1800 ||
+        screenWidth <= 1980 ||
+        screenWidth <= 3200 ||
+        screenWidth <= 3900 ||
+        screenWidth <= 2160
+    );
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [screenWidth]);
+
+  const showOffCanvas = () => setShow(true);
+  const closeOffCanvas = () => setShow(false);
+  const handleShowRegister = () => setRegisterShow(true);
+  const handleShowLogin = () => setLoginShow(true);
+  const handleOffcanvasShow = () => setShow(false);
+  const handleSearchShow = () => setSearchShow(true);
+  const handleSearchClose = () => setSearchShow(false);
 
   return (
     <BrowserRouter>
@@ -81,40 +78,37 @@ export default function Header() {
           />
           <Navbar.Collapse
             id="responsive-navbar-nav"
-            style={{ display: isToggleVisible ? "none" : "block" }}
+            style={{ display: isVisible ? "none" : "block" }}
           >
-            <div
-              className="thea"
-              style={{ display: "flex", marginLeft: "30px" }}
-            >
-              <Nav.Item style={{marginRight:20}}>
+            <div className="thea" style={{ display: "flex", marginLeft: "30px" }}>
+              <Nav.Item style={{ marginRight: 20 }}>
                 <Nav.Link as={Link} to="/">
                   Giới thiệu
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item style={{marginRight:20}}>
+              <Nav.Item style={{ marginRight: 20 }}>
                 <Nav.Link as={Link} to="/services">
                   Dịch vụ
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item style={{marginRight:20}}>
+              <Nav.Item style={{ marginRight: 20 }}>
                 <Nav.Link as={Link} to="/employ">
-                  Tuyển dụng
+                  Sản phẩm
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item style={{marginRight:20}}>
+              <Nav.Item style={{ marginRight: 20 }}>
                 <Nav.Link as={Link} to="/contact">
                   Liên hệ
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item style={{marginRight:20}}>
+              <Nav.Item style={{ marginRight: 20 }}>
                 <Nav.Link as={Link} to="/booking">
                   Đặt lịch
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item style={{marginRight:20}}>
+              <Nav.Item style={{ marginRight: 20 }}>
                 <Nav.Link as={Link} to="/blog">
-                  Tin tức
+                  Sự kiện
                 </Nav.Link>
               </Nav.Item>
             </div>
@@ -171,7 +165,7 @@ export default function Header() {
             <Offcanvas.Body style={{ display: "block" }}>
               <Nav className="me-auto">
                 <InputGroup className="mb-3">
-                  <InputGroup.Text id="basic-addon1" style={{width:"40px"}}>
+                  <InputGroup.Text id="basic-addon1" style={{ width: "40px" }}>
                     <i className="fa-solid fa-magnifying-glass"></i>
                   </InputGroup.Text>
                   <Form.Control
@@ -195,22 +189,12 @@ export default function Header() {
                 style={{ height: "40px", marginTop: "150px" }}
                 variant="underline"
               >
-                <Nav.Item
-                  as="li"
-                  style={{ display: isLogin ? "block" : "none" }}
-                >
-                  <Nav.Link
-                    as={Link}
-                    to="/account"
-                    onClick={handleOffcanvasShow}
-                  >
+                <Nav.Item as="li" style={{ display: isLogin ? "block" : "none" }}>
+                  <Nav.Link as={Link} to="/account" onClick={handleOffcanvasShow}>
                     Tài khoản
                   </Nav.Link>
                 </Nav.Item>
-                <Nav.Item
-                  as="li"
-                  style={{ display: isLogin ? "block" : "none" }}
-                >
+                <Nav.Item as="li" style={{ display: isLogin ? "block" : "none" }}>
                   <Nav.Link
                     onClick={handleOffcanvasShow}
                     as={Link}
@@ -234,11 +218,7 @@ export default function Header() {
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item as="li">
-                  <Nav.Link
-                    onClick={handleOffcanvasShow}
-                    as={Link}
-                    to="/employ"
-                  >
+                  <Nav.Link onClick={handleOffcanvasShow} as={Link} to="/employ">
                     Tuyển dụng
                   </Nav.Link>
                 </Nav.Item>
@@ -269,8 +249,6 @@ export default function Header() {
       <Login show={loginShow} onHide={() => setLoginShow(false)} />
       <Search
         show={searchShow}
-        // results={results}
-        // setresult={setResults}
         onHide={handleSearchClose}
       />
       <div>

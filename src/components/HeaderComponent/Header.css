@@ -1,6 +1,7 @@
 .header {
   background-color: transparent;
-  background-image: linear-gradient(90deg, #015aad 0%, #05a955 100%);
+  background-image: linear-gradient(90deg, #cb6a6a 0%, #c825c3 100%);
+
 }
 
 .header a {
@@ -9,11 +10,11 @@
 }
 
 .header a:hover {
-  color: gold;
+  color: #F7FF58; /* Màu vàng nhạt */
 }
 
 .header a:focus {
-  color: gold;
+  color: #F7FF58; /* Màu vàng nhạt */
 }
 
 .header .thea div a {
@@ -26,20 +27,21 @@
 
 .header .dropdown div {
   background-color: transparent;
-  background-image: linear-gradient(90deg, #015aad 0%, #05a955 100%);
+  background-image: linear-gradient(90deg, #FFD166 0%, #3B4257 100%);
 }
 
 .header .dropdown div a:hover {
   background-color: transparent;
-  background-image: linear-gradient(90deg, #015aad 0%, #05a955 100%);
+  background-image: linear-gradient(90deg, #06D6A0 0%, #3B4257 100%);
 }
 
 .offcanvas {
   background-color: transparent;
-  background-image: linear-gradient(90deg, #015aad 0%, #05a955 100%);
+  background-image: linear-gradient(90deg, #F76C6C 0%, #FFDD78 100%);
   color: #fff;
 }
 
-.offcanvas a:hover{
+.offcanvas a:hover {
   cursor: pointer;
+  color: #FFDD78; /* Màu vàng nhạt */
 }
