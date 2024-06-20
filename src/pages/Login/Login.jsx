@@ -83,7 +83,7 @@ const Login = (props) => {
             </Link>
           </Form.Group>
           <div style={{textAlign: "center"}}>
-          <ButtonCustom content="Đăng nhập" type="submit" className="mx-auto" />
+            <button type="submit">Đăng nhập</button>
           </div>
         </Form>
       </Modal.Body>

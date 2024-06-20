@@ -92,7 +92,7 @@ export default function Header() {
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item style={{ marginRight: 20 }}>
-                <Nav.Link as={Link} to="/employ">
+                <Nav.Link as={Link} to="/product">
                   Sản phẩm
                 </Nav.Link>
               </Nav.Item>
@@ -257,6 +257,7 @@ export default function Header() {
           <Route path="/services" element={<DichVu />} />
           <Route path="/booking" element={<DatLich />} />
           <Route path="/contact" element={<LienHe />} />
+       
         </Routes>
       </div>
     </BrowserRouter>

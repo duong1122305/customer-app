@@ -1,33 +1,46 @@
-import { Modal, Form, Button } from "react-bootstrap";
-import ButtonCustom from "../../components/ButtonCustomComponent/ButtonCustom";
+import React, { useState } from 'react';
+import { Modal, Form, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 
 const Register = (props) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showError, setShowError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleClose = () => {
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
     setShowError(false);
     props.onHide();
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!email || !password || !confirmPassword) {
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+    const trimmedConfirmPassword = confirmPassword.trim();
+
+    if (!trimmedEmail || !trimmedPassword || !trimmedConfirmPassword) {
+      setShowError(true);
+    } else if (trimmedPassword.length < 6 || trimmedPassword.length > 8) {
+      setShowError(true);
+    } else if (trimmedPassword !== trimmedConfirmPassword) {
       setShowError(true);
     } else {
-      // Process your registration logic here
-      console.log("Email:", email, "Password:", password, "Confirm Password:", confirmPassword);
+      console.log("Email:", trimmedEmail, "Password:", trimmedPassword, "Confirm Password:", trimmedConfirmPassword);
       handleClose();
     }
+  };
+
+  const handleReset = () => {
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setShowError(false);
   };
 
   const toggleShowPassword = () => {
@@ -53,7 +66,7 @@ const Register = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} onReset={handleReset}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email</Form.Label>
             <Form.Control
@@ -61,35 +74,39 @@ const Register = (props) => {
               placeholder="Nhập email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              isInvalid={showError && !email}
+              isInvalid={showError && !email.trim()}
             />
             <Form.Control.Feedback type="invalid">
               Vui lòng nhập địa chỉ email.
             </Form.Control.Feedback>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Mật khẩu</Form.Label>
             <div className="input-group">
               <Form.Control
                 type={showPassword ? "text" : "password"}
-                placeholder="Nhập mật khẩu"
+                placeholder="Nhập mật khẩu (6-8 ký tự)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                isInvalid={showError && !password}
+                isInvalid={
+                  (showError && !password.trim()) ||
+                  (password.trim() && (password.length < 6 || password.length > 8))
+                }
                 style={{ flex: 1 }}
               />
               <Button
                 variant="outline-secondary"
                 onClick={toggleShowPassword}
                 className="password-toggle-btn"
-                style={{ marginLeft: -1 }} // Negative margin to overlap border
+                style={{ marginLeft: -1 }}
               >
                 {showPassword ? "Ẩn" : "Hiện"}
               </Button>
+              <Form.Control.Feedback type="invalid">
+                Vui lòng nhập mật khẩu từ 6-8 ký tự.
+              </Form.Control.Feedback>
             </div>
-            <Form.Control.Feedback type="invalid">
-              Vui lòng nhập mật khẩu.
-            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
@@ -100,26 +117,29 @@ const Register = (props) => {
                 placeholder="Nhập lại mật khẩu"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                isInvalid={showError && !confirmPassword}
+                isInvalid={
+                  (showError && !confirmPassword.trim()) ||
+                  (confirmPassword.trim() && confirmPassword !== password)
+                }
                 style={{ flex: 1 }}
               />
               <Button
                 variant="outline-secondary"
                 onClick={toggleShowConfirmPassword}
                 className="password-toggle-btn"
-                style={{ marginLeft: -1 }} // Negative margin to overlap border
+                style={{ marginLeft: -1 }}
               >
                 {showConfirmPassword ? "Ẩn" : "Hiện"}
               </Button>
+              <Form.Control.Feedback type="invalid">
+                Vui lòng nhập lại mật khẩu và phải khớp với mật khẩu đã nhập.
+              </Form.Control.Feedback>
             </div>
-            <Form.Control.Feedback type="invalid">
-              Vui lòng nhập lại mật khẩu.
-            </Form.Control.Feedback>
           </Form.Group>
 
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <ButtonCustom content="Đăng ký" type="submit" />
-            <ButtonCustom content="Nhập lại" type="reset" />
+            <Button type="submit" style={{ marginRight: 5 }}>Đăng ký</Button>
+            <Button type="reset">Nhập lại</Button>
           </div>
         </Form>
       </Modal.Body>
