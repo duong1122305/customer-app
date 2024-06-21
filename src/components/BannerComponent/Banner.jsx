@@ -2,9 +2,7 @@ import { Carousel, CarouselItem } from "react-bootstrap";
 import PropTypes from 'prop-types';
 
 const bannerArr = [
-  "/src/assets/image/banner1.jpg",
-  "/src/assets/image/banner2.jpg",
-  "/src/assets/image/banner3.jpg",
+  "/src/assets/image/banner5.png",
 ];
 
 const Banner = (props) => {
@@ -18,7 +16,7 @@ const Banner = (props) => {
               src={image}
               alt={`Banner ${index + 1}`}
               style={{
-                height: "500px",
+                height: "auto",
               }}
             />
           </CarouselItem>
