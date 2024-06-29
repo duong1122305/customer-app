@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, Button, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import ButtonCustom from "../../components/ButtonCustomComponent/ButtonCustom";
-
+import { Nav } from 'react-bootstrap'; 
 const Login = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -78,9 +77,8 @@ const Login = (props) => {
           </Form.Group>
 
           <Form.Group className="text-align-end" style={{textAlign: "end",marginTop: 10}}>
-            <Link to="/forgot" className="text-decoration-none">
-              Quên mật khẩu?
-            </Link>
+           
+            <Nav.Link as={Link} to="/forgot-password">Quên mật khẩu</Nav.Link>
           </Form.Group>
           <div style={{textAlign: "center"}}>
             <button type="submit">Đăng nhập</button>

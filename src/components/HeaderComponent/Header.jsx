@@ -15,6 +15,7 @@
   import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
   import Register from "../../pages/Register/Register";
   import Login from "../../pages/Login/Login";
+  import QuenMatKhau from "../../pages/QuenMatKhau/QuenMatKhau";
   import Search from "../SearchComponent/Search";
   import GioiThieu from "../../pages/GioiThieu/GioiThieu";
   import DichVu from "../../pages/DichVu/DichVu";
@@ -260,8 +261,8 @@
             <Route path="/booking" element={<DatLich />} />
             <Route path="/contact" element={<LienHe />} />
             <Route path="/listProduct" element={<DanhSachSanPham />} />
-          <Route path="/product/:id" element={<SanPhamChiTiet />} />
-
+            <Route path="/product/:id" element={<SanPhamChiTiet />} />
+            <Route path="/forgot-password" element={<QuenMatKhau />} />
           </Routes>
         </div>
       </BrowserRouter>
