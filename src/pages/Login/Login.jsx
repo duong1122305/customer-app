@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Modal, Form, Button, Alert } from "react-bootstrap";
+import { useState } from "react";
+import { Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Nav } from 'react-bootstrap'; 
+import { Nav } from "react-bootstrap";
 const Login = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -24,13 +24,37 @@ const Login = (props) => {
       setShowError(true);
     } else {
       // Xử lý logic đăng nhập ở đây (chưa cài đặt)
-      console.log("Đăng nhập với tài khoản:", username, "và mật khẩu:", password);
+      const postData = {
+        username: username,
+        password: password,
+      };
+      handleLogin(postData)
+      // if(handleLogin(postData)){
+      //   props.onLogin();
+      // }
       // Sau khi đăng nhập thành công thì có thể ẩn modal và xoá dữ liệu
       setUsername("");
       setPassword("");
       props.onHide();
     }
   };
+
+  async function handleLogin(postData) {
+    const response = await fetch(
+      `https://localhost:7039/api/GuestAuthen/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+      }
+    );
+    if (response.ok) {
+      console.log("succes");
+      return true;
+    }
+  }
 
   return (
     <Modal
@@ -49,7 +73,7 @@ const Login = (props) => {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="formBasicEmail">
-            <Form.Label>Tài khoản:</Form.Label>
+            <Form.Label>Email:</Form.Label>
             <Form.Control
               type="email"
               placeholder="Nhập vào tài khoản"
@@ -62,7 +86,7 @@ const Login = (props) => {
             </Form.Control.Feedback>
           </Form.Group>
 
-          <Form.Group controlId="formBasicPassword" style={{marginTop: 20}}>
+          <Form.Group controlId="formBasicPassword" style={{ marginTop: 20 }}>
             <Form.Label>Mật khẩu:</Form.Label>
             <Form.Control
               type="password"
@@ -76,12 +100,18 @@ const Login = (props) => {
             </Form.Control.Feedback>
           </Form.Group>
 
-          <Form.Group className="text-align-end" style={{textAlign: "end",marginTop: 10}}>
-           
-            <Nav.Link as={Link} to="/forgot-password">Quên mật khẩu</Nav.Link>
+          <Form.Group
+            className="text-align-end"
+            style={{ textAlign: "end", marginTop: 10 }}
+          >
+            <Nav.Link as={Link} to="/forgot-password">
+              Quên mật khẩu
+            </Nav.Link>
           </Form.Group>
-          <div style={{textAlign: "center"}}>
-            <button type="submit">Đăng nhập</button>
+          <div style={{ textAlign: "center" }}>
+            <button type="submit" id="login">
+              Đăng nhập
+            </button>
           </div>
         </Form>
       </Modal.Body>
@@ -91,6 +121,7 @@ const Login = (props) => {
 
 Login.propTypes = {
   onHide: PropTypes.func,
+  // onLogin: PropTypes.func,
 };
 
 export default Login;

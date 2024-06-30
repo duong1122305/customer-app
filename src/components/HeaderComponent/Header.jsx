@@ -65,9 +65,9 @@
     const handleShowRegister = () => setRegisterShow(true);
     const handleShowLogin = () => setLoginShow(true);
     const handleOffcanvasShow = () => setShow(false);
-    const handleSearchShow = () => setSearchShow(true);
+    // const handleSearchShow = () => setSearchShow(true);
     const handleSearchClose = () => setSearchShow(false);
-
+   
     return (
       <BrowserRouter>
         <Navbar collapseOnSelect expand="lg" className="header" sticky="top">
@@ -249,7 +249,7 @@
           </Container>
         </Navbar>
         <Register show={registerShow} onHide={() => setRegisterShow(false)} />
-        <Login show={loginShow} onHide={() => setLoginShow(false)} />
+        <Login show={loginShow} onHide={() => setLoginShow(false)}/>
         <Search
           show={searchShow}
           onHide={handleSearchClose}
