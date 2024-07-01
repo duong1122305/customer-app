@@ -94,7 +94,7 @@ const OTPVerification = ({ email }) => {
   return (
     <div className="otp-verification-container">
       {!otpVerified ? ( // If OTP is not verified, show OTP verification form
-        <div className="card">
+        <div className="card-tl">
           <div className="form-container">
             <h2 className="title">Xác nhận OTP</h2>
             <div className="otp-input-container">
