@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import products from "../SanPham/Product"; 
 import VerticalMenu from "../../components/MenuVerticalComponent/VerticalMenu"; 

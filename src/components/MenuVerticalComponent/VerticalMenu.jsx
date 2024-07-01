@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './VerticalMenu.css';
 
 const VerticalMenu = () => {
