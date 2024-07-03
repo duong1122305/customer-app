@@ -1,45 +1,108 @@
-import React, { useState } from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
-import PropTypes from 'prop-types';
+import { useState } from "react";
+import { Modal, Form, Button } from "react-bootstrap";
+import PropTypes from "prop-types";
 
 const Register = (props) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showError, setShowError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleClose = () => {
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
+    setName("");
+    setEmail("");
+    setPhone("");
+    setUsername("");
+    setPassword("");
+    setConfirmPassword("");
     setShowError(false);
     props.onHide();
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const trimmedName = name.trim();
+    const trimmedPhone = phone.trim();
     const trimmedEmail = email.trim();
+    const trimmedUsername = username.trim();
     const trimmedPassword = password.trim();
     const trimmedConfirmPassword = confirmPassword.trim();
 
     if (!trimmedEmail || !trimmedPassword || !trimmedConfirmPassword) {
+      setShowError(true);
+    } else if (!trimmedName) {
+      setShowError(true);
+    } else if (
+      !trimmedPhone ||
+      trimmedPhone.length < 10 ||
+      trimmedPhone.length > 10
+    ) {
+      setShowError(true);
+    } else if (!trimmedUsername) {
       setShowError(true);
     } else if (trimmedPassword.length < 6 || trimmedPassword.length > 8) {
       setShowError(true);
     } else if (trimmedPassword !== trimmedConfirmPassword) {
       setShowError(true);
     } else {
-      console.log("Email:", trimmedEmail, "Password:", trimmedPassword, "Confirm Password:", trimmedConfirmPassword);
-      handleClose();
+      console.log(
+        "Email:",
+        trimmedEmail,
+        "Password:",
+        trimmedPassword,
+        "Confirm Password:",
+        trimmedConfirmPassword
+      );
+      const postData = {
+        name: name,
+        gender: true,
+        password: password,
+        phoneNumber: phone,
+        address: "",
+        email: email,
+        userName: username,
+      };
+      handleRegis(postData);
     }
   };
 
+  async function handleRegis(postData) {
+    try {
+      const response = await fetch(
+        "https://localhost:7039/api/GuestManager/register-by-guest",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
+        }
+      );
+      if (response.ok) {
+        console.log("ok");
+        setMessage("Đã gửi mã tới email của bạn");
+        handleClose();
+      } else {
+        console.log("loi");
+        setMessage("Vui lòng kiểm tra lại thông tin của bạn");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const handleReset = () => {
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
+    setEmail("");
+    setName("");
+    setPhone("");
+    setPassword("");
+    setConfirmPassword("");
     setShowError(false);
   };
 
@@ -61,12 +124,53 @@ const Register = (props) => {
       backdrop="static"
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          ĐĂNG KÝ
-        </Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">ĐĂNG KÝ</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit} onReset={handleReset}>
+        <Form method="post" onSubmit={handleSubmit} onReset={handleReset}>
+          <Form.Group className="mb-3" controlId="formBasicName">
+            <Form.Label>Tên</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Nhập họ và tên"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              isInvalid={showError && !name.trim()}
+            />
+            <Form.Control.Feedback type="invalid">
+              Vui lòng nhập họ và tên của bạn.
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicPhone">
+            <Form.Label>SĐT</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Nhập SĐT"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              isInvalid={
+                (showError && !phone.trim()) ||
+                (phone.trim() && phone.length < 10) ||
+                phone.length > 10
+              }
+            />
+            <Form.Control.Feedback type="invalid">
+              Vui lòng nhập SĐT của bạn, SĐT phải đủ 10 ký tự.
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicUsername">
+            <Form.Label>Tên đăng nhập</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Nhập tên đăng nhập"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              isInvalid={showError && !username.trim()}
+            />
+            <Form.Control.Feedback type="invalid">
+              Vui lòng nhập tên đăng nhập.
+            </Form.Control.Feedback>
+          </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email</Form.Label>
             <Form.Control
@@ -91,7 +195,8 @@ const Register = (props) => {
                 onChange={(e) => setPassword(e.target.value)}
                 isInvalid={
                   (showError && !password.trim()) ||
-                  (password.trim() && (password.length < 6 || password.length > 8))
+                  (password.trim() &&
+                    (password.length < 6 || password.length > 8))
                 }
                 style={{ flex: 1 }}
               />
@@ -138,17 +243,20 @@ const Register = (props) => {
           </Form.Group>
 
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button type="submit" style={{ marginRight: 5 }}>Đăng ký</Button>
+            <Button type="submit" style={{ marginRight: 5 }}>
+              Đăng ký
+            </Button>
             <Button type="reset">Nhập lại</Button>
           </div>
         </Form>
       </Modal.Body>
+      <p style={{ color: "red" }}>{message}</p>
     </Modal>
   );
 };
 
 Register.propTypes = {
-  onHide: PropTypes.func.isRequired
+  onHide: PropTypes.func.isRequired,
 };
 
 export default Register;
