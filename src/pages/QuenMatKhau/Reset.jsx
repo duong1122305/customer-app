@@ -21,7 +21,7 @@ const ResetPassword = () => {
 
   return (
     <div className="reset-password-container">
-      <div className="card">
+      <div className="card-tl3">
         <div className="form-container">
           <h2 className="title">Đặt lại mật khẩu</h2>
           <form onSubmit={handlePasswordReset}>

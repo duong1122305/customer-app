@@ -24,7 +24,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="forgot-password-container">
-      <div className="card">
+      <div className="card-tl2">
         <div className="form-container">
           <h2 className="title">Quên mật khẩu</h2>
           {step === 1 && (
