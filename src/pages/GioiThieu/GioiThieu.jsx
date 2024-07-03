@@ -1,14 +1,14 @@
 import Banner from "../../components/BannerComponent/Banner";
-import { Row, Col, Container } from "react-bootstrap";
 import "./GioiThieu.css";
 import ProductList from "../DanhSachSanPham/ProductList";
 
 const GioiThieu = () => {
+  const isBlockTrue = true;
   return (
     <div className="containerGt">
       <Banner className="banner" />
       <div>
-        <ProductList/>
+        <ProductList isBlock={isBlockTrue} />
       </div>
     </div>
   );

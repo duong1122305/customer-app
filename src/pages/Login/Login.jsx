@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Nav } from "react-bootstrap";
-const Login = (props) => {
+const Login = ({ onHide, onLogin, ...props }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
@@ -14,7 +14,7 @@ const Login = (props) => {
     setPassword("");
     setShowError(false);
     // Đóng modal
-    props.onHide();
+    onHide();
   };
 
   const handleSubmit = (event) => {
@@ -28,14 +28,11 @@ const Login = (props) => {
         username: username,
         password: password,
       };
-      handleLogin(postData)
-      // if(handleLogin(postData)){
-      //   props.onLogin();
-      // }
+      handleLogin(postData);
       // Sau khi đăng nhập thành công thì có thể ẩn modal và xoá dữ liệu
       setUsername("");
       setPassword("");
-      props.onHide();
+      onHide();
     }
   };
 
@@ -51,8 +48,10 @@ const Login = (props) => {
       }
     );
     if (response.ok) {
-      console.log("succes");
-      return true;
+      console.log("success");
+      const data = await response.json();
+      sessionStorage.setItem('token', data.data);
+      onLogin();
     }
   }
 
@@ -121,7 +120,7 @@ const Login = (props) => {
 
 Login.propTypes = {
   onHide: PropTypes.func,
-  // onLogin: PropTypes.func,
+  onLogin: PropTypes.any,
 };
 
-export default Login;
+export default memo(Login);
