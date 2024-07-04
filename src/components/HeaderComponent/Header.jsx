@@ -12,17 +12,10 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Header.css";
 import { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Register from "../../pages/Register/Register";
 import Login from "../../pages/Login/Login";
-import QuenMatKhau from "../../pages/QuenMatKhau/QuenMatKhau";
 import Search from "../SearchComponent/Search";
-import GioiThieu from "../../pages/GioiThieu/GioiThieu";
-import DichVu from "../../pages/DichVu/DichVu";
-import DatLich from "../../pages/DatLich/DatLich";
-import LienHe from "../../pages/LienHe/LienHe";
-import DanhSachSanPham from "../../pages/DanhSachSanPham/ProductList";
-import SanPhamChiTiet from "../../pages/SanPhamChiTiet/ProductDetail";
 
 export default function Header() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -79,9 +72,9 @@ export default function Header() {
     }else{
       console.error();
     }
-  })
+  }, [isLogin])
   return (
-    <BrowserRouter>
+    <div>
       <Navbar collapseOnSelect expand="lg" className="header" sticky="top">
         <Container>
           <Navbar.Brand className="m-0 p-0">
@@ -285,17 +278,6 @@ export default function Header() {
         onLogin={handleLogin}
       />
       <Search show={searchShow} onHide={handleSearchClose} />
-      <div>
-        <Routes>
-          <Route path="/" element={<GioiThieu />} />
-          <Route path="/services" element={<DichVu />} />
-          <Route path="/booking" element={<DatLich />} />
-          <Route path="/contact" element={<LienHe />} />
-          <Route path="/listProduct" element={<DanhSachSanPham />} />
-          <Route path="/product/:id" element={<SanPhamChiTiet />} />
-          <Route path="/forgot-password" element={<QuenMatKhau />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    </div>
   );
 }

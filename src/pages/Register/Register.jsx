@@ -84,13 +84,14 @@ const Register = (props) => {
           body: JSON.stringify(postData),
         }
       );
-      const result = response.json();
+      const result = await response.json();
+      console.log(result);
       if (result.isSuccess == true) {
         console.log(result.data);
         setMessage("Đã gửi mã tới email của bạn");
         handleClose();
       } else {
-        console.log("loi");
+        console.log("Có lỗi xảy ra");
         console.log(result);
         setMessage(result.error);
       }
