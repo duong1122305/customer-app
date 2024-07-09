@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Redirect = () => {
-//   const [count, setCount] = useState(5);
+  //   const [count, setCount] = useState(5);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -10,17 +10,20 @@ const Redirect = () => {
   useEffect(() => {
     const param = new URLSearchParams(location.search);
     const verifyCode = param.get("verifyCode");
-    console.log(verifyCode);
+    const trimmedCode = verifyCode.trimStart().trimEnd();
+    const replaceCode = trimmedCode.replace(/\s/g, "+");
+    const finalCode = encodeURIComponent(replaceCode)
+    console.log(finalCode);
     const verify = async () => {
       try {
         const response = await fetch(
-          `https://localhost:7039/api/GuestManager/verify-cus?verifyCode=${verifyCode}`,
+          `https://localhost:7039/api/GuestManager/verify-cus?verifyCode=${finalCode}`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(verifyCode),
+            //body: JSON.stringify(verifyCode),
           }
         );
 
@@ -33,7 +36,7 @@ const Redirect = () => {
 
           navigate("/");
         } else {
-          setMessage("Xác minh không thành công !!!");
+          setMessage(result.error);
           console.error(result.error); // Hiển thị thông báo lỗi chi tiết hơn từ API
         }
       } catch (error) {
@@ -43,14 +46,11 @@ const Redirect = () => {
     };
 
     verify(); // Gọi hàm verify bên trong useEffect
-  }, [location, navigate]); // Thêm verifyCode vào dependency array
+  }, [location]); // Thêm verifyCode vào dependency array
 
   return (
     <div style={{ height: "100vh" }}>
-      {/* <h2>{message}</h2>
-      {count > 0 && ( // Chỉ hiển thị đếm ngược khi count > 0
-        <p>Bạn sẽ được chuyển hướng về trang chủ sau {count} giây hoặc bạn có thể <a href="/">bấm vào đây</a>.</p>
-      )} */}
+      <h2>{message}</h2>
     </div>
   );
 };

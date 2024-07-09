@@ -28,6 +28,7 @@ export default function Header() {
   const [isVisible, setIsVisible] = useState(false);
   const [isToggleVisible, setIsToggleVisible] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [username, setUsername] = useState("");
  
   useEffect(() => {
     const handleResize = () => {
@@ -66,13 +67,21 @@ export default function Header() {
   }, []);
   useEffect(() => {
     const token = sessionStorage.getItem('token');
+    const result = JSON.parse(token);
     if(token){
       setIsLogin(true);
-      console.log('login');
-    }else{
-      console.error();
+      setUsername(result.username);
+      console.log(token);
+      console.log(username);
     }
-  }, [isLogin])
+  }, [isLogin, username])
+
+  const handleLogout = useCallback(() => {
+    setIsLogin(false);
+    sessionStorage.removeItem('token');
+  }, []);
+
+
   return (
     <div>
       <Navbar collapseOnSelect expand="lg" className="header" sticky="top">
@@ -141,15 +150,15 @@ export default function Header() {
               }}
             >
               <i className="fa-solid fa-user" style={{ color: "#fff" }}></i>
-              <NavDropdown title="Tài khoản" className="dropdown">
-                <NavDropdown.Item as={Link} to="/">
+              <NavDropdown title={username} className="dropdown">
+                <NavDropdown.Item as={Link} to="/profile">
                   Thông tin
                 </NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/">
                   Đổi mật khẩu
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item as={Link} to="/">
+                <NavDropdown.Item as={Link} to="/" onClick={handleLogout}>
                   Đăng xuất
                 </NavDropdown.Item>
               </NavDropdown>

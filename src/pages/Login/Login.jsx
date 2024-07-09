@@ -3,6 +3,8 @@ import { Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Nav } from "react-bootstrap";
+import { jwtDecode } from "jwt-decode";
+
 const Login = ({ onHide, onLogin, ...props }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -47,10 +49,18 @@ const Login = ({ onHide, onLogin, ...props }) => {
         body: JSON.stringify(postData),
       }
     );
-    if (response.ok) {
-      console.log("success");
-      const data = await response.json();
-      sessionStorage.setItem('token', data.data);
+    const result = await response.json();
+    const decode = jwtDecode(result.data);
+    const tokenValue = {
+      name: decode["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"],
+      email: decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
+      username: decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+    }
+    const objValue = JSON.stringify(tokenValue);
+    if (result.isSuccess) {
+      console.log(result);
+      console.log(decode);
+      sessionStorage.setItem("token", objValue);
       onLogin();
     }
   }

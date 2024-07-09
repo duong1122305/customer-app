@@ -3,7 +3,7 @@ import "./GioiThieu.css";
 import ProductList from "../DanhSachSanPham/ProductList";
 
 const GioiThieu = () => {
-  const isBlockTrue = true;
+  const isBlockTrue = "hidden";
   return (
     <div className="containerGt">
       <Banner className="banner" />

@@ -9,7 +9,7 @@ const ProductList = ({ isBlock }) => {
       <div className="row">
         <div
           className="col-3 col-md-3 mt-5"
-          style={{ width: 300, display: isBlock ? "none" : "block" }}
+          style={{ width: 300, visibility: isBlock}}
         >
           <h2>Danh mục sản phẩm</h2>
           <VerticalMenu />
@@ -49,7 +49,7 @@ const ProductList = ({ isBlock }) => {
 };
 
 ProductList.propTypes = {
-  isBlock: PropTypes.bool,
+  isBlock: PropTypes.string,
 };
 
 export default ProductList;
