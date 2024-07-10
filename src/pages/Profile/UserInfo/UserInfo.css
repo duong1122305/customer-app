@@ -1,9 +1,17 @@
+.container{
+    height: 100%;
+}
+
 .row-1{
     display: flex;
     margin-top: 10px;
 }
 
 .row-1 h4{
+    flex: 1;
+}
+
+.row-2{
     flex: 1;
 }
 
@@ -17,6 +25,14 @@
 
 .col-1{
     width: 50%;
+}
+
+.input-mt{
+    margin-top: 10%;
+}
+
+.in-mt{
+    margin-top: 5%;
 }
 
 .container-avatar{
@@ -42,4 +58,14 @@
     bottom: -10px;
     right: 180px;
     content: none;
+}
+
+.text-infomation label{
+    color: rgb(116, 111, 111);
+    margin-bottom: 10px;
+}
+
+.text-infomation p{
+    margin-left: 10px;
+    text-wrap: wrap;
 }

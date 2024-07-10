@@ -6,9 +6,15 @@ import { Button, Nav } from "react-bootstrap";
 import "./Sidebar.css";
 import UserInfo from "../UserInfo/UserInfo";
 import Pet from "../Pet/Pet";
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ onItemClick }) => {
+  const navigate = useNavigate();
   const [activeKey, setActiveKey] = useState("dashboard");
+  const signOut = () => {
+    sessionStorage.removeItem("token");
+    navigate("/");
+  }
   return (
     <Nav
       className="flex-column sidebar"
@@ -27,8 +33,8 @@ const Sidebar = ({ onItemClick }) => {
         <FontAwesomeIcon icon={faHouse} /> My Pet
       </Nav.Link>
 
-      <Button variant="link" className="sign-out">
-        <FontAwesomeIcon icon={faRightFromBracket} /> Sign Out
+      <Button variant="link" className="sign-out" onClick={signOut}>
+        <FontAwesomeIcon icon={faRightFromBracket} /> Đăng xuất
       </Button>
     </Nav>
   );

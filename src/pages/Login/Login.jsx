@@ -54,7 +54,8 @@ const Login = ({ onHide, onLogin, ...props }) => {
     const tokenValue = {
       name: decode["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"],
       email: decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
-      username: decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+      username: decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+      id: decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
     }
     const objValue = JSON.stringify(tokenValue);
     if (result.isSuccess) {
