@@ -1,4 +1,4 @@
-import { Col, Container, Dropdown, Form, Image, Row } from "react-bootstrap";
+import { Col, Container, Form, Image, Row } from "react-bootstrap";
 import "./UserInfo.css";
 import { useEffect, useState } from "react";
 
