@@ -51,8 +51,8 @@ function App() {
             <Route path="/forgot-password" element={<QuenMatKhau />} />
             <Route path="/redirect" element={<Redirect />} />
           </Route>
-          <Route path="/profile" element={<BlankLayout />}>
-            <Route index element={<Profile />} />
+          <Route path="/" element={<BlankLayout />}>
+            <Route path="/profile" element={<Profile />} />
             <Route path="/expired" element={<Expired />} />
             <Route path="/duplicate" element={<Duplicate />} />
           </Route>
