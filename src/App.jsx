@@ -12,6 +12,8 @@ import QuenMatKhau from "./pages/QuenMatKhau/QuenMatKhau";
 import MainLayout from "./MainLayout";
 import BlankLayout from "./BlankLayout";
 import Profile from "./pages/Profile/Profile";
+import Expired from "./pages/Register/Expired";
+import Duplicate from "./pages/Register/Duplicate";
 
 function App() {
   useEffect(() => {
@@ -51,6 +53,8 @@ function App() {
           </Route>
           <Route path="/profile" element={<BlankLayout />}>
             <Route index element={<Profile />} />
+            <Route path="/expired" element={<Expired />} />
+            <Route path="/duplicate" element={<Duplicate />} />
           </Route>
         </Routes>
       </div>

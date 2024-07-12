@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { faHouse, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Nav } from "react-bootstrap";
 import "./Sidebar.css";
 import UserInfo from "../UserInfo/UserInfo";
@@ -15,6 +15,18 @@ const Sidebar = ({ onItemClick }) => {
     sessionStorage.removeItem("token");
     navigate("/");
   }
+
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    const result = JSON.parse(token);
+    if(token){
+      setName(result.name);
+      console.log("ok");
+    }
+  }, [name]);
+
   return (
     <Nav
       className="flex-column sidebar"
@@ -22,8 +34,8 @@ const Sidebar = ({ onItemClick }) => {
       onSelect={(selectedKey) => setActiveKey(selectedKey)}
     >
       <div className="sidebar-header">
-        <img src="profile.jpg" alt="Profile" className="rounded-circle" />
-        <span className="username">Sarah Smith</span>
+        <img src="https://dersteira.at/img/nh-nn-trng-fb.jpg" alt="Profile" className="rounded-circle" />
+        <span className="username">{name}</span>
       </div>
 
       <Nav.Link onClick={() => onItemClick(<UserInfo />)}>

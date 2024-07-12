@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Redirect = () => {
   //   const [count, setCount] = useState(5);
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -12,7 +11,7 @@ const Redirect = () => {
     const verifyCode = param.get("verifyCode");
     const trimmedCode = verifyCode.trimStart().trimEnd();
     const replaceCode = trimmedCode.replace(/\s/g, "+");
-    const finalCode = encodeURIComponent(replaceCode)
+    const finalCode = encodeURIComponent(replaceCode);
     console.log(finalCode);
     const verify = async () => {
       try {
@@ -32,27 +31,26 @@ const Redirect = () => {
 
         if (result.isSuccess) {
           // Kiểm tra trực tiếp isSuccess (không cần so sánh === true)
-          setMessage("Xác minh thành công !!!");
-
           navigate("/");
         } else {
-          setMessage(result.error);
+          if (result.error === "Thông tin xác minh của bạn đã quá hạn") {
+            navigate("/expried");
+          } else if (
+            result.error === "Tài khoản đã được xác minh hoặc mã xác minh sai"
+          ) {
+            navigate("/duplicate");
+          }
           console.error(result.error); // Hiển thị thông báo lỗi chi tiết hơn từ API
         }
       } catch (error) {
         console.error("Có lỗi xảy ra:", error); // Hiển thị chi tiết lỗi cụ thể
-        setMessage("Đã có lỗi xảy ra trong quá trình xác minh."); // Thông báo lỗi cho người dùng
       }
     };
 
     verify(); // Gọi hàm verify bên trong useEffect
-  }, [location]); // Thêm verifyCode vào dependency array
+  }, [navigate, location]); // Thêm verifyCode vào dependency array
 
-  return (
-    <div style={{ height: "100vh" }}>
-      <h2>{message}</h2>
-    </div>
-  );
+  return <div></div>;
 };
 
 export default Redirect;
