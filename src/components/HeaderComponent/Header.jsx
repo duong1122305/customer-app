@@ -71,8 +71,6 @@ export default function Header() {
     if(token){
       setIsLogin(true);
       setUsername(result.username);
-      console.log(token);
-      console.log(username);
     }
   }, [isLogin, username])
 
