@@ -1,0 +1,12 @@
+.services{
+    height: 100vh;
+}
+
+.services .row-1{
+    height: 15%;
+}
+
+.row-1 {
+    display: flex;
+    align-items: center;
+}
