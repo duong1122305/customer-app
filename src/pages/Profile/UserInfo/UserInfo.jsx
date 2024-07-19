@@ -14,6 +14,7 @@ const UserInfo = () => {
 
   const [readonly, setReadonly] = useState(true);
   const [nameBtn, setNameBtn] = useState("Thay đổi thông tin");
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -66,10 +67,17 @@ const UserInfo = () => {
   }, [setInfo]);
 
   const onBtnClick = () => {
-    setReadonly(false);
-    setNameBtn("Xác nhận");
+    if (count === 0) {
+      setCount(count + 1);
+      setReadonly(false);
+      setNameBtn("Xác nhận");
+    } else {
+      setReadonly(true);
+      setNameBtn("Thay đổi thông tin");
+      setCount(0);
+    }
   };
-
+  console.log(count);
   return (
     <Container className="container">
       <Row className="row-1">
@@ -116,7 +124,9 @@ const UserInfo = () => {
                 className="in-mt"
                 value={info.phoneNumber}
                 disabled={readonly}
-                onChange={(e) => setInfo({ ...info, phoneNumber: e.target.value })}
+                onChange={(e) =>
+                  setInfo({ ...info, phoneNumber: e.target.value })
+                }
               />
             </div>
             <div className="input-mt">

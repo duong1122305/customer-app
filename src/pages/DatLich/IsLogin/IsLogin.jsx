@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, ButtonGroup, FloatingLabel, Form } from "react-bootstrap";
+import moment from "moment";
 import TableServices from "../TableServices/TableServices";
 import "./IsLogin.css";
 import CreatePet from "../../Pet/CreatePet";
-import { Prev } from "react-bootstrap/esm/PageItem";
+import Announcement from "../../../components/AnnouncementComponent/Announcement";
 
 const IsLogin = () => {
   const [lstPet, setLstPet] = useState([]);
   const [selectedServicesForForm, setSelectedServicesForForm] = useState([]);
   const [show, setShow] = useState(false);
   const [showPet, setShowPet] = useState(false);
+  const [showAnnoucement, setShowAnnoucement] = useState(false);
+  const [content, setContent] = useState("");
 
   //ref
   const petIdRef = useRef(null);
@@ -21,13 +24,15 @@ const IsLogin = () => {
   const result = JSON.parse(token);
   const id = result.id;
 
-  const [lstServiceDetail, setLstServiceDtail] = useState({
-    staffId: "",
-    petId: 0,
-    serviceDetailId: [],
-    startDateTime: "",
-    dateBooking: "",
-  });
+  const [lstServiceDetail, setLstServiceDtail] = useState([
+    {
+      staffId: "",
+      petId: 0,
+      serviceDetailId: [],
+      startDateTime: "",
+      dateBooking: "",
+    },
+  ]);
 
   // useEffect(() => {
   //   console.log(lstServiceDetail);
@@ -79,16 +84,25 @@ const IsLogin = () => {
   const handleBooking = async (event) => {
     event.preventDefault();
 
+    // Chuyển đổi chuỗi thời gian thành đối tượng Moment
+    const startMoment = moment(startDateTimeRef.current.value, "HH:mm:ss");
+
+    // Định dạng lại thành chuỗi ISO 8601 (hoặc định dạng mong muốn)
+    const startDateTime = startMoment.format("HH:mm:ss");
+
+    const selectedServiceDetails = selectedServicesForForm.map(
+      (serviceDetailId) => ({
+        staffId: "E6DFF21F-781C-40DD-8636-08DC9447F8CE", // Thay bằng staffId thực tế
+        petId: parseInt(petIdRef.current.value),
+        serviceDetailId,
+        startDateTime: startDateTime,
+        dateBooking: dateBookingRef.current.value,
+      })
+    );
+
     const params = {
       ...data,
-      listIdServiceDetail: {
-        staffId: "E6DFF21F-781C-40DD-8636-08DC9447F8CE",
-        petId: parseInt(petIdRef.current.value),
-        startDateTime: startDateTimeRef.current.value, // Lấy giá trị trực tiếp
-        dateBooking: dateBookingRef.current.value, // Lấy giá trị trực tiếp
-        serviceDetailId:
-          selectedServicesForForm.length > 0 ? selectedServicesForForm : [],
-      },
+      listIdServiceDetail: selectedServiceDetails,
     };
 
     console.log("params:::::::", params);
@@ -103,11 +117,16 @@ const IsLogin = () => {
           body: JSON.stringify(params),
         }
       );
+      console.log("ok:", JSON.stringify(params));
       const result = await response.json();
       if (result.isSuccess === true) {
         console.log("Booking successful:", result);
+        setShowAnnoucement(true);
+        setContent("Bạn đã đặt lịch thành công!!!");
       } else {
         console.error("Booking failed:", result.error);
+        setShowAnnoucement(true);
+        setContent(result.error);
       }
     } catch (error) {
       console.error("Error occurred during booking:", error);
@@ -166,6 +185,7 @@ const IsLogin = () => {
         </ButtonGroup>
       </Form>
       <CreatePet show={showPet} />
+      <Announcement show={showAnnoucement} content={content} />
     </div>
   );
 };
