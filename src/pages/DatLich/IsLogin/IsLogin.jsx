@@ -3,6 +3,7 @@ import { Button, ButtonGroup, FloatingLabel, Form } from "react-bootstrap";
 import TableServices from "../TableServices/TableServices";
 import "./IsLogin.css";
 import CreatePet from "../../Pet/CreatePet";
+import { Prev } from "react-bootstrap/esm/PageItem";
 
 const IsLogin = () => {
   const [lstPet, setLstPet] = useState([]);
@@ -19,11 +20,21 @@ const IsLogin = () => {
   const token = sessionStorage.getItem("token");
   const result = JSON.parse(token);
   const id = result.id;
-  const [data, setData] = useState({
+
+  const [lstServiceDetail, setLstServiceDtail] = useState({
+    staffId: "",
     petId: 0,
     serviceDetailId: [],
     startDateTime: "",
     dateBooking: "",
+  });
+
+  // useEffect(() => {
+  //   console.log(lstServiceDetail);
+  // }, [JSON.stringify(lstServiceDetail)]);
+
+  const [data, setData] = useState({
+    listIdServiceDetail: [{}],
     voucherId: 0,
     guestId: id,
   });
@@ -38,6 +49,7 @@ const IsLogin = () => {
     setSelectedServicesForForm(services);
     handleClosePopup(); // Đóng modal sau khi chọn
   };
+
   useEffect(() => {
     const getPet = async () => {
       const response = await fetch(
@@ -67,13 +79,19 @@ const IsLogin = () => {
   const handleBooking = async (event) => {
     event.preventDefault();
 
-    setData({
-      petId: parseInt(petIdRef.current.value),
-      startDateTime: startDateTimeRef.current.value, // Lấy giá trị trực tiếp
-      dateBooking: dateBookingRef.current.value, // Lấy giá trị trực tiếp
-      serviceDetailId:
-        selectedServicesForForm.length > 0 ? selectedServicesForForm : [],
-    });
+    const params = {
+      ...data,
+      listIdServiceDetail: {
+        staffId: "E6DFF21F-781C-40DD-8636-08DC9447F8CE",
+        petId: parseInt(petIdRef.current.value),
+        startDateTime: startDateTimeRef.current.value, // Lấy giá trị trực tiếp
+        dateBooking: dateBookingRef.current.value, // Lấy giá trị trực tiếp
+        serviceDetailId:
+          selectedServicesForForm.length > 0 ? selectedServicesForForm : [],
+      },
+    };
+
+    console.log("params:::::::", params);
     try {
       const response = await fetch(
         "https://localhost:7039/api/Booking/Guest-Booking",
@@ -82,10 +100,9 @@ const IsLogin = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(params),
         }
       );
-
       const result = await response.json();
       if (result.isSuccess === true) {
         console.log("Booking successful:", result);
@@ -96,8 +113,6 @@ const IsLogin = () => {
       console.error("Error occurred during booking:", error);
     }
   };
-
-  console.log(selectedServicesForForm);
 
   return (
     <div>
@@ -115,6 +130,7 @@ const IsLogin = () => {
         />
         <FloatingLabel label="Boss hưởng thụ">
           <Form.Select ref={petIdRef}>
+            <option value={null}>Chọn boss của bạn</option>
             {lstPet.length > 0 ? (
               lstPet.map((pet) => (
                 <option key={pet.id} value={pet.id}>
