@@ -14,6 +14,7 @@ import BlankLayout from "./BlankLayout";
 import Profile from "./pages/Profile/Profile";
 import Expired from "./pages/Register/Expired";
 import Duplicate from "./pages/Register/Duplicate";
+import Success from "./pages/Register/Success";
 
 function App() {
   useEffect(() => {
@@ -55,6 +56,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/expired" element={<Expired />} />
             <Route path="/duplicate" element={<Duplicate />} />
+            <Route path="/success" element={<Success />} />
           </Route>
         </Routes>
       </div>

@@ -31,7 +31,7 @@ const Redirect = () => {
 
         if (result.isSuccess) {
           // Kiểm tra trực tiếp isSuccess (không cần so sánh === true)
-          navigate("/");
+          navigate("/success");
         } else {
           if (result.error === "Thông tin xác minh của bạn đã quá hạn") {
             navigate("/expried");
