@@ -185,7 +185,7 @@ const IsLogin = () => {
         </ButtonGroup>
       </Form>
       <CreatePet show={showPet} />
-      <Announcement show={showAnnoucement} content={content} />
+      <Announcement show={showAnnoucement} content={content} onClose={() => setShowAnnoucement(false)} />
     </div>
   );
 };
