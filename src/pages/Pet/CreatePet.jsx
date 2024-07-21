@@ -129,7 +129,7 @@ const handleCreatePet = async (event) => {
             <ButtonGroup>
               <Button type="submit">Xác nhận boss</Button>
               <Button type="reset">Nhập lại</Button>
-              <Button type="button">Đóng</Button>
+              <Button type="button" onClick={onHide}>Đóng</Button>
             </ButtonGroup>
           </Form>
         </Modal.Body>
