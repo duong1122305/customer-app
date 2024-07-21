@@ -50,7 +50,7 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
             </tr>
           </thead>
           <tbody>
-            {lstServices.map((services, index) => (
+            {lstServices.length > 0 ? (lstServices.map((services, index) => (
               <tr key={Math.random()}>
                 <td>{index + 1}</td>
                 <td>{services.serviceName}</td>
@@ -64,7 +64,9 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
                   />
                 </td>
               </tr>
-            ))}
+            ))) : (
+                <p>Loading ...</p>
+            )}
           </tbody>
         </Table>
         <Modal.Footer>

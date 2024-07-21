@@ -13,7 +13,6 @@ const Register = (props) => {
   const [showError, setShowError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [message, setMessage] = useState("");
   const [showAnnoun, setShowAnnoun] = useState(false);
   const [contentAnnoun, setContentAnnoun] = useState("");
 
@@ -93,14 +92,12 @@ const Register = (props) => {
         setShowAnnoun(true);
         setContentAnnoun("Đăng ký thành công");
         console.log(result.data);
-        setMessage("Đã gửi mã tới email của bạn");
         handleClose();
       } else {
         setShowAnnoun(true);
-        setContentAnnoun("Đăng ký thất bại");
+        setContentAnnoun("Đăng ký thất bại: ", result.error);
         console.log("Có lỗi xảy ra");
         console.log(result);
-        setMessage(result.error);
       }
     } catch (error) {
       console.log(error);
@@ -261,7 +258,6 @@ const Register = (props) => {
             </div>
           </Form>
         </Modal.Body>
-        <p style={{ color: "red" }}>{message}</p>
       </Modal>
       <Announcement show={showAnnoun} content={contentAnnoun} onClose={() => setShowAnnoun(false)} />
     </>
