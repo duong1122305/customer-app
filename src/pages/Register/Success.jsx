@@ -13,7 +13,7 @@ const Success = () => {
       }, 1000);
       return () => clearTimeout(countDown);
     } else {
-      //navigate("/");
+      navigate("/");
     }
   }, [count, navigate]);
 

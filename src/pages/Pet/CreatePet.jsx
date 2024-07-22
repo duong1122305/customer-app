@@ -7,6 +7,7 @@ import {
 } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
+import Announcement from "../../components/AnnouncementComponent/Announcement";
 
 const CreatePet = ({ show, onHide }) => {
   const petSpe = useRef(null);
@@ -18,62 +19,71 @@ const CreatePet = ({ show, onHide }) => {
   const petNote = useRef(null);
   const petBirth = useRef(null);
   const petColor = useRef(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [content, setContent] = useState("");
 
   const [lstPetSpecies, setLstPetSpecies] = useState([]);
   useEffect(() => {
     const layDanhSachLoaiThuCung = async () => {
-        try {
-            const response = await fetch("https://localhost:7039/api/PetSpecies/get-all");
-            const result = await response.json();
-            if (result.isSuccess) {
-                setLstPetSpecies(result.data);
-            } else {
-                console.log("ko");
-            }
-        } catch (error) {
-            console.error(error);
+      try {
+        const response = await fetch(
+          "https://localhost:7039/api/PetSpecies/get-all"
+        );
+        const result = await response.json();
+        if (result.isSuccess) {
+          setLstPetSpecies(result.data);
+        } else {
+          console.log("ko");
         }
+      } catch (error) {
+        console.error(error);
+      }
     };
     layDanhSachLoaiThuCung();
-}, []); // Mảng phụ thuộc trống đảm bảo rằng hàm này chỉ chạy một lần khi mount
+  }, []); // Mảng phụ thuộc trống đảm bảo rằng hàm này chỉ chạy một lần khi mount
 
-const handleCreatePet = async (event) => {
+  const handleCreatePet = async (event) => {
     event.preventDefault(); // Ngăn chặn hành vi gửi form mặc định
 
     const thuCungMoi = {
-        ownerId: JSON.parse(sessionStorage.getItem("token")).id,
-        speciesId: parseInt(petSpe.current.value, 10),
-        name: petName.current.value,
-        gender: petGender.current.value === "true",
-        birthday: petBirth.current.value,
-        weight: parseFloat(petWeight.current.value),
-        neutered: petNeu.current.value === "true",
-        originalColor: petColor.current.value,
-        vaccinated: petVaccine.current.value === "true",
-        note: petNote.current.value,
+      ownerId: JSON.parse(sessionStorage.getItem("token")).id,
+      speciesId: parseInt(petSpe.current.value, 10),
+      name: petName.current.value,
+      gender: petGender.current.value === "true",
+      birthday: petBirth.current.value,
+      weight: parseFloat(petWeight.current.value),
+      neutered: petNeu.current.value === "true",
+      originalColor: petColor.current.value,
+      vaccinated: petVaccine.current.value === "true",
+      note: petNote.current.value,
     };
 
     try {
-        const response = await fetch("https://localhost:7039/api/PetManager/create-pet", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(thuCungMoi),
-        });
-
-        const result = await response.json();
-
-        if (result.isSuccess) {
-            onHide(); // Đóng modal khi thành công
-        } else {
-          console.log("loi");
+      const response = await fetch(
+        "https://localhost:7039/api/PetManager/create-pet",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(thuCungMoi),
         }
+      );
+
+      const result = await response.json();
+
+      if (result.isSuccess) {
+        setShowAlert(true);
+        setContent("Boss của bạn đã được thêm!!!");
+        onHide(); // Đóng modal khi thành công
+      } else {
+        setContent("Oops!!! Có chút trục trặc mất rùi");
+        console.log("loi");
+      }
     } catch (error) {
       console.error(error);
     }
-};
-
+  };
 
   return (
     <div>
@@ -129,11 +139,18 @@ const handleCreatePet = async (event) => {
             <ButtonGroup>
               <Button type="submit">Xác nhận boss</Button>
               <Button type="reset">Nhập lại</Button>
-              <Button type="button" onClick={onHide}>Đóng</Button>
+              <Button type="button" onClick={onHide}>
+                Đóng
+              </Button>
             </ButtonGroup>
           </Form>
         </Modal.Body>
       </Modal>
+      <Announcement
+        show={showAlert}
+        content={content}
+        onClose={() => setShowAlert(false)}
+      />
     </div>
   );
 };

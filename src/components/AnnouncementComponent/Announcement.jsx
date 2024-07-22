@@ -1,7 +1,20 @@
 import { Modal } from "react-bootstrap";
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 
 const Announcement = ({ show, content, onClose }) => {
+  const [isShow, setIsShow] = useState(true);
+
+  useEffect(() => {
+    if (isShow) {
+      const timeout = setTimeout(() => {
+        setIsShow(false);
+      }, 2000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [isShow]);
+
   return (
     <div>
       <Modal show={show} onHide={onClose} centered>
