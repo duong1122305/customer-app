@@ -5,6 +5,7 @@ import TableServices from "../TableServices/TableServices";
 import "./IsLogin.css";
 import CreatePet from "../../Pet/CreatePet";
 import Announcement from "../../../components/AnnouncementComponent/Announcement";
+import AcceptRequest from "../../../components/AcceptRequestComponent/AcceptRequest";
 
 const IsLogin = () => {
   const [lstPet, setLstPet] = useState([]);
@@ -13,7 +14,8 @@ const IsLogin = () => {
   const [showPet, setShowPet] = useState(false);
   const [showAnnoucement, setShowAnnoucement] = useState(false);
   const [content, setContent] = useState("");
-
+  const [ifTrue, setIfTrue] = useState(false);
+  const [showAccept, setShowAccept] = useState(false);
   //ref
   const petIdRef = useRef(null);
   const startDateTimeRef = useRef(null);
@@ -24,15 +26,15 @@ const IsLogin = () => {
   const result = JSON.parse(token);
   const id = result.id;
 
-  const [lstServiceDetail, setLstServiceDtail] = useState([
-    {
-      staffId: "",
-      petId: 0,
-      serviceDetailId: [],
-      startDateTime: "",
-      dateBooking: "",
-    },
-  ]);
+  // const [lstServiceDetail, setLstServiceDtail] = useState([
+  //   {
+  //     staffId: "",
+  //     petId: 0,
+  //     serviceDetailId: [],
+  //     startDateTime: "",
+  //     dateBooking: "",
+  //   },
+  // ]);
 
   // useEffect(() => {
   //   console.log(lstServiceDetail);
@@ -55,6 +57,10 @@ const IsLogin = () => {
     handleClosePopup(); // Đóng modal sau khi chọn
   };
 
+  const getDataFromChild = (dataChild) => {
+    setIfTrue(dataChild);
+  };
+
   useEffect(() => {
     const getPet = async () => {
       const response = await fetch(
@@ -75,15 +81,16 @@ const IsLogin = () => {
     };
 
     getPet();
-  }, [id]);
+    if (ifTrue) {
+      getPet();
+    }
+  }, [id, ifTrue]);
 
   const handleCreatePet = () => {
     setShowPet(true);
   };
 
-  const handleBooking = async (event) => {
-    event.preventDefault();
-
+  const handleShowAccept = async () => {
     // Chuyển đổi chuỗi thời gian thành đối tượng Moment
     const startMoment = moment(startDateTimeRef.current.value, "HH:mm:ss");
 
@@ -120,11 +127,10 @@ const IsLogin = () => {
       console.log("ok:", JSON.stringify(params));
       const result = await response.json();
       if (result.isSuccess === true) {
-        console.log("Booking successful:", result);
         setShowAnnoucement(true);
         setContent("Bạn đã đặt lịch thành công!!!");
+        setShowAccept(false);
       } else {
-        console.error("Booking failed:", result.error);
         setShowAnnoucement(true);
         setContent(result.error);
       }
@@ -132,6 +138,15 @@ const IsLogin = () => {
       console.error("Error occurred during booking:", error);
     }
   };
+
+  const handleBooking = (event) => {
+    event.preventDefault();
+    setShowAccept(true);
+  };
+
+  const handleCloseAccept = () => {
+    setShowAccept(false);
+  }
 
   return (
     <div>
@@ -184,11 +199,20 @@ const IsLogin = () => {
           </Button>
         </ButtonGroup>
       </Form>
-      <CreatePet show={showPet} onHide={() => setShowPet(false)}/>
+      <CreatePet
+        show={showPet}
+        onHide={() => setShowPet(false)}
+        sendData={getDataFromChild}
+      />
       <Announcement
         show={showAnnoucement}
         content={content}
         onClose={() => setShowAnnoucement(false)}
+      />
+      <AcceptRequest
+        show={showAccept}
+        onClose={handleCloseAccept}
+        onAccept={handleShowAccept}
       />
     </div>
   );

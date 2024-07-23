@@ -1,19 +1,17 @@
 import { Modal } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const Announcement = ({ show, content, onClose }) => {
-  const [isShow, setIsShow] = useState(true);
-
   useEffect(() => {
-    if (isShow) {
+    if (show) {
       const timeout = setTimeout(() => {
-        setIsShow(false);
+        onClose();
       }, 2000);
 
       return () => clearTimeout(timeout);
     }
-  }, [isShow]);
+  }, [show, onClose]);
 
   return (
     <div>

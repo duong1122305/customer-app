@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import Announcement from "../../components/AnnouncementComponent/Announcement";
 
-const CreatePet = ({ show, onHide }) => {
+const CreatePet = ({ show, onHide, sendData }) => {
   const petSpe = useRef(null);
   const petName = useRef(null);
   const petGender = useRef(null);
@@ -75,6 +75,7 @@ const CreatePet = ({ show, onHide }) => {
       if (result.isSuccess) {
         setShowAlert(true);
         setContent("Boss của bạn đã được thêm!!!");
+        sendData(true);
         onHide(); // Đóng modal khi thành công
       } else {
         setContent("Oops!!! Có chút trục trặc mất rùi");
@@ -158,6 +159,7 @@ const CreatePet = ({ show, onHide }) => {
 CreatePet.propTypes = {
   show: PropTypes.bool,
   onHide: PropTypes.func,
+  sendData: PropTypes.func,
 };
 
 export default CreatePet;

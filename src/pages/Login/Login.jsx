@@ -59,8 +59,6 @@ const Login = ({ onHide, onLogin, ...props }) => {
     }
     const objValue = JSON.stringify(tokenValue);
     if (result.isSuccess) {
-      console.log(result);
-      console.log(decode);
       sessionStorage.setItem("token", objValue);
       onLogin();
     }
