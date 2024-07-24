@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import callApi from "../../utlis/request";
 
 const Redirect = () => {
   //   const [count, setCount] = useState(5);
@@ -19,14 +20,13 @@ const Redirect = () => {
       if (!isLoading) return;
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `https://localhost:7039/api/GuestManager/verify-cus?verifyCode=${finalCode}`,
+        const response = await callApi(
+          `GuestManager/verify-cus?verifyCode=${finalCode}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
-            //body: JSON.stringify(verifyCode),
           }
         );
 
@@ -58,11 +58,10 @@ const Redirect = () => {
     };
 
     verify(); // Gọi hàm verify bên trong useEffect
-    
+
     return () => {
       isMounted = false;
     };
-
   }, [location.search]); // Thêm verifyCode vào dependency array
 
   return <div></div>;

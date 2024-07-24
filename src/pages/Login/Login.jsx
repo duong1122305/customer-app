@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Nav } from "react-bootstrap";
 import { jwtDecode } from "jwt-decode";
+import callApi from "../../utlis/request";
 
 const Login = ({ onHide, onLogin, ...props }) => {
   const [username, setUsername] = useState("");
@@ -39,24 +40,29 @@ const Login = ({ onHide, onLogin, ...props }) => {
   };
 
   async function handleLogin(postData) {
-    const response = await fetch(
-      `https://localhost:7039/api/GuestAuthen/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
-      }
-    );
+    const response = await callApi("GuestAuthen/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(postData),
+    });
     const result = await response.json();
     const decode = jwtDecode(result.data);
     const tokenValue = {
-      name: decode["http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"],
-      email: decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
-      username: decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-      id: decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
-    }
+      name: decode[
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"
+      ],
+      email:
+        decode[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+        ],
+      username:
+        decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+      id: decode[
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+      ],
+    };
     const objValue = JSON.stringify(tokenValue);
     if (result.isSuccess) {
       sessionStorage.setItem("token", objValue);

@@ -1,4 +1,4 @@
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import PropTypes from "prop-types";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Footer.css";

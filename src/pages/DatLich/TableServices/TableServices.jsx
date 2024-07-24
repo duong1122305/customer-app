@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Modal, Table, Form, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
+import callApi from "../../../utlis/request";
 
 const TableServices = ({ show, onClosed, onServicesSelected }) => {
   const [lstServices, setLstServices] = useState([]);
@@ -17,15 +18,12 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
   };
   useEffect(() => {
     const handleServices = async () => {
-      const response = await fetch(
-        "https://localhost:7039/api/ServicesDetail/getServiceName",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await callApi("ServicesDetail/getServiceName", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (response.ok) {
         const result = await response.json();
         setLstServices(result);

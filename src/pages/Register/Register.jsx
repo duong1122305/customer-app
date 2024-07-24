@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import Announcement from "../../components/AnnouncementComponent/Announcement";
+import callApi from "../../utlis/request";
 
 const Register = (props) => {
   const [name, setName] = useState("");
@@ -76,16 +77,13 @@ const Register = (props) => {
 
   async function handleRegis(postData) {
     try {
-      const response = await fetch(
-        "https://localhost:7039/api/GuestManager/register-by-guest",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(postData),
-        }
-      );
+      const response = await callApi("GuestManager/register-by-guest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+      });
       const result = await response.json();
       if (result.isSuccess == true) {
         setShowAnnoun(true);
@@ -255,7 +253,11 @@ const Register = (props) => {
           </Form>
         </Modal.Body>
       </Modal>
-      <Announcement show={showAnnoun} content={contentAnnoun} onClose={() => setShowAnnoun(false)} />
+      <Announcement
+        show={showAnnoun}
+        content={contentAnnoun}
+        onClose={() => setShowAnnoun(false)}
+      />
     </>
   );
 };

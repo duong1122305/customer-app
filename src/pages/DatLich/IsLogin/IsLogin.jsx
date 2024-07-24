@@ -6,6 +6,7 @@ import "./IsLogin.css";
 import CreatePet from "../../Pet/CreatePet";
 import Announcement from "../../../components/AnnouncementComponent/Announcement";
 import AcceptRequest from "../../../components/AcceptRequestComponent/AcceptRequest";
+import callApi from "../../../utlis/request";
 
 const IsLogin = () => {
   //state
@@ -59,9 +60,10 @@ const IsLogin = () => {
   const handleServicesSelected = (services, servicesData) => {
     setSelectedServicesForForm(services);
     handleClosePopup(); // Đóng modal sau khi chọn
-    
+
     const newPrice = services.reduce((total, serviceId) => {
-      const servicePrice = servicesData.find(s => s.serviceDetailId  === serviceId)?.price || 0;
+      const servicePrice =
+        servicesData.find((s) => s.serviceDetailId === serviceId)?.price || 0;
       return total + servicePrice;
     }, 0);
     console.log(newPrice);
@@ -74,15 +76,12 @@ const IsLogin = () => {
 
   useEffect(() => {
     const getPet = async () => {
-      const response = await fetch(
-        `https://localhost:7039/api/PetManager/get-pet-by-guest?id=${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await callApi(`PetManager/get-pet-by-guest?id=${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const resResult = await response.json();
       if (resResult.isSuccess === true) {
         setLstPet(resResult.data);
@@ -92,8 +91,8 @@ const IsLogin = () => {
     };
 
     const getVoucher = async () => {
-      const response = await fetch(
-        `https://localhost:7039/api/Booking/List-Voucher-Can-Apply?totalPrice=${price}`,
+      const response = await callApi(
+        `Booking/List-Voucher-Can-Apply?totalPrice=${price}`,
         {
           method: "GET",
           headers: {
@@ -105,7 +104,7 @@ const IsLogin = () => {
       if (result.isSuccess === true) {
         setLstVoucher(result.data);
         console.log("ok");
-      }else{
+      } else {
         console.log(result.error);
       }
     };
@@ -141,20 +140,17 @@ const IsLogin = () => {
     const params = {
       ...data,
       listIdServiceDetail: selectedServiceDetails,
+      voucherId: voucherIdRef.current.value,
     };
 
-    console.log("params:::::::", params);
     try {
-      const response = await fetch(
-        "https://localhost:7039/api/Booking/Guest-Booking",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(params),
-        }
-      );
+      const response = await callApi("Booking/Guest-Booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
       console.log("ok:", JSON.stringify(params));
       const result = await response.json();
       if (result.isSuccess === true) {
@@ -216,7 +212,9 @@ const IsLogin = () => {
         <FloatingLabel label="Bạn có voucher chứ">
           <Form.Select ref={voucherIdRef}>
             {lstVoucher.map((vouchers, index) => (
-              <option key={index} value={vouchers.id}>{vouchers.voucherName}</option>
+              <option key={index} value={vouchers.id}>
+                {vouchers.voucherName}
+              </option>
             ))}
           </Form.Select>
         </FloatingLabel>

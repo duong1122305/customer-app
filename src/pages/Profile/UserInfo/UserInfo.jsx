@@ -1,6 +1,7 @@
 import { Col, Container, Form, Image, Row } from "react-bootstrap";
 import "./UserInfo.css";
 import { useEffect, useState } from "react";
+import callApi from "../../../utlis/request";
 
 const UserInfo = () => {
   const [info, setInfo] = useState({
@@ -24,12 +25,12 @@ const UserInfo = () => {
       const id = result.id;
       try {
         const findInfo = async () => {
-          const response = await fetch(
-            `https://localhost:7039/api/GuestManager/find-by-id?id=${id}`,
-            {
-              method: "GET",
-            }
-          );
+          const response = await callApi(`GuestManager/find-by-id?id=${id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
           const responseResult = await response.json();
           if (responseResult.isSuccess === true) {
             const data = responseResult.data;

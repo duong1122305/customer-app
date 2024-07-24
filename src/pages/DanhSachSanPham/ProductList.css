@@ -1,0 +1,29 @@
+.row {
+  display: flex; /* Kích hoạt flexbox cho container chứa các card */
+  flex-wrap: wrap; /* Cho phép các card xuống dòng khi không đủ chỗ */
+}
+
+.card {
+  flex: 1 0 25%; /* Mỗi card chiếm 25% chiều rộng và có thể co giãn */
+  margin-bottom: 1rem; /* Khoảng cách giữa các card */
+}
+
+/* Điều chỉnh chiều cao tối đa của nội dung card */
+.card-body {
+  max-height: 150%; /* (Điều chỉnh giá trị này theo ý muốn) */
+  overflow: hidden;
+}
+
+/* Thêm hiệu ứng "Xem thêm" nếu cần thiết */
+.card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Ngăn không cho nội dung xuống dòng */
+}

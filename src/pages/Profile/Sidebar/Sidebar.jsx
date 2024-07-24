@@ -11,12 +11,16 @@ import { useNavigate } from 'react-router-dom';
 const Sidebar = ({ onItemClick }) => {
   const navigate = useNavigate();
   const [activeKey, setActiveKey] = useState("dashboard");
+  const [name, setName] = useState("");
+  
   const signOut = () => {
     sessionStorage.removeItem("token");
     navigate("/");
   }
 
-  const [name, setName] = useState("");
+  const toFirst = () => {
+    navigate("/");
+  }
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -45,6 +49,9 @@ const Sidebar = ({ onItemClick }) => {
         <FontAwesomeIcon icon={faHouse} /> My Pet
       </Nav.Link>
 
+      <Button variant="link" className="sign-out" onClick={toFirst}>
+        <FontAwesomeIcon icon={faRightFromBracket} /> Quay lại trang chủ
+      </Button>
       <Button variant="link" className="sign-out" onClick={signOut}>
         <FontAwesomeIcon icon={faRightFromBracket} /> Đăng xuất
       </Button>
