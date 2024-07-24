@@ -25,7 +25,7 @@ const Success = () => {
       <h1>
         Bạn đã xác minh tài khoản thành công, bạn sẽ được chuyển hướng sau....
       </h1>
-      <h3>{count}</h3>
+      <h3 style={{textAlign:"center"}}>{count}</h3>
     </div>
   );
 };

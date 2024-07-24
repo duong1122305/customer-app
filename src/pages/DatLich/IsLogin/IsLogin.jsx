@@ -8,6 +8,7 @@ import Announcement from "../../../components/AnnouncementComponent/Announcement
 import AcceptRequest from "../../../components/AcceptRequestComponent/AcceptRequest";
 
 const IsLogin = () => {
+  //state
   const [lstPet, setLstPet] = useState([]);
   const [selectedServicesForForm, setSelectedServicesForForm] = useState([]);
   const [show, setShow] = useState(false);
@@ -16,12 +17,15 @@ const IsLogin = () => {
   const [content, setContent] = useState("");
   const [ifTrue, setIfTrue] = useState(false);
   const [showAccept, setShowAccept] = useState(false);
+  const [lstVoucher, setLstVoucher] = useState([]);
+  const [price, setPrice] = useState(0);
   //ref
   const petIdRef = useRef(null);
   const startDateTimeRef = useRef(null);
   const dateBookingRef = useRef(null);
   const voucherIdRef = useRef(null);
 
+  //get token
   const token = sessionStorage.getItem("token");
   const result = JSON.parse(token);
   const id = result.id;
@@ -52,9 +56,16 @@ const IsLogin = () => {
   const handleClosePopup = () => {
     setShow(false);
   };
-  const handleServicesSelected = (services) => {
+  const handleServicesSelected = (services, servicesData) => {
     setSelectedServicesForForm(services);
     handleClosePopup(); // Đóng modal sau khi chọn
+    
+    const newPrice = services.reduce((total, serviceId) => {
+      const servicePrice = servicesData.find(s => s.serviceDetailId  === serviceId)?.price || 0;
+      return total + servicePrice;
+    }, 0);
+    console.log(newPrice);
+    setPrice(newPrice);
   };
 
   const getDataFromChild = (dataChild) => {
@@ -80,11 +91,31 @@ const IsLogin = () => {
       }
     };
 
+    const getVoucher = async () => {
+      const response = await fetch(
+        `https://localhost:7039/api/Booking/List-Voucher-Can-Apply?totalPrice=${price}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const result = await response.json();
+      if (result.isSuccess === true) {
+        setLstVoucher(result.data);
+        console.log("ok");
+      }else{
+        console.log(result.error);
+      }
+    };
+
     getPet();
+    getVoucher();
     if (ifTrue) {
       getPet();
     }
-  }, [id, ifTrue]);
+  }, [id, ifTrue, price]);
 
   const handleCreatePet = () => {
     setShowPet(true);
@@ -146,7 +177,7 @@ const IsLogin = () => {
 
   const handleCloseAccept = () => {
     setShowAccept(false);
-  }
+  };
 
   return (
     <div>
@@ -183,11 +214,11 @@ const IsLogin = () => {
           <Form.Control type="time" ref={startDateTimeRef} />
         </FloatingLabel>
         <FloatingLabel label="Bạn có voucher chứ">
-          <Form.Control
-            type="text"
-            placeholder="X3aBdcss4"
-            ref={voucherIdRef}
-          />
+          <Form.Select ref={voucherIdRef}>
+            {lstVoucher.map((vouchers, index) => (
+              <option key={index} value={vouchers.id}>{vouchers.voucherName}</option>
+            ))}
+          </Form.Select>
         </FloatingLabel>
         <ButtonGroup>
           <Button type="submit">Gửi yêu cầu</Button>

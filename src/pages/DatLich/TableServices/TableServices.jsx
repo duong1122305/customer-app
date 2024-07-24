@@ -7,9 +7,9 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
   const [selectedServices, setSelectedServices] = useState([]);
 
   const handleCheckboxChange = (serviceId) => {
-    setSelectedServices(prevSelected => {
+    setSelectedServices((prevSelected) => {
       if (prevSelected.includes(serviceId)) {
-        return prevSelected.filter(id => id !== serviceId); // Bỏ chọn nếu đã được chọn
+        return prevSelected.filter((id) => id !== serviceId); // Bỏ chọn nếu đã được chọn
       } else {
         return [...prevSelected, serviceId]; // Thêm vào nếu chưa được chọn
       }
@@ -50,29 +50,35 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
             </tr>
           </thead>
           <tbody>
-            {lstServices.length > 0 ? (lstServices.map((services, index) => (
-              <tr key={Math.random()}>
-                <td>{index + 1}</td>
-                <td>{services.serviceName}</td>
-                <td>{services.price}</td>
-                <td>{services.duration}</td>
-                <td>{services.description}</td>
-                <td>
-                  <Form.Check
-                    checked={selectedServices.includes(services.serviceDetailId)}
-                    onChange={() => handleCheckboxChange(services.serviceDetailId)}
-                  />
-                </td>
-              </tr>
-            ))) : (
-                <p>Loading ...</p>
+            {lstServices.length > 0 ? (
+              lstServices.map((services, index) => (
+                <tr key={Math.random()}>
+                  <td>{index + 1}</td>
+                  <td>{services.serviceName}</td>
+                  <td>{services.price}</td>
+                  <td>{services.duration}</td>
+                  <td>{services.description}</td>
+                  <td>
+                    <Form.Check
+                      checked={selectedServices.includes(
+                        services.serviceDetailId
+                      )}
+                      onChange={() =>
+                        handleCheckboxChange(services.serviceDetailId)
+                      }
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <p>Loading ...</p>
             )}
           </tbody>
         </Table>
         <Modal.Footer>
           <Button
             variant="primary"
-            onClick={() => onServicesSelected(selectedServices)}
+            onClick={() => onServicesSelected(selectedServices, lstServices)}
           >
             Xác nhận
           </Button>

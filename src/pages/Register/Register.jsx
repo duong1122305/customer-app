@@ -87,17 +87,13 @@ const Register = (props) => {
         }
       );
       const result = await response.json();
-      console.log(result);
       if (result.isSuccess == true) {
         setShowAnnoun(true);
         setContentAnnoun("Đăng ký thành công");
-        console.log(result.data);
         handleClose();
       } else {
         setShowAnnoun(true);
         setContentAnnoun("Đăng ký thất bại: ", result.error);
-        console.log("Có lỗi xảy ra");
-        console.log(result);
       }
     } catch (error) {
       console.log(error);
