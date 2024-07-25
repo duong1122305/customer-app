@@ -7,6 +7,7 @@ import "./Sidebar.css";
 import UserInfo from "../UserInfo/UserInfo";
 import Pet from "../Pet/Pet";
 import { useNavigate } from 'react-router-dom';
+import BookingInfo from '../BookingInfo/BookingInfo';
 
 const Sidebar = ({ onItemClick }) => {
   const navigate = useNavigate();
@@ -27,7 +28,6 @@ const Sidebar = ({ onItemClick }) => {
     const result = JSON.parse(token);
     if(token){
       setName(result.name);
-      console.log("ok");
     }
   }, [name]);
 
@@ -47,6 +47,9 @@ const Sidebar = ({ onItemClick }) => {
       </Nav.Link>
       <Nav.Link onClick={() => onItemClick(<Pet />)}>
         <FontAwesomeIcon icon={faHouse} /> My Pet
+      </Nav.Link>
+      <Nav.Link onClick={() => onItemClick(<BookingInfo />)}>
+        <FontAwesomeIcon icon={faHouse} /> Lịch của bạn
       </Nav.Link>
 
       <Button variant="link" className="sign-out" onClick={toFirst}>

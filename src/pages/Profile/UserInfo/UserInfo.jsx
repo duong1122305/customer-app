@@ -46,7 +46,6 @@ const UserInfo = () => {
               return count === 1 ? "," : match; // Chỉ thay thế dấu ! đầu tiên sau khi đã xóa dãy số
             });
 
-            console.log("ok");
             setInfo({
               name: data.name,
               gender: data.gender,
@@ -55,7 +54,6 @@ const UserInfo = () => {
               avatarUrl: data.avatarUrl,
               address: finalAddress,
             });
-            console.log(info);
           }
         };
         findInfo();
@@ -65,7 +63,7 @@ const UserInfo = () => {
     } else {
       console.log("co loi");
     }
-  }, [setInfo]);
+  }, []);
 
   const onBtnClick = () => {
     if (count === 0) {
@@ -78,7 +76,6 @@ const UserInfo = () => {
       setCount(0);
     }
   };
-  console.log(count);
   return (
     <Container className="container">
       <Row className="row-1">
