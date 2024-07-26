@@ -6,7 +6,6 @@ import callApi from "../../../utlis/request";
 const BookingInfo = () => {
   const [lstBooking, setLstBooking] = useState([]);
   const [lstServiceName, setLstServiceName] = useState([]);
-  const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
@@ -14,6 +13,7 @@ const BookingInfo = () => {
   const id = JSON.parse(token).id;
 
   const totalPages = Math.ceil(lstBooking.length / itemsPerPage);
+  
   const currentItems = lstBooking.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -38,9 +38,8 @@ const BookingInfo = () => {
       const result = await response.json();
       if (result.isSuccess === true && Array.isArray(result.data)) {
         setLstBooking(result.data);
-        setLstServiceName(
-          result.data.length > 0 ? result.data[0].serviceName : []
-        );
+        const serName = result.data.map(item => item.serviceName);
+        setLstServiceName(serName);
         setLoading(false);
       } else {
         setLoading(true);
@@ -74,8 +73,10 @@ const BookingInfo = () => {
               <tr>
                 <th>STT</th>
                 <th>Tên dịch vụ</th>
+                <th>Boss hưởng thụ</th>
                 <th>Ngày đặt</th>
-                <th>Ngày hoàn thành</th>
+                <th>Ngày làm</th>
+                <th>Giờ làm</th>
                 <th>Thành tiền</th>
                 <th>Trạng thái</th>
               </tr>
@@ -98,8 +99,10 @@ const BookingInfo = () => {
                         ))}
                       </ul>
                     </td>
+                    <td>{booking.petName}</td>
+                    <td>{booking.bookingTime}</td>
                     <td>{booking.startDate}</td>
-                    <td>{booking.endDate}</td>
+                    <td>{booking.startTime}</td>
                     <td>{booking.totalPrice}</td>
                     <td>{getStatusString(booking.status)}</td>
                   </tr>
