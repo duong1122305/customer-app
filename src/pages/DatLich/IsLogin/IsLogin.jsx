@@ -57,6 +57,7 @@ const IsLogin = () => {
   const handleClosePopup = () => {
     setShow(false);
   };
+
   const handleServicesSelected = (services, servicesData) => {
     setSelectedServicesForForm(services);
     handleClosePopup(); // Đóng modal sau khi chọn
@@ -140,7 +141,7 @@ const IsLogin = () => {
     const params = {
       ...data,
       listIdServiceDetail: selectedServiceDetails,
-      voucherId: voucherIdRef.current.value,
+      ...(voucherIdRef.current.value && { voucherId: voucherIdRef.current.value }),
     };
 
     try {
@@ -242,6 +243,7 @@ const IsLogin = () => {
         show={showAccept}
         onClose={handleCloseAccept}
         onAccept={handleShowAccept}
+        content="Xác nhận đặt lịch"
       />
     </div>
   );

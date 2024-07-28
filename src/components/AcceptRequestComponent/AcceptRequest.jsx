@@ -1,7 +1,7 @@
 import { Button, Modal } from "react-bootstrap";
 import PropTypes from "prop-types";
 
-const AcceptRequest = ({ show, onClose, onAccept }) => {
+const AcceptRequest = ({ show, onClose, onAccept, content }) => {
     const handleAccept = () => {
         onAccept();
         onClose();
@@ -10,7 +10,7 @@ const AcceptRequest = ({ show, onClose, onAccept }) => {
     <div>
       <Modal show={show} onHide={onClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Thông báo</Modal.Title>
+          <Modal.Title>{content}</Modal.Title>
         </Modal.Header>
         <Modal.Footer>
           <Button variant="primary" onClick={handleAccept}>Xác nhận</Button>
@@ -25,6 +25,7 @@ AcceptRequest.propTypes = {
   show: PropTypes.bool,
   onClose: PropTypes.func,
   onAccept: PropTypes.func,
+  content: PropTypes.string
 };
 
 export default AcceptRequest;
