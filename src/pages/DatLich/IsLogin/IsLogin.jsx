@@ -20,6 +20,9 @@ const IsLogin = () => {
   const [showAccept, setShowAccept] = useState(false);
   const [lstVoucher, setLstVoucher] = useState([]);
   const [price, setPrice] = useState(0);
+  const [validated, setValidated] = useState(false);
+  const [formError, setFormError] = useState({});
+
   //ref
   const petIdRef = useRef(null);
   const startDateTimeRef = useRef(null);
@@ -30,20 +33,6 @@ const IsLogin = () => {
   const token = sessionStorage.getItem("token");
   const result = JSON.parse(token);
   const id = result.id;
-
-  // const [lstServiceDetail, setLstServiceDtail] = useState([
-  //   {
-  //     staffId: "",
-  //     petId: 0,
-  //     serviceDetailId: [],
-  //     startDateTime: "",
-  //     dateBooking: "",
-  //   },
-  // ]);
-
-  // useEffect(() => {
-  //   console.log(lstServiceDetail);
-  // }, [JSON.stringify(lstServiceDetail)]);
 
   const [data, setData] = useState({
     listIdServiceDetail: [{}],
@@ -141,7 +130,9 @@ const IsLogin = () => {
     const params = {
       ...data,
       listIdServiceDetail: selectedServiceDetails,
-      ...(voucherIdRef.current.value && { voucherId: voucherIdRef.current.value }),
+      ...(voucherIdRef.current.value && {
+        voucherId: voucherIdRef.current.value,
+      }),
     };
 
     try {
@@ -169,16 +160,49 @@ const IsLogin = () => {
 
   const handleBooking = (event) => {
     event.preventDefault();
-    setShowAccept(true);
+    const form = event.currentTarget;
+
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    setValidated(true); // Đặt validated thành true khi submit
+
+    // Kiểm tra tất cả các trường và cập nhật formErrors
+    setFormError({
+      petId: petIdRef.current.value ? "" : "Vui lòng chọn boss !!!",
+      dateBooking: dateBookingRef.current.value
+        ? ""
+        : "Vui lòng chọn ngày làm dịch vụ !!!",
+      startTime: startDateTimeRef.current.value
+        ? ""
+        : "Vui lòng chọn giờ làm dịch vụ !!!",
+    });
   };
 
   const handleCloseAccept = () => {
     setShowAccept(false);
   };
 
+  const onInputChange = (event) => {
+    const { name, value } = event.target;
+
+    // Loại bỏ lỗi khi người dùng bắt đầu nhập
+    setFormError((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  };
+
   return (
     <div>
-      <Form className="form_booking" onSubmit={handleBooking}>
+      <Form
+        className="form_booking"
+        onSubmit={handleBooking}
+        noValidate
+        validated={validated}
+      >
         <Button onClick={handleShowPopup}>Chọn dịch vụ</Button>
         <TableServices
           show={show}
@@ -190,9 +214,15 @@ const IsLogin = () => {
           name="selectedServices"
           value={JSON.stringify(selectedServicesForForm)}
         />
+        <span style={{color:"red"}} disabled><b>*Mặc định sẽ là boss đầu tiên bạn thêm vào</b></span>
         <FloatingLabel label="Boss hưởng thụ">
-          <Form.Select ref={petIdRef}>
-            <option value={null}>Chọn boss của bạn</option>
+          <Form.Select
+            ref={petIdRef}
+            onChange={onInputChange}
+            name="petId"
+            isInvalid={!!formError.petId && validated}
+            required
+          >
             {lstPet.length > 0 ? (
               lstPet.map((pet) => (
                 <option key={pet.id} value={pet.id}>
@@ -200,23 +230,50 @@ const IsLogin = () => {
                 </option>
               ))
             ) : (
-              <option>Bạn chưa thêm Boss của mình rùi !!!</option>
+              <option disabled>Bạn chưa thêm Boss của mình rùi !!!</option>
             )}
           </Form.Select>
+          <Form.Control.Feedback type="invalid">
+            {formError.petId}
+          </Form.Control.Feedback>
         </FloatingLabel>
         <FloatingLabel label="Ngày làm dịch vụ">
-          <Form.Control type="date" ref={dateBookingRef} />
+          <Form.Control
+            type="date"
+            ref={dateBookingRef}
+            onChange={onInputChange}
+            name="bookingTime"
+            isInvalid={!!formError.dateBooking && validated}
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            {formError.dateBooking}
+          </Form.Control.Feedback>
         </FloatingLabel>
         <FloatingLabel label="Giờ làm dịch vụ">
-          <Form.Control type="time" ref={startDateTimeRef} />
+          <Form.Control
+            type="time"
+            ref={startDateTimeRef}
+            onChange={onInputChange}
+            name="startTime"
+            isInvalid={!!formError.startTime && validated}
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            {formError.startTime}
+          </Form.Control.Feedback>
         </FloatingLabel>
-        <FloatingLabel label="Bạn có voucher chứ">
+        <FloatingLabel label="Voucher có thể áp dụng cho đơn dịch vụ của bạn">
           <Form.Select ref={voucherIdRef}>
-            {lstVoucher.map((vouchers, index) => (
-              <option key={index} value={vouchers.id}>
-                {vouchers.voucherName}
-              </option>
-            ))}
+            {lstVoucher.length > 0 ? (
+              lstVoucher.map((vouchers, index) => (
+                <option key={index} value={vouchers.id}>
+                  {vouchers.voucherName}
+                </option>
+              ))
+            ) : (
+              <option disabled>Không có voucher có thể áp dụng</option>
+            )}
           </Form.Select>
         </FloatingLabel>
         <ButtonGroup>

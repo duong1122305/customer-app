@@ -1,10 +1,25 @@
-import { memo, useEffect, useState } from "react";
-import { Button, Dropdown, Spinner, Table } from "react-bootstrap";
+import { memo, useEffect, useRef, useState } from "react";
+import {
+  Button,
+  Dropdown,
+  Form,
+  InputGroup,
+  Spinner,
+  Table,
+} from "react-bootstrap";
 import callApi from "../../../../utlis/request";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import "./BookingInfoChild.css";
+import moment from "moment";
 
 const BookingInfoChild = () => {
   const token = sessionStorage.getItem("token");
   const id = JSON.parse(token).id;
+
+  const searchDateRef = useRef(null);
+  const [searchDate, setSearchDate] = useState("");
+  const [groupedBookings, setGroupedBookings] = useState({});
   const [lstBooking, setLstBooking] = useState([
     {
       petName: "",
@@ -35,7 +50,17 @@ const BookingInfoChild = () => {
       const result = await response.json();
       if (result.isSuccess === true) {
         if (result.data.length > 0) {
-          setLstBooking(result.data.filter((item) => item !== null));
+          const filteredData = result.data.filter((item) => item !== null);
+          setLstBooking(filteredData);
+          const newGroupedBookings = filteredData.reduce((acc, booking) => {
+            const date = booking.bookingTime;
+            if (!acc[date]) {
+              acc[date] = [];
+            }
+            acc[date].push(booking);
+            return acc;
+          }, {});
+          setGroupedBookings(newGroupedBookings);
           setIsLoading(false);
         }
       } else {
@@ -46,14 +71,27 @@ const BookingInfoChild = () => {
     getBooking();
   }, [id]);
 
-  const groupedBookings = lstBooking.reduce((acc, booking) => {
-    const date = booking.bookingTime;
-    if (!acc[date]) {
-      acc[date] = [];
-    }
-    acc[date].push(booking);
-    return acc;
-  }, {});
+  useEffect(() => {
+    // Cập nhật groupedBookings khi searchDate thay đổi
+    const newGroupedBookings = lstBooking.reduce((acc, booking) => {
+      const date = booking.bookingTime;
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(booking);
+      return acc;
+    }, {});
+    setGroupedBookings(newGroupedBookings);
+  }, [lstBooking, searchDate]);
+
+  // const groupedBookings = lstBooking.reduce((acc, booking) => {
+  //   const date = booking.bookingTime;
+  //   if (!acc[date]) {
+  //     acc[date] = [];
+  //   }
+  //   acc[date].push(booking);
+  //   return acc;
+  // }, {});
 
   const getStatusString = (status) => {
     switch (status) {
@@ -73,8 +111,31 @@ const BookingInfoChild = () => {
   console.log(lstBooking);
   return (
     <div>
+      <InputGroup className="mb-3 w-50 ms-2">
+        <InputGroup.Text id="basic-addon1" className="font_icon">
+          <FontAwesomeIcon icon={faSearch} />
+        </InputGroup.Text>
+        <Form.Control
+          placeholder="Ngày đặt"
+          aria-describedby="basic-addon1"
+          type="date"
+          ref={searchDateRef}
+          value={searchDate}
+          onChange={(e) => setSearchDate(e.target.value)}
+        />
+      </InputGroup>
+
       {Object.entries(groupedBookings)
-        .filter((item) => item != null)
+        .filter(([date, bookings]) => {
+          // Sửa ở đây
+          if (!searchDate) return true;
+          const formattedSearchDate = moment(searchDate).format("DD/MM/YYYY"); // Chuyển về định dạng DD/MM/YYYY
+          return bookings.some(
+            (booking) =>
+              moment(booking.bookingTime, "DD/MM/YYYY").format("DD/MM/YYYY") ===
+              formattedSearchDate
+          );
+        })
         .map(([date, bookings]) => (
           <Dropdown key={date} className="d-flex justify-content-center">
             <Dropdown.Toggle
@@ -86,7 +147,8 @@ const BookingInfoChild = () => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="w-100">
-              <Table bordered>
+              <Form.Control className="w-25 mb-2 ms-2" placeholder="Tìm kiếm" />
+              <Table bordered responsive>
                 <thead className="text-center">
                   <tr>
                     <th>STT</th>
@@ -114,7 +176,9 @@ const BookingInfoChild = () => {
                         <td>
                           <ol className="text-start">
                             {booking.serviceName.map((name, indexName) => (
-                              <li key={indexName} className="mb-1">{name}</li>
+                              <li key={indexName} className="mb-1">
+                                {name}
+                              </li>
                             ))}
                           </ol>
                         </td>
