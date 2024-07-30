@@ -7,6 +7,7 @@ import CreatePet from "../../Pet/CreatePet";
 import Announcement from "../../../components/AnnouncementComponent/Announcement";
 import AcceptRequest from "../../../components/AcceptRequestComponent/AcceptRequest";
 import callApi from "../../../utlis/request";
+import { createHubConnection } from '../IsLogin/SignalRService'; // Import SignalR Service
 
 const IsLogin = () => {
   //state
@@ -22,6 +23,7 @@ const IsLogin = () => {
   const [price, setPrice] = useState(0);
   const [validated, setValidated] = useState(false);
   const [formError, setFormError] = useState({});
+  const [notification, setNotification] = useState("");
 
   //ref
   const petIdRef = useRef(null);
@@ -106,6 +108,17 @@ const IsLogin = () => {
     }
   }, [id, ifTrue, price]);
 
+  useEffect(() => {
+    const hubConnection = createHubConnection((message) => {
+      setNotification(message);
+      setShowAnnoucement(true);
+      setContent(message);
+    });
+
+    return () => {
+      hubConnection.stop();
+    };
+  }, []);
   const handleCreatePet = () => {
     setShowPet(true);
   };
@@ -277,7 +290,7 @@ const IsLogin = () => {
           </Form.Select>
         </FloatingLabel>
         <ButtonGroup>
-          <Button type="submit">Gửi yêu cầu</Button>
+          <Button type="submit" onClick={handleShowAccept}>Gửi yêu cầu</Button>
           <Button variant="warning" type="reset">
             Chọn lại
           </Button>
