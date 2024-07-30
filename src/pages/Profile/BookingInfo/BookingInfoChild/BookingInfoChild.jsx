@@ -2,18 +2,17 @@ import { memo, useEffect, useRef, useState } from "react";
 import {
   Button,
   Dropdown,
+  FloatingLabel,
   Form,
-  InputGroup,
   Spinner,
   Table,
 } from "react-bootstrap";
 import callApi from "../../../../utlis/request";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import "./BookingInfoChild.css";
 import moment from "moment";
+import PropTypes from "prop-types";
 
-const BookingInfoChild = () => {
+const BookingInfoChild = ({ conditions }) => {
   const token = sessionStorage.getItem("token");
   const id = JSON.parse(token).id;
 
@@ -50,7 +49,8 @@ const BookingInfoChild = () => {
       const result = await response.json();
       if (result.isSuccess === true) {
         if (result.data.length > 0) {
-          const filteredData = result.data.filter((item) => item !== null);
+          const filteredData = result.data.filter((item) => item !== null)
+          .filter((item) => conditions !== undefined ? item.status === conditions : true);
           setLstBooking(filteredData);
           const newGroupedBookings = filteredData.reduce((acc, booking) => {
             const date = booking.bookingTime;
@@ -69,7 +69,7 @@ const BookingInfoChild = () => {
       }
     };
     getBooking();
-  }, [id]);
+  }, [id, conditions]);
 
   useEffect(() => {
     // Cập nhật groupedBookings khi searchDate thay đổi
@@ -108,13 +108,9 @@ const BookingInfoChild = () => {
     }
   };
 
-  console.log(lstBooking);
   return (
     <div>
-      <InputGroup className="mb-3 w-50 ms-2">
-        <InputGroup.Text id="basic-addon1" className="font_icon">
-          <FontAwesomeIcon icon={faSearch} />
-        </InputGroup.Text>
+      <FloatingLabel label="Tìm kiếm theo ngày đặt" className="w-50 mb-2 ms-2">
         <Form.Control
           placeholder="Ngày đặt"
           aria-describedby="basic-addon1"
@@ -123,7 +119,7 @@ const BookingInfoChild = () => {
           value={searchDate}
           onChange={(e) => setSearchDate(e.target.value)}
         />
-      </InputGroup>
+      </FloatingLabel>
 
       {Object.entries(groupedBookings)
         .filter(([date, bookings]) => {
@@ -147,7 +143,6 @@ const BookingInfoChild = () => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="w-100">
-              <Form.Control className="w-25 mb-2 ms-2" placeholder="Tìm kiếm" />
               <Table bordered responsive>
                 <thead className="text-center">
                   <tr>
@@ -202,6 +197,10 @@ const BookingInfoChild = () => {
         ))}
     </div>
   );
+};
+
+BookingInfoChild.propTypes = {
+  conditions: PropTypes.number,
 };
 
 export default memo(BookingInfoChild);

@@ -9,11 +9,11 @@ const BookingInfo = () => {
         <Tab eventKey="home" title="Tất cả">
           <BookingInfoChild />
         </Tab>
-        <Tab eventKey="profile" title="Chuẩn bị">
-          Tab content for Profile
+        <Tab eventKey="profile" title="Chưa hoàn thành">
+          <BookingInfoChild conditions={1} />
         </Tab>
         <Tab eventKey="longer-tab" title="Đã xong">
-          Tab content for Loooonger Tab
+          <BookingInfoChild conditions={0} />
         </Tab>
       </Tabs>
     </div>
