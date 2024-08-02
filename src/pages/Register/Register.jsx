@@ -49,7 +49,7 @@ const Register = (props) => {
       setShowError(true);
     } else if (!trimmedUsername) {
       setShowError(true);
-    } else if (trimmedPassword.length < 6 || trimmedPassword.length > 8) {
+    } else if (trimmedPassword.length < 6 || trimmedPassword.length > 20) {
       setShowError(true);
     } else if (trimmedPassword !== trimmedConfirmPassword) {
       setShowError(true);
@@ -211,7 +211,7 @@ const Register = (props) => {
                   {showPassword ? "Ẩn" : "Hiện"}
                 </Button>
                 <Form.Control.Feedback type="invalid">
-                  Vui lòng nhập mật khẩu từ 6-8 ký tự.
+                  Vui lòng nhập mật khẩu từ 6-20 ký tự.
                 </Form.Control.Feedback>
               </div>
             </Form.Group>

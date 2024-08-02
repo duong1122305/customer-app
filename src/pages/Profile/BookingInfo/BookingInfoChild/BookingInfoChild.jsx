@@ -12,13 +12,20 @@ import callApi from "../../../../utlis/request";
 import "./BookingInfoChild.css";
 import moment from "moment";
 import PropTypes from "prop-types";
+import Announcement from "../../../../components/AnnouncementComponent/Announcement";
 
 const BookingInfoChild = ({ conditions }) => {
   const token = sessionStorage.getItem("token");
   const id = JSON.parse(token).id;
 
-  const searchDateRef = useRef(null);
-  const [searchDate, setSearchDate] = useState("");
+  const searchStartDateRef = useRef(null);
+  const searchEndDateRef = useRef(null);
+
+  const [searchStartDate, setSearchStartDate] = useState("");
+  const [searchEndDate, setSearchEndDate] = useState("");
+  const [content, setContent] = useState("");
+  const [showAnnounce, setShowAnnounce] = useState(false);
+
   const [groupedBookings, setGroupedBookings] = useState({});
   const [lstBooking, setLstBooking] = useState([
     {
@@ -41,12 +48,19 @@ const BookingInfoChild = ({ conditions }) => {
 
   const filteredGroupedBookings = Object.entries(groupedBookings).filter(
     ([date, bookings]) => {
-      if (!searchDate) return true;
-      const formattedSearchDate = moment(searchDate).format("DD/MM/YYYY");
-      return bookings.some(
-        (booking) =>
-          moment(booking.bookingTime, "DD/MM/YYYY").format("DD/MM/YYYY") ===
-          formattedSearchDate
+      if (!searchStartDate || !searchEndDate) return true; // Show all if no range
+      if (searchEndDate < searchStartDate) {
+        setShowAnnounce(true);
+        setContent("Khoảng ngày của bạn đã chọn sai!!!");
+        return false;
+      }
+      const startDate = moment(searchStartDate);
+      const endDate = moment(searchEndDate);
+      const bookingDate = moment(date, "DD/MM/YYYY");
+
+      return (
+        bookingDate.isSameOrAfter(startDate, "day") &&
+        bookingDate.isSameOrBefore(endDate, "day")
       );
     }
   );
@@ -62,6 +76,7 @@ const BookingInfoChild = ({ conditions }) => {
           },
         }
       );
+
       const result = await response.json();
       if (result.isSuccess === true) {
         if (result.data.length > 0) {
@@ -101,7 +116,7 @@ const BookingInfoChild = ({ conditions }) => {
       return acc;
     }, {});
     setGroupedBookings(newGroupedBookings);
-  }, [lstBooking, searchDate]);
+  }, [lstBooking, searchStartDate]);
 
   const getStatusString = (status) => {
     switch (status) {
@@ -120,16 +135,28 @@ const BookingInfoChild = ({ conditions }) => {
 
   return (
     <div>
-      <FloatingLabel label="Tìm kiếm theo ngày đặt" className="w-50 mb-2 ms-2">
-        <Form.Control
-          placeholder="Ngày đặt"
-          aria-describedby="basic-addon1"
-          type="date"
-          ref={searchDateRef}
-          value={searchDate}
-          onChange={(e) => setSearchDate(e.target.value)}
-        />
-      </FloatingLabel>
+      <div className="d-flex">
+        <FloatingLabel label="Từ ngày" className="w-50 mb-2 ms-1">
+          <Form.Control
+            placeholder="Ngày đặt"
+            aria-describedby="basic-addon1"
+            type="date"
+            ref={searchStartDateRef}
+            value={searchStartDate}
+            onChange={(e) => setSearchStartDate(e.target.value)}
+          />
+        </FloatingLabel>
+        <FloatingLabel label="Tới ngày" className="w-50 mb-2 ms-1">
+          <Form.Control
+            placeholder="Ngày đặt"
+            aria-describedby="basic-addon1"
+            type="date"
+            ref={searchEndDateRef}
+            value={searchEndDate}
+            onChange={(e) => setSearchEndDate(e.target.value)}
+          />
+        </FloatingLabel>
+      </div>
 
       {filteredGroupedBookings.map(([date, bookings]) => {
         const indexOfLastItem = currentPage * itemsPerPage;
@@ -230,6 +257,11 @@ const BookingInfoChild = ({ conditions }) => {
           </Dropdown>
         );
       })}
+      <Announcement
+        show={showAnnounce}
+        content={content}
+        onClose={() => setShowAnnounce(false)}
+      />
     </div>
   );
 };

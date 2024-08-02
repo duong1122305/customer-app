@@ -1,4 +1,4 @@
-import { Col, Container, Form, Image, Row } from "react-bootstrap";
+import { Col, Container, Form, Image, Row, FloatingLabel } from "react-bootstrap";
 import "./UserInfo.css";
 import { useEffect, useState } from "react";
 import callApi from "../../../utlis/request";
@@ -56,6 +56,8 @@ const UserInfo = () => {
             });
           }
         };
+
+        
         findInfo();
       } catch (error) {
         console.error(error);
@@ -63,6 +65,16 @@ const UserInfo = () => {
     } else {
       console.log("co loi");
     }
+    const getAddress = async () => {
+      const response = await callApi("https://esgoo.net/api-tinhthanh/1/0.htm",{
+        method: "GET",
+        headers: {
+          "Content-Type":"application/json",
+        }
+      })
+    }
+
+    getAddress();
   }, []);
 
   const onBtnClick = () => {
@@ -106,14 +118,15 @@ const UserInfo = () => {
             </div>
             <div className="input-mt">
               <label>Địa chỉ</label>
-              <Form.Control
-                type="text"
-                placeholder="Địa chỉ của bạn"
-                style={{ marginTop: "15px" }}
-                value={info.address}
-                disabled={readonly}
-                onChange={(e) => setInfo({ ...info, address: e.target.value })}
-              />
+              <FloatingLabel label="Thành phố">
+                <Form.Select />
+              </FloatingLabel>
+              <FloatingLabel label="Quận/huyện">
+                <Form.Select />
+              </FloatingLabel>
+              <FloatingLabel label="Xã/phường">
+                <Form.Select />
+              </FloatingLabel>
             </div>
             <div className="input-mt">
               <label htmlFor="">SĐT</label>
