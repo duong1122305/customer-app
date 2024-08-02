@@ -34,6 +34,8 @@ const Pet = () => {
         <tr>
           <th>STT</th>
           <th>Pet Name</th>
+          <th>Ngày sinh</th>
+          <th>Giới</th>
         </tr>
       </thead>
       <tbody>
@@ -41,6 +43,8 @@ const Pet = () => {
           <tr key={pet.id}>
             <td>{index + 1}</td>
             <td>{pet.name}</td>
+            <td>{pet.birthday}</td>
+            <td>{pet.gender ? "Đực" : "Cái"}</td>
           </tr>
         ))}
       </tbody>

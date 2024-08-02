@@ -4,6 +4,7 @@ import {
   Dropdown,
   FloatingLabel,
   Form,
+  Pagination,
   Spinner,
   Table,
 } from "react-bootstrap";
@@ -35,6 +36,21 @@ const BookingInfoChild = ({ conditions }) => {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const filteredGroupedBookings = Object.entries(groupedBookings).filter(
+    ([date, bookings]) => {
+      if (!searchDate) return true;
+      const formattedSearchDate = moment(searchDate).format("DD/MM/YYYY");
+      return bookings.some(
+        (booking) =>
+          moment(booking.bookingTime, "DD/MM/YYYY").format("DD/MM/YYYY") ===
+          formattedSearchDate
+      );
+    }
+  );
+
   useEffect(() => {
     const getBooking = async () => {
       const response = await callApi(
@@ -49,8 +65,11 @@ const BookingInfoChild = ({ conditions }) => {
       const result = await response.json();
       if (result.isSuccess === true) {
         if (result.data.length > 0) {
-          const filteredData = result.data.filter((item) => item !== null)
-          .filter((item) => conditions !== undefined ? item.status === conditions : true);
+          const filteredData = result.data
+            .filter((item) => item !== null)
+            .filter((item) =>
+              conditions !== undefined ? item.status === conditions : true
+            );
           setLstBooking(filteredData);
           const newGroupedBookings = filteredData.reduce((acc, booking) => {
             const date = booking.bookingTime;
@@ -84,15 +103,6 @@ const BookingInfoChild = ({ conditions }) => {
     setGroupedBookings(newGroupedBookings);
   }, [lstBooking, searchDate]);
 
-  // const groupedBookings = lstBooking.reduce((acc, booking) => {
-  //   const date = booking.bookingTime;
-  //   if (!acc[date]) {
-  //     acc[date] = [];
-  //   }
-  //   acc[date].push(booking);
-  //   return acc;
-  // }, {});
-
   const getStatusString = (status) => {
     switch (status) {
       case 0:
@@ -121,18 +131,16 @@ const BookingInfoChild = ({ conditions }) => {
         />
       </FloatingLabel>
 
-      {Object.entries(groupedBookings)
-        .filter(([date, bookings]) => {
-          // Sửa ở đây
-          if (!searchDate) return true;
-          const formattedSearchDate = moment(searchDate).format("DD/MM/YYYY"); // Chuyển về định dạng DD/MM/YYYY
-          return bookings.some(
-            (booking) =>
-              moment(booking.bookingTime, "DD/MM/YYYY").format("DD/MM/YYYY") ===
-              formattedSearchDate
-          );
-        })
-        .map(([date, bookings]) => (
+      {filteredGroupedBookings.map(([date, bookings]) => {
+        const indexOfLastItem = currentPage * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+        const currentItems = bookings.slice(indexOfFirstItem, indexOfLastItem);
+
+        // Function to handle page changes
+        const handlePageChange = (pageNumber) => {
+          setCurrentPage(pageNumber);
+        };
+        return (
           <Dropdown key={date} className="d-flex justify-content-center">
             <Dropdown.Toggle
               variant="secondary"
@@ -165,7 +173,7 @@ const BookingInfoChild = ({ conditions }) => {
                       </td>
                     </tr>
                   ) : (
-                    bookings.map((booking, index) => (
+                    currentItems.map((booking, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
                         <td>
@@ -192,9 +200,36 @@ const BookingInfoChild = ({ conditions }) => {
                   )}
                 </tbody>
               </Table>
+              <div className="d-flex justify-content-center">
+                <Pagination>
+                  <Pagination.Prev
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  />
+                  {Array.from(
+                    { length: Math.ceil(bookings.length / itemsPerPage) },
+                    (_, i) => (
+                      <Pagination.Item
+                        key={i + 1}
+                        active={i + 1 === currentPage}
+                        onClick={() => handlePageChange(i + 1)}
+                      >
+                        {i + 1}
+                      </Pagination.Item>
+                    )
+                  )}
+                  <Pagination.Next
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={
+                      currentPage === Math.ceil(bookings.length / itemsPerPage)
+                    }
+                  />
+                </Pagination>
+              </div>
             </Dropdown.Menu>
           </Dropdown>
-        ))}
+        );
+      })}
     </div>
   );
 };
