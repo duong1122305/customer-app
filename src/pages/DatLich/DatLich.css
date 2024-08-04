@@ -9,7 +9,7 @@
 
 .col-full{
     flex: 1;
-    max-width: 60%;
+    max-width: 100%;
 }
 .col-last{
     display: flex;
@@ -19,7 +19,7 @@
     text-align: center;
     height: 80vh;
     flex: 0;
-    max-width: 40%;
+    max-width: 100%;
 }
 
 .col-last hr{

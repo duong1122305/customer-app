@@ -7,7 +7,6 @@ import CreatePet from "../../Pet/CreatePet";
 import Announcement from "../../../components/AnnouncementComponent/Announcement";
 import AcceptRequest from "../../../components/AcceptRequestComponent/AcceptRequest";
 import callApi from "../../../utlis/request";
-import { createHubConnection } from '../IsLogin/SignalRService'; // Import SignalR Service
 
 const IsLogin = () => {
   //state
@@ -23,7 +22,6 @@ const IsLogin = () => {
   const [price, setPrice] = useState(0);
   const [validated, setValidated] = useState(false);
   const [formError, setFormError] = useState({});
-  const [notification, setNotification] = useState("");
 
   //ref
   const petIdRef = useRef(null);
@@ -35,11 +33,13 @@ const IsLogin = () => {
   const token = sessionStorage.getItem("token");
   const result = JSON.parse(token);
   const id = result.id;
+  const guestName = result.name;
 
   const [data, setData] = useState({
     listIdServiceDetail: [{}],
-    voucherId: 0,
+    voucherId: null,
     guestId: id,
+    guestName: guestName,
   });
 
   const handleShowPopup = () => {
@@ -51,14 +51,14 @@ const IsLogin = () => {
 
   const handleServicesSelected = (services, servicesData) => {
     setSelectedServicesForForm(services);
-    handleClosePopup(); // Đóng modal sau khi chọn
+    handleClosePopup();
 
+    // Sử dụng servicesData (đã được lọc) để tính toán giá
     const newPrice = services.reduce((total, serviceId) => {
-      const servicePrice =
-        servicesData.find((s) => s.serviceDetailId === serviceId)?.price || 0;
+      const servicePrice = servicesData.find((s) => s.serviceDetailId === serviceId)?.price || 0;
       return total + servicePrice;
     }, 0);
-    console.log(newPrice);
+
     setPrice(newPrice);
   };
 
@@ -95,7 +95,6 @@ const IsLogin = () => {
       const result = await response.json();
       if (result.isSuccess === true) {
         setLstVoucher(result.data);
-        console.log("ok");
       } else {
         console.log(result.error);
       }
@@ -108,17 +107,6 @@ const IsLogin = () => {
     }
   }, [id, ifTrue, price]);
 
-  useEffect(() => {
-    const hubConnection = createHubConnection((message) => {
-      setNotification(message);
-      setShowAnnoucement(true);
-      setContent(message);
-    });
-
-    return () => {
-      hubConnection.stop();
-    };
-  }, []);
   const handleCreatePet = () => {
     setShowPet(true);
   };
@@ -132,7 +120,6 @@ const IsLogin = () => {
 
     const selectedServiceDetails = selectedServicesForForm.map(
       (serviceDetailId) => ({
-        staffId: "E6DFF21F-781C-40DD-8636-08DC9447F8CE", // Thay bằng staffId thực tế
         petId: parseInt(petIdRef.current.value),
         serviceDetailId,
         startDateTime: startDateTime,
@@ -178,6 +165,9 @@ const IsLogin = () => {
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+
+      setValidated(true); // Đặt validated để hiển thị lỗi
+      return; // Ngăn chặn xử lý tiếp theo nếu biểu mẫu không hợp lệ
     }
 
     setValidated(true); // Đặt validated thành true khi submit
@@ -192,6 +182,8 @@ const IsLogin = () => {
         ? ""
         : "Vui lòng chọn giờ làm dịch vụ !!!",
     });
+
+    setShowAccept(true);
   };
 
   const handleCloseAccept = () => {
@@ -290,7 +282,7 @@ const IsLogin = () => {
           </Form.Select>
         </FloatingLabel>
         <ButtonGroup>
-          <Button type="submit" onClick={handleShowAccept}>Gửi yêu cầu</Button>
+          <Button type="submit">Gửi yêu cầu</Button>
           <Button variant="warning" type="reset">
             Chọn lại
           </Button>

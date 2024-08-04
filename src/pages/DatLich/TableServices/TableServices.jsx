@@ -1,24 +1,29 @@
 import { useEffect, useState } from "react";
-import { Modal, Table, Form, Button } from "react-bootstrap";
+import { Modal, Table, Form, Button, Dropdown } from "react-bootstrap";
 import PropTypes from "prop-types";
 import callApi from "../../../utlis/request";
+import "./TableServices.css";
 
 const TableServices = ({ show, onClosed, onServicesSelected }) => {
-  const [lstServices, setLstServices] = useState([]);
+  const [lstServices, setLstServices] = useState([{
+    serviceName: "",
+    serviceDetails: []
+  }]);
   const [selectedServices, setSelectedServices] = useState([]);
 
   const handleCheckboxChange = (serviceId) => {
     setSelectedServices((prevSelected) => {
       if (prevSelected.includes(serviceId)) {
-        return prevSelected.filter((id) => id !== serviceId); // Bỏ chọn nếu đã được chọn
+        return prevSelected.filter((id) => id !== serviceId);
       } else {
-        return [...prevSelected, serviceId]; // Thêm vào nếu chưa được chọn
+        return [...prevSelected, serviceId];
       }
     });
   };
+  
   useEffect(() => {
     const handleServices = async () => {
-      const response = await callApi("ServicesDetail/getServiceName", {
+      const response = await callApi("ServicesDetail/groupByServiceName", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -33,50 +38,82 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
   }, []);
 
   return (
-    <div>
-      <Modal show={show} onHide={onClosed} centered>
-        <Modal.Header closeButton></Modal.Header>
-        <Table responsive striped bordered style={{ width: "500px" }}>
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th>Dịch vụ</th>
-              <th>Giá tiền</th>
-              <th>Thời gian làm</th>
-              <th>Mô tả</th>
-              <th>Chọn</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lstServices.length > 0 ? (
-              lstServices.map((services, index) => (
-                <tr key={Math.random()}>
-                  <td>{index + 1}</td>
-                  <td>{services.serviceName}</td>
-                  <td>{services.price}</td>
-                  <td>{services.duration}</td>
-                  <td>{services.description}</td>
-                  <td>
-                    <Form.Check
-                      checked={selectedServices.includes(
-                        services.serviceDetailId
-                      )}
-                      onChange={() =>
-                        handleCheckboxChange(services.serviceDetailId)
-                      }
-                    />
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <p>Loading ...</p>
-            )}
-          </tbody>
-        </Table>
+    <div className="table_services">
+      <Modal
+        show={show}
+        onHide={onClosed}
+        centered
+        className="custom_modal_width"
+      >
+        <Modal.Header closeButton className="modal_header">
+          Danh sách dịch vụ
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Control
+            className="mb-2"
+            type="text"
+            placeholder="Tìm kiếm ..."
+          />
+          {lstServices.map((services, index) => (
+            <Dropdown key={index}>
+              <Dropdown.Toggle
+                variant="secondary"
+                id="dropdown-basic"
+                className="w-100 mb-2"
+              >
+                {services.serviceName}
+              </Dropdown.Toggle>
+              <Dropdown.Menu className="w-100">
+                <Table>
+                  <thead>
+                    <tr>
+                      <td>STT</td>
+                      <td>Kiểu</td>
+                      <td>Giá</td>
+                      <td>Khoảng thời gian làm</td>
+                      <td>Chọn</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {services.serviceDetails
+                      .map((serviceDetail, stt) => (
+                        <tr key={stt}>
+                          <td>{stt + 1}</td>
+                          <td>{serviceDetail.description}</td>
+                          <td>{serviceDetail.price}</td>
+                          <td>{serviceDetail.duration}</td>
+                          <td>
+                            <Form.Check
+                              checked={selectedServices.includes(
+                                serviceDetail.id
+                              )}
+                              onChange={() =>
+                                handleCheckboxChange(serviceDetail.id)
+                              }
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </Table>
+              </Dropdown.Menu>
+            </Dropdown>
+          ))}
+        </Modal.Body>
         <Modal.Footer>
           <Button
             variant="primary"
-            onClick={() => onServicesSelected(selectedServices, lstServices)}
+            onClick={() => {
+              // Lọc lấy serviceDetails từ lstServices dựa trên selectedServices
+              const selectedServiceDetails = lstServices.flatMap(
+                (service) =>
+                  service.serviceDetails.filter((detail) =>
+                    selectedServices.includes(detail.serviceDetailId) // Sử dụng serviceDetailId
+                  )
+              );
+
+              onServicesSelected(selectedServices, selectedServiceDetails); // Truyền cả selectedServiceDetails
+            }}
           >
             Xác nhận
           </Button>
