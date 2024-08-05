@@ -1,10 +1,19 @@
-import { Col, Container, Form, Image, Row, FloatingLabel } from "react-bootstrap";
+import {
+  Col,
+  Container,
+  Form,
+  Image,
+  Row,
+  FloatingLabel,
+} from "react-bootstrap";
 import "./UserInfo.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import callApi from "../../../utlis/request";
+import Announcement from "../../../components/AnnouncementComponent/Announcement";
 
 const UserInfo = () => {
   const [info, setInfo] = useState({
+    id: "",
     name: "",
     gender: true,
     phoneNumber: "",
@@ -16,6 +25,30 @@ const UserInfo = () => {
   const [readonly, setReadonly] = useState(true);
   const [nameBtn, setNameBtn] = useState("Thay đổi thông tin");
   const [count, setCount] = useState(0);
+  const [provinces, setProvince] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [content, setContent] = useState("");
+  const [show, setShow] = useState(false);
+  const [success, setSuccess] = useState(false);
+  //ref
+  const homeRef = useRef(null);
+  const phoneRef = useRef(null);
+  const nameRef = useRef(null);
+
+  //value
+  const [selectedProvinces, setSelectedProvinces] = useState({
+    id: "",
+    name: "",
+  });
+  const [selectedDistricts, setSelectedDistricts] = useState({
+    id: "",
+    name: "",
+  });
+  const [selectedWard, setSelectedWard] = useState({
+    id: "",
+    name: "",
+  });
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -37,16 +70,17 @@ const UserInfo = () => {
             const address = data.address;
 
             // Bước 1: Xóa dãy số đầu tiên và dấu ! đầu tiên
-            const cleanedAddress = address.replace(/^0\d+!/, "");
+            const cleanedAddress = address.replace(/^\d+!/, "");
 
             // Bước 2: Thay dấu ! thứ hai bằng dấu ,
             let count = 0;
             const finalAddress = cleanedAddress.replace(/!/g, (match) => {
               count++;
-              return count === 1 ? "," : match; // Chỉ thay thế dấu ! đầu tiên sau khi đã xóa dãy số
+              return count === 1 ? ", " : match; // Chỉ thay thế dấu ! đầu tiên sau khi đã xóa dãy số
             });
 
             setInfo({
+              id: id,
               name: data.name,
               gender: data.gender,
               phoneNumber: data.phoneNumber,
@@ -57,25 +91,85 @@ const UserInfo = () => {
           }
         };
 
-        
         findInfo();
+        if(success){
+          findInfo();
+        }
       } catch (error) {
         console.error(error);
       }
     } else {
       console.log("co loi");
     }
-    const getAddress = async () => {
-      const response = await callApi("https://esgoo.net/api-tinhthanh/1/0.htm",{
-        method: "GET",
-        headers: {
-          "Content-Type":"application/json",
-        }
-      })
-    }
 
-    getAddress();
-  }, []);
+    const getProvinces = async () => {
+      const response = await fetch("https://esgoo.net/api-tinhthanh/1/0.htm", {
+        method: "GET",
+      });
+      if (response.ok) {
+        var result = await response.json();
+        setProvince(result.data);
+      }
+    };
+
+    const getDistricts = async () => {
+      const response = await fetch(
+        `https://esgoo.net/api-tinhthanh/2/${selectedProvinces.id}.htm`,
+        {
+          method: "GET",
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setDistricts(result.data);
+      }
+    };
+
+    const getWards = async () => {
+      const response = await fetch(
+        `https://esgoo.net/api-tinhthanh/3/${selectedDistricts.id}.htm`,
+        {
+          method: "GET",
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setWards(result.data);
+      }
+    };
+
+    getProvinces();
+    getDistricts();
+    getWards();
+  }, [selectedProvinces, selectedDistricts, success]);
+
+  const handleProvincesChange = (event) => {
+    const selectedOption = provinces.find(
+      (pro) => pro.id === event.target.value
+    );
+    setSelectedProvinces({
+      id: event.target.value,
+      name: selectedOption ? selectedOption.full_name : "",
+    });
+  };
+
+  const handleDistrictsChange = (event) => {
+    const selectedOption = districts.find(
+      (pro) => pro.id === event.target.value
+    );
+    setSelectedDistricts({
+      id: event.target.value,
+      name: selectedOption ? selectedOption.full_name : "",
+    });
+  };
+
+  const handleWardChange = (event) => {
+    const selectedOption = wards.find((pro) => pro.id === event.target.value);
+    setSelectedWard({
+      id: event.target.value,
+      name: selectedOption ? selectedOption.full_name : "",
+    });
+  };
 
   const onBtnClick = () => {
     if (count === 0) {
@@ -83,14 +177,38 @@ const UserInfo = () => {
       setReadonly(false);
       setNameBtn("Xác nhận");
     } else {
-      setReadonly(true);
-      setNameBtn("Thay đổi thông tin");
-      setCount(0);
+      const updateInfo = async () => {
+        const updatedInfo = {
+          ...info,
+          name: nameRef.current.value,
+          phoneNumber: phoneRef.current.value,
+          address: `${selectedWard.id}!${homeRef.current.value}!${selectedWard.name}, ${selectedDistricts.name}, ${selectedProvinces.name}`,
+        };
+        const response = await callApi("GuestManager/update-guest", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedInfo),
+        });
+        const result = await response.json();
+        if (result.isSuccess === true) {
+          setShow(true);
+          setContent("Cập nhật thông tin thành công.");
+          setSuccess(true);
+          setReadonly(true);
+          setNameBtn("Thay đổi thông tin");
+          setCount(0);
+        } else {
+          setContent("Có lỗi khi cập nhật thông tin: ", result.error);
+        }
+      };
+      updateInfo();
     }
   };
   return (
     <Container className="container">
-      <Row className="row-1">
+      <Row className="row-1 mt-2">
         <h4>THÔNG TIN 🤵</h4>
         <button className="btn-updateInfo" onClick={onBtnClick}>
           {nameBtn}
@@ -114,18 +232,46 @@ const UserInfo = () => {
                 value={info.name}
                 disabled={readonly}
                 onChange={(e) => setInfo({ ...info, name: e.target.value })}
+                ref={nameRef}
               />
             </div>
             <div className="input-mt">
-              <label>Địa chỉ</label>
-              <FloatingLabel label="Thành phố">
-                <Form.Select />
+              <label className="mb-2">Địa chỉ</label>
+              <FloatingLabel label="Số nhà, Đường" className="mb-2">
+                <Form.Control disabled={readonly} ref={homeRef} />
               </FloatingLabel>
-              <FloatingLabel label="Quận/huyện">
-                <Form.Select />
+              <FloatingLabel label="Tỉnh/Thành" className="mb-2">
+                <Form.Select
+                  onChange={handleProvincesChange}
+                  disabled={readonly}
+                >
+                  {provinces.map((pro, index) => (
+                    <option key={index} value={pro.id}>
+                      {pro.full_name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </FloatingLabel>
+              <FloatingLabel label="Quận/huyện" className="mb-2">
+                <Form.Select
+                  onChange={handleDistrictsChange}
+                  disabled={readonly}
+                >
+                  {districts.map((dis, index) => (
+                    <option key={index} value={dis.id}>
+                      {dis.full_name}
+                    </option>
+                  ))}
+                </Form.Select>
               </FloatingLabel>
               <FloatingLabel label="Xã/phường">
-                <Form.Select />
+                <Form.Select disabled={readonly} onChange={handleWardChange}>
+                  {wards.map((war, index) => (
+                    <option key={index} value={war.id}>
+                      {war.full_name}
+                    </option>
+                  ))}
+                </Form.Select>
               </FloatingLabel>
             </div>
             <div className="input-mt">
@@ -138,6 +284,7 @@ const UserInfo = () => {
                 onChange={(e) =>
                   setInfo({ ...info, phoneNumber: e.target.value })
                 }
+                ref={phoneRef}
               />
             </div>
             <div className="input-mt">
@@ -179,7 +326,11 @@ const UserInfo = () => {
                 roundedCircle
                 className="avatar"
               />
-              <input className="btn-upload" type="file"></input>
+              <input
+                className="btn-upload"
+                type="file"
+                disabled={readonly}
+              ></input>
             </div>
           </div>
           <hr style={{ marginTop: "50px" }} />
@@ -210,6 +361,11 @@ const UserInfo = () => {
           </div>
         </Col>
       </Row>
+      <Announcement
+        content={content}
+        show={show}
+        onClose={() => setShow(false)}
+      />
     </Container>
   );
 };
