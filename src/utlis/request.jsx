@@ -1,5 +1,5 @@
 async function callApi(endpoints, options) {
-  const baseURL = "https://localhost:7039/api/";
+  const baseURL = "http://localhost:7039/api/";
   return fetch(`${baseURL}${endpoints}`, options);
 }
 
