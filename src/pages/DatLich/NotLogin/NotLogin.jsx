@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, FloatingLabel, Form } from "react-bootstrap";
 import TableServices from "../TableServices/TableServices";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./NotLogin.css";
 import callApi from "../../../utlis/request";
 import Announcement from "../../../components/AnnouncementComponent/Announcement";
@@ -22,8 +22,18 @@ const NotLogin = () => {
     speciesId: "",
     idBooking: "",
     voucherId: "",
-    lstBookingDetail: [],
+    lstBookingDetail: [{}],
   });
+
+  //ref
+  const nameRef = useRef(null);
+  const dateRef = useRef(null);
+  const timeRef = useRef(null);
+  const bossNameRef = useRef(null);
+  const emailRef = useRef(null);
+  const phoneRef = useRef(null);
+  const speRef = useRef(null);
+
 
   const handleShowPopup = () => {
     setShow(true);
@@ -58,6 +68,25 @@ const NotLogin = () => {
   }, []);
 
   const handleBooking = async () => {
+
+    const newData = {
+      phoneNumber: phoneRef.current.value,
+      email: emailRef.current.value,
+      nameGuest: nameRef.current.value,
+      namePet: bossNameRef.current.value,
+      speciesId: speRef.current.value,
+      genderPet: data.genderPet,
+      idBooking: 23, // Update if needed
+      voucherId: "", // Update if needed
+      // Get services and dates from selectedServicesForForm and form fields
+      lstBookingDetail: selectedServicesForForm.map((service) => ({
+        serviceDetailId: service,
+        startDateTime: timeRef.current.value,
+        dateBooking: dateRef.current.value
+      })),
+    };
+    console.log(newData);
+    
     const response = await callApi(
       "Booking/Create-Booking-For-User-NoAccount",
       {
@@ -65,18 +94,17 @@ const NotLogin = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(newData),
       }
     );
 
     const result = await response.json();
     if (result.isSuccess === true) {
       setContent("Đặt lịch thành công!!!");
-      setShowAnnounce(true);
     } else {
-      setContent("Lỗi: ", result.error);
-      setShowAnnounce(true);
+      setContent("Lỗi: " + result.error);
     }
+    setShowAnnounce(true);
   };
 
   const handleShowAccept = (event) => {
@@ -99,16 +127,16 @@ const NotLogin = () => {
           value={JSON.stringify(selectedServicesForForm)}
         />
         <FloatingLabel label="Email">
-          <Form.Control type="email" />
+          <Form.Control type="email" ref={emailRef}/>
         </FloatingLabel>
         <FloatingLabel label="Họ và tên">
-          <Form.Control type="text" />
+          <Form.Control type="text" ref={nameRef}/>
         </FloatingLabel>
         <FloatingLabel label="SĐT">
-          <Form.Control type="text" />
+          <Form.Control type="text" ref={phoneRef}/>
         </FloatingLabel>
         <FloatingLabel label="Boss của bạn thuộc">
-          <Form.Select>
+          <Form.Select ref={speRef}>
             <option value={null} disabled>
               Chọn loại
             </option>
@@ -120,7 +148,7 @@ const NotLogin = () => {
           </Form.Select>
         </FloatingLabel>
         <FloatingLabel label="Tên của boss">
-          <Form.Control type="text" />
+          <Form.Control type="text" ref={bossNameRef}/>
         </FloatingLabel>
         <div>
           <label htmlFor="genderPet" className="mb-2">
@@ -146,10 +174,10 @@ const NotLogin = () => {
           </div>
         </div>
         <FloatingLabel label="Ngày làm dịch vụ">
-          <Form.Control type="date" />
+          <Form.Control type="date" ref={dateRef}/>
         </FloatingLabel>
         <FloatingLabel label="Thời gian làm dịch vụ">
-          <Form.Control type="time" />
+          <Form.Control type="time" ref={timeRef}/>
         </FloatingLabel>
         <ButtonGroup>
           <Button type="submit">Gửi yêu cầu</Button>
