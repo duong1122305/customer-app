@@ -12,6 +12,18 @@ const NotLogin = () => {
   const [selectedServicesForForm, setSelectedServicesForForm] = useState([]);
   const [showRequest, setShowRequest] = useState(false);
   const [showAnnounce, setShowAnnounce] = useState(false);
+  const [content, setContent] = useState("");
+  const [data, setData] = useState({
+    phoneNumber: "",
+    email: "",
+    nameGuest: "",
+    namePet: "",
+    genderPet: true,
+    speciesId: "",
+    idBooking: "",
+    voucherId: "",
+    lstBookingDetail: [],
+  });
 
   const handleShowPopup = () => {
     setShow(true);
@@ -24,8 +36,7 @@ const NotLogin = () => {
     setSelectedServicesForForm(services);
     handleClosePopup();
     console.log(selectedServicesForForm);
-  }
-
+  };
 
   useEffect(() => {
     const getPet = async () => {
@@ -46,9 +57,36 @@ const NotLogin = () => {
     getPet();
   }, []);
 
+  const handleBooking = async () => {
+    const response = await callApi(
+      "Booking/Create-Booking-For-User-NoAccount",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    const result = await response.json();
+    if (result.isSuccess === true) {
+      setContent("Đặt lịch thành công!!!");
+      setShowAnnounce(true);
+    } else {
+      setContent("Lỗi: ", result.error);
+      setShowAnnounce(true);
+    }
+  };
+
+  const handleShowAccept = (event) => {
+    event.preventDefault();
+    setShowRequest(true);
+  };
+
   return (
     <div>
-      <Form>
+      <Form onSubmit={handleShowAccept}>
         <Button onClick={handleShowPopup}>Danh sách dịch vụ</Button>
         <TableServices
           show={show}
@@ -71,15 +109,42 @@ const NotLogin = () => {
         </FloatingLabel>
         <FloatingLabel label="Boss của bạn thuộc">
           <Form.Select>
-            <option value={null}>Chọn loại</option>
+            <option value={null} disabled>
+              Chọn loại
+            </option>
             {lstPet.map((pet, index) => (
-              <option key={index} value={pet.id}>{pet.name}</option>
+              <option key={index} value={pet.id}>
+                {pet.name}
+              </option>
             ))}
           </Form.Select>
         </FloatingLabel>
         <FloatingLabel label="Tên của boss">
           <Form.Control type="text" />
         </FloatingLabel>
+        <div>
+          <label htmlFor="genderPet" className="mb-2">
+            Giới
+          </label>
+          <div>
+            <Form.Check
+              type="radio"
+              label="Đực"
+              name="genderPet"
+              checked={data.genderPet === true}
+              onChange={() => setData({ ...data, genderPet: true })}
+              htmlFor="genderPet"
+            />
+            <Form.Check
+              type="radio"
+              label="Cái"
+              name="genderPet"
+              checked={data.genderPet === false}
+              onChange={() => setData({ ...data, genderPet: false })}
+              htmlFor="genderPet"
+            />
+          </div>
+        </div>
         <FloatingLabel label="Ngày làm dịch vụ">
           <Form.Control type="date" />
         </FloatingLabel>
@@ -93,8 +158,17 @@ const NotLogin = () => {
           </Button>
         </ButtonGroup>
       </Form>
-      <Announcement />
-      <AcceptRequest />
+      <Announcement
+        show={showAnnounce}
+        content={content}
+        onClose={() => setShowAnnounce(false)}
+      />
+      <AcceptRequest
+        show={showRequest}
+        onClose={() => setShowRequest(false)}
+        content="Xác nhận đặt lịch ?"
+        onAccept={handleBooking}
+      />
     </div>
   );
 };
