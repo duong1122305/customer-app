@@ -85,7 +85,7 @@ export default function Header() {
       <Navbar collapseOnSelect expand="lg" className="header" sticky="top">
         <Container>
           <Navbar.Brand className="m-0 p-0">
-            <Image style={{ width: "50px" }} src="/src/assets/image/logo.jpg" />
+            <Image style={{ width: "50px" }} src="/assets/image/logo.jpg" />
           </Navbar.Brand>
           <Navbar.Toggle
             aria-controls="responsive-navbar-nav"
@@ -213,7 +213,7 @@ export default function Header() {
                 >
                   <Nav.Link
                     as={Link}
-                    to="/account"
+                    to="/profile"
                     onClick={handleOffcanvasShow}
                   >
                     Tài khoản

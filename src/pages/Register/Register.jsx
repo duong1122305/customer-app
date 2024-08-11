@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Modal, Form, Button } from "react-bootstrap";
+import { useEffect, useRef, useState } from "react";
+import { Modal, Form, Button, FloatingLabel } from "react-bootstrap";
 import PropTypes from "prop-types";
 import Announcement from "../../components/AnnouncementComponent/Announcement";
 import callApi from "../../utlis/request";
+import "./Register.css";
 
 const Register = (props) => {
   const [name, setName] = useState("");
@@ -16,6 +17,25 @@ const Register = (props) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showAnnoun, setShowAnnoun] = useState(false);
   const [contentAnnoun, setContentAnnoun] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [provinces, setProvince] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
+  const [selectedProvinces, setSelectedProvinces] = useState({
+    id: "89",
+    name: "Tỉnh An Giang",
+  });
+  const [selectedDistricts, setSelectedDistricts] = useState({
+    id: "886",
+    name: "Huyện An Phú",
+  });
+  const [selectedWard, setSelectedWard] = useState({
+    id: "30337",
+    name: "Thị trấn An Phú",
+  });
+
+  const homeRef = useRef(null);
 
   const handleClose = () => {
     setName("");
@@ -60,29 +80,79 @@ const Register = (props) => {
         "Password:",
         trimmedPassword,
         "Confirm Password:",
-        trimmedConfirmPassword
+        trimmedConfirmPassword,
+        "File",
+        selectedFile
       );
       const postData = {
         name: name,
         gender: true,
         password: password,
         phoneNumber: phone,
-        address: "",
+        address: `${selectedWard.id}!${homeRef.current.value}!${selectedWard.name}, ${selectedDistricts.name}, ${selectedProvinces.name}`,
         email: email,
         userName: username,
+        avatarFile: selectedFile,
       };
       handleRegis(postData);
     }
   };
 
+  useEffect(() => {
+    const getProvinces = async () => {
+      const response = await fetch("https://esgoo.net/api-tinhthanh/1/0.htm", {
+        method: "GET",
+      });
+      if (response.ok) {
+        var result = await response.json();
+        setProvince(result.data);
+      }
+    };
+
+    getProvinces();
+  }, [selectedDistricts, selectedProvinces]);
+
+  useEffect(() => {
+    const getDistricts = async () => {
+      const response = await fetch(
+        `https://esgoo.net/api-tinhthanh/2/${selectedProvinces.id}.htm`,
+        {
+          method: "GET",
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setDistricts(result.data);
+      }
+    };
+    getDistricts();
+  }, [selectedProvinces]);
+
+  useEffect(() => {
+    const getWards = async () => {
+      const response = await fetch(
+        `https://esgoo.net/api-tinhthanh/3/${selectedDistricts.id}.htm`,
+        {
+          method: "GET",
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setWards(result.data);
+      }
+    };
+    getWards();
+  }, [selectedDistricts]);
+
   async function handleRegis(postData) {
     try {
+      const formData = new FormData();
+      for (const key in postData) {
+        formData.append(key, postData[key]);
+      }
       const response = await callApi("GuestManager/register-by-guest", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
+        body: formData,
       });
       const result = await response.json();
       if (result.isSuccess == true) {
@@ -113,6 +183,34 @@ const Register = (props) => {
 
   const toggleShowConfirmPassword = () => {
     setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const handleProvincesChange = (event) => {
+    const selectedOption = provinces.find(
+      (pro) => pro.id === event.target.value
+    );
+    setSelectedProvinces({
+      id: event.target.value,
+      name: selectedOption ? selectedOption.full_name : "",
+    });
+  };
+
+  const handleDistrictsChange = (event) => {
+    const selectedOption = districts.find(
+      (pro) => pro.id === event.target.value
+    );
+    setSelectedDistricts({
+      id: event.target.value,
+      name: selectedOption ? selectedOption.full_name : "",
+    });
+  };
+
+  const handleWardChange = (event) => {
+    const selectedOption = wards.find((pro) => pro.id === event.target.value);
+    setSelectedWard({
+      id: event.target.value,
+      name: selectedOption ? selectedOption.full_name : "",
+    });
   };
 
   return (
@@ -159,6 +257,41 @@ const Register = (props) => {
               <Form.Control.Feedback type="invalid">
                 Vui lòng nhập SĐT của bạn, SĐT phải đủ 10 ký tự.
               </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Địa chỉ</Form.Label>
+              <FloatingLabel label="Số nhà, Đường" className="mb-2">
+                <Form.Control ref={homeRef} />
+              </FloatingLabel>
+              <div className="d-flex">
+                <FloatingLabel label="Tỉnh/Thành" className="mb-2 w-auto">
+                  <Form.Select onChange={handleProvincesChange}>
+                    {provinces.map((pro, index) => (
+                      <option key={index} value={pro.id}>
+                        {pro.full_name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </FloatingLabel>
+                <FloatingLabel label="Quận/huyện" className="mb-2 w-auto">
+                  <Form.Select onChange={handleDistrictsChange}>
+                    {districts.map((dis, index) => (
+                      <option key={index} value={dis.id}>
+                        {dis.full_name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </FloatingLabel>
+                <FloatingLabel label="Xã/phường">
+                  <Form.Select onChange={handleWardChange}>
+                    {wards.map((war, index) => (
+                      <option key={index} value={war.id}>
+                        {war.full_name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </FloatingLabel>
+              </div>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicUsername">
               <Form.Label>Tên đăng nhập</Form.Label>
@@ -243,7 +376,15 @@ const Register = (props) => {
                 </Form.Control.Feedback>
               </div>
             </Form.Group>
-
+            <Form.Group>
+              <Form.Label>Thêm ảnh</Form.Label>
+              <Form.Control
+                type="file"
+                onChange={(e) => {
+                  setSelectedFile(e.target.files[0]);
+                }}
+              />
+            </Form.Group>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Button type="submit" style={{ marginRight: 5 }}>
                 Đăng ký

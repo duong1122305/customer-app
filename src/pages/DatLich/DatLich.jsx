@@ -17,7 +17,7 @@ const DatLich = () => {
   return (
     <>
       <div className="bookHead">
-        <Image className="image" src="/src/assets/image/ok.png" />
+        <Image className="image" src="/assets/image/ok.png" />
       </div>
       <Container className="booking">
         <Col className="col-full">{isLogin ? <IsLogin /> : <NotLogin />}</Col>

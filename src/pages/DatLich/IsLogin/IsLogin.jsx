@@ -55,7 +55,8 @@ const IsLogin = () => {
 
     // Sử dụng servicesData (đã được lọc) để tính toán giá
     const newPrice = services.reduce((total, serviceId) => {
-      const servicePrice = servicesData.find((s) => s.serviceDetailId === serviceId)?.price || 0;
+      const servicePrice =
+        servicesData.find((s) => s.serviceDetailId === serviceId)?.price || 0;
       return total + servicePrice;
     }, 0);
 
@@ -118,12 +119,16 @@ const IsLogin = () => {
     // Định dạng lại thành chuỗi ISO 8601 (hoặc định dạng mong muốn)
     const startDateTime = startMoment.format("HH:mm:ss");
 
+    const dateMoment = moment(dateBookingRef.current.value, "YYYY-MM-DD"); // Giả sử định dạng mong muốn của máy chủ là "YYYY-MM-DD"
+
+    const dateBooking = dateMoment.format("YYYY-MM-DD");
+
     const selectedServiceDetails = selectedServicesForForm.map(
       (serviceDetailId) => ({
         petId: parseInt(petIdRef.current.value),
         serviceDetailId,
         startDateTime: startDateTime,
-        dateBooking: dateBookingRef.current.value,
+        dateBooking: dateBooking,
       })
     );
 
@@ -134,7 +139,7 @@ const IsLogin = () => {
         voucherId: voucherIdRef.current.value,
       }),
     };
-
+    console.log(params);
     try {
       const response = await callApi("Booking/Guest-Booking", {
         method: "POST",
@@ -219,7 +224,9 @@ const IsLogin = () => {
           name="selectedServices"
           value={JSON.stringify(selectedServicesForForm)}
         />
-        <span style={{color:"red"}} disabled><b>*Mặc định sẽ là boss đầu tiên bạn thêm vào</b></span>
+        <span style={{ color: "red" }} disabled>
+          <b>*Mặc định sẽ là boss đầu tiên bạn thêm vào</b>
+        </span>
         <FloatingLabel label="Boss hưởng thụ">
           <Form.Select
             ref={petIdRef}
@@ -268,7 +275,7 @@ const IsLogin = () => {
             {formError.startTime}
           </Form.Control.Feedback>
         </FloatingLabel>
-        <FloatingLabel label="Voucher có thể áp dụng cho đơn dịch vụ của bạn">
+        <FloatingLabel label="Voucher">
           <Form.Select ref={voucherIdRef}>
             {lstVoucher.length > 0 ? (
               lstVoucher.map((vouchers, index) => (

@@ -2,7 +2,7 @@ import { Carousel, CarouselItem } from "react-bootstrap";
 import PropTypes from 'prop-types';
 
 const bannerArr = [
-  "/assets/image/banner5.png",
+  "/assets/image/bannerchinh.png",
 ];
 
 const Banner = (props) => {

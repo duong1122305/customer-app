@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
+import callApi from "../../../utlis/request";
 
 const Pet = () => {
   const [lstPet, setLstPet] = useState([]);
@@ -9,8 +10,8 @@ const Pet = () => {
   console.log(id);
   useEffect(() => {
     const getPet = async () => {
-      const response = await fetch(
-        `https://localhost:7039/api/PetManager/get-pet-by-guest?id=${id}`,
+      const response = await callApi(
+        `PetManager/get-pet-by-guest?id=${id}`,
         {
           method: "GET",
           headers: {

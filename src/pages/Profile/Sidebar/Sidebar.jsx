@@ -38,7 +38,6 @@ const Sidebar = ({ onItemClick }) => {
       onSelect={(selectedKey) => setActiveKey(selectedKey)}
     >
       <div className="sidebar-header">
-        <img src="https://dersteira.at/img/nh-nn-trng-fb.jpg" alt="Profile" className="rounded-circle" />
         <span className="username">{name}</span>
       </div>
 

@@ -38,21 +38,22 @@ const UserInfo = () => {
 
   //value
   const [selectedProvinces, setSelectedProvinces] = useState({
-    id: "",
-    name: "",
+    id: "89",
+    name: "Tỉnh An Giang",
   });
   const [selectedDistricts, setSelectedDistricts] = useState({
-    id: "",
-    name: "",
+    id: "886",
+    name: "Huyện An Phú",
   });
   const [selectedWard, setSelectedWard] = useState({
-    id: "",
-    name: "",
+    id: "30337",
+    name: "Thị trấn An Phú",
   });
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     const result = JSON.parse(token);
+    console.log(result);
 
     if (token) {
       const id = result.id;
@@ -92,7 +93,7 @@ const UserInfo = () => {
         };
 
         findInfo();
-        if(success){
+        if (success) {
           findInfo();
         }
       } catch (error) {

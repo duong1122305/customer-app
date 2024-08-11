@@ -216,7 +216,7 @@ const BookingInfoChild = ({ conditions }) => {
                         <td>{booking.bookingTime}</td>
                         <td>{booking.startDate}</td>
                         <td>{booking.startTime}</td>
-                        <td>{booking.totalPrice}</td>
+                        <td>{booking.totalPrice} VNĐ</td>
                         <td>{getStatusString(booking.status)}</td>
                         <td>
                           <Button>Sửa</Button>
