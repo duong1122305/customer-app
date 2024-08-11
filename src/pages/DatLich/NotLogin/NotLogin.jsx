@@ -97,14 +97,32 @@ const NotLogin = () => {
     getVoucher();
   }, [price]);
 
+  const formatTime = (time) => {
+    if(moment(time, "HH:mm", true).isValid()){
+      const finish = moment(time, "HH:mm").format("HH:mm:ss");
+
+      return finish;
+    }
+    return moment(time, "HH:mm:ss").format("HH:mm:ss");
+  }
+
+  const formatDate = (date) => {
+    const parsedDate = moment(date, ["MM/DD/YYYY", "YYYY-MM-DD"], true);
+    if(parsedDate.isValid()){
+      return parsedDate.format("YYYY-MM-DD");
+    }
+
+    return moment(date, "YYYY-MM-DD").format("YYYY-MM-DD");
+  }
+
   const handleBooking = async () => {
-    const startMoment = moment(timeRef.current.value, "HH:mm:ss");
+    // const startMoment = moment(timeRef.current.value, "HH:mm:ss");
 
-    const startDatetime = startMoment.format("HH:mm:ss");
+    // const startDatetime = startMoment.format("HH:mm:ss");
 
-    const dateMoment = moment(dateRef.current.value, "YYYY-MM-DD"); // Giả sử định dạng mong muốn của máy chủ là "YYYY-MM-DD"
+    // const dateMoment = moment(dateRef.current.value, "YYYY-MM-DD"); // Giả sử định dạng mong muốn của máy chủ là "YYYY-MM-DD"
 
-    const dateBooking = dateMoment.format("YYYY-MM-DD");
+    // const dateBooking = dateMoment.format("YYYY-MM-DD");
 
     const newData = {
       phoneNumber: phoneRef.current.value,
@@ -120,11 +138,12 @@ const NotLogin = () => {
       // Get services and dates from selectedServicesForForm and form fields
       lstBookingDetail: selectedServicesForForm.map((service) => ({
         serviceDetailId: service,
-        startDateTime: startDatetime,
-        dateBooking: dateBooking,
+        startDateTime: formatTime(timeRef.current.value),
+        dateBooking: formatDate(dateRef.current.value),
         endDateTime: "00:00:00",
       })),
     };
+    
     console.log(newData);
 
     const response = await callApi(

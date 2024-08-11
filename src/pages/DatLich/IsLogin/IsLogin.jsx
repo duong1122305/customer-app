@@ -112,23 +112,31 @@ const IsLogin = () => {
     setShowPet(true);
   };
 
+  const formatDate = (inputDate) => {
+      moment(inputDate, "YYYY-MM-DD").format("DD-MM-YYYY");
+  };
+
+  const formatTime = (inputTime) => {
+    moment(inputTime, "HH:mm").format("HH:mm:ss");
+  }
+
   const handleShowAccept = async () => {
     // Chuyển đổi chuỗi thời gian thành đối tượng Moment
-    const startMoment = moment(startDateTimeRef.current.value, "HH:mm:ss");
+    // const startMoment = moment(startDateTimeRef.current.value, "HH:mm:ss");
 
-    // Định dạng lại thành chuỗi ISO 8601 (hoặc định dạng mong muốn)
-    const startDateTime = startMoment.format("HH:mm:ss");
+    // // Định dạng lại thành chuỗi ISO 8601 (hoặc định dạng mong muốn)
+    // const startDateTime = startMoment.format("HH:mm:ss");
 
-    const dateMoment = moment(dateBookingRef.current.value, "YYYY-MM-DD"); // Giả sử định dạng mong muốn của máy chủ là "YYYY-MM-DD"
+    // const dateMoment = moment(dateBookingRef.current.value, "YYYY-MM-DD"); // Giả sử định dạng mong muốn của máy chủ là "YYYY-MM-DD"
 
-    const dateBooking = dateMoment.format("YYYY-MM-DD");
+    // const dateBooking = dateMoment.format("YYYY-MM-DD");
 
     const selectedServiceDetails = selectedServicesForForm.map(
       (serviceDetailId) => ({
         petId: parseInt(petIdRef.current.value),
         serviceDetailId,
-        startDateTime: startDateTime,
-        dateBooking: dateBooking,
+        startDateTime: formatTime(startDateTimeRef.current.value),
+        dateBooking: formatDate(dateBookingRef.current.value),
       })
     );
 
