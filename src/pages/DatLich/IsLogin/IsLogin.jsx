@@ -22,6 +22,7 @@ const IsLogin = () => {
   const [price, setPrice] = useState(0);
   const [validated, setValidated] = useState(false);
   const [formError, setFormError] = useState({});
+  const [selectedVoucherId, setSelectedVoucherId] = useState(null);
 
   //ref
   const petIdRef = useRef(null);
@@ -41,6 +42,10 @@ const IsLogin = () => {
     guestId: id,
     guestName: guestName,
   });
+
+  const handleVoucherChange = (event) => {
+    setSelectedVoucherId(event.target.value);
+  };
 
   const handleShowPopup = () => {
     setShow(true);
@@ -113,12 +118,16 @@ const IsLogin = () => {
   };
 
   const formatDate = (inputDate) => {
-      moment(inputDate, "YYYY-MM-DD").format("DD-MM-YYYY");
+    return moment(
+      inputDate,
+      ["MM/DD/YYYY", "YYYY-MM-DD", "MMMM dd, yyyy"],
+      true
+    ).format("YYYY-MM-DD");
   };
 
   const formatTime = (inputTime) => {
-    moment(inputTime, "HH:mm").format("HH:mm:ss");
-  }
+    return moment(inputTime, "HH:mm").format("HH:mm:ss");
+  };
 
   const handleShowAccept = async () => {
     // Chuyển đổi chuỗi thời gian thành đối tượng Moment
@@ -143,7 +152,7 @@ const IsLogin = () => {
     const params = {
       ...data,
       listIdServiceDetail: selectedServiceDetails,
-      ...(voucherIdRef.current.value && {
+      ...(voucherIdRef.current?.value && {
         voucherId: voucherIdRef.current.value,
       }),
     };
@@ -284,17 +293,23 @@ const IsLogin = () => {
           </Form.Control.Feedback>
         </FloatingLabel>
         <FloatingLabel label="Voucher">
-          <Form.Select ref={voucherIdRef}>
-            {lstVoucher.length > 0 ? (
-              lstVoucher.map((vouchers, index) => (
+          {lstVoucher.length > 0 ? (
+            <Form.Select
+              ref={voucherIdRef}
+              value={selectedVoucherId}
+              onChange={handleVoucherChange}
+            >
+              {lstVoucher.map((vouchers, index) => (
                 <option key={index} value={vouchers.id}>
                   {vouchers.voucherName}
                 </option>
-              ))
-            ) : (
-              <option disabled>Không có voucher có thể áp dụng</option>
-            )}
-          </Form.Select>
+              ))}
+            </Form.Select>
+          ) : (
+            <Form.Select disabled>
+              <option>Không có voucher nào được chọn</option>
+            </Form.Select>
+          )}
         </FloatingLabel>
         <ButtonGroup>
           <Button type="submit">Gửi yêu cầu</Button>

@@ -27,6 +27,7 @@ const NotLogin = () => {
     voucherId: null,
     lstBookingDetail: [{}],
   });
+  const [selectedVoucherId, setSelectedVoucherId] = useState(null);
 
   //ref
   const nameRef = useRef(null);
@@ -43,6 +44,10 @@ const NotLogin = () => {
   };
   const handleClosePopup = () => {
     setShow(false);
+  };
+
+  const handleVoucherChange = (event) => {
+    setSelectedVoucherId(event.target.value);
   };
 
   const handleServicesSelected = (services, servicesData) => {
@@ -98,22 +103,22 @@ const NotLogin = () => {
   }, [price]);
 
   const formatTime = (time) => {
-    if(moment(time, "HH:mm", true).isValid()){
+    if (moment(time, "HH:mm", true).isValid()) {
       const finish = moment(time, "HH:mm").format("HH:mm:ss");
 
       return finish;
     }
     return moment(time, "HH:mm:ss").format("HH:mm:ss");
-  }
+  };
 
   const formatDate = (date) => {
     const parsedDate = moment(date, ["MM/DD/YYYY", "YYYY-MM-DD"], true);
-    if(parsedDate.isValid()){
+    if (parsedDate.isValid()) {
       return parsedDate.format("YYYY-MM-DD");
     }
 
     return moment(date, "YYYY-MM-DD").format("YYYY-MM-DD");
-  }
+  };
 
   const handleBooking = async () => {
     // const startMoment = moment(timeRef.current.value, "HH:mm:ss");
@@ -132,7 +137,7 @@ const NotLogin = () => {
       speciesId: speRef.current.value,
       genderPet: data.genderPet,
       idBooking: 23, // Update if needed
-      ...(voucherIdRef.current.value && {
+      ...(voucherIdRef.current?.value && {
         voucherId: voucherIdRef.current.value,
       }), // Update if needed
       // Get services and dates from selectedServicesForForm and form fields
@@ -143,7 +148,7 @@ const NotLogin = () => {
         endDateTime: "00:00:00",
       })),
     };
-    
+
     console.log(newData);
 
     const response = await callApi(
@@ -239,17 +244,23 @@ const NotLogin = () => {
           <Form.Control type="time" ref={timeRef} />
         </FloatingLabel>
         <FloatingLabel label="Voucher">
-          <Form.Select ref={voucherIdRef}>
-            {lstVoucher.length > 0 ? (
-              lstVoucher.map((vouchers, index) => (
+          {lstVoucher.length > 0 ? (
+            <Form.Select
+              ref={voucherIdRef}
+              value={selectedVoucherId}
+              onChange={handleVoucherChange}
+            >
+              {lstVoucher.map((vouchers, index) => (
                 <option key={index} value={vouchers.id}>
                   {vouchers.voucherName}
                 </option>
-              ))
-            ) : (
-              <option disabled>Không có voucher có thể áp dụng</option>
-            )}
-          </Form.Select>
+              ))}
+            </Form.Select>
+          ) : (
+            <Form.Select disabled>
+              <option>Không có voucher nào được chọn</option>
+            </Form.Select>
+          )}
         </FloatingLabel>
         <ButtonGroup>
           <Button type="submit">Gửi yêu cầu</Button>
