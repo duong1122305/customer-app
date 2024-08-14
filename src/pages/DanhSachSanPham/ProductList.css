@@ -27,3 +27,8 @@
   text-overflow: ellipsis;
   white-space: nowrap; /* Ngăn không cho nội dung xuống dòng */
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+}

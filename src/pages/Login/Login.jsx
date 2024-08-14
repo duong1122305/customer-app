@@ -1,15 +1,15 @@
-import { memo, useState } from "react";
+import { memo, useContext, useState } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Nav } from "react-bootstrap";
-import { jwtDecode } from "jwt-decode";
-import callApi from "../../utlis/request";
+import { SessionContext } from "../../contex/SessionContex";
 
 const Login = ({ onHide, onLogin, ...props }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
+  const sessionContext = useContext(SessionContext);
 
   const handleClose = () => {
     // Xoá dữ liệu đã nhập khi đóng modal
@@ -40,32 +40,8 @@ const Login = ({ onHide, onLogin, ...props }) => {
   };
 
   async function handleLogin(postData) {
-    const response = await callApi("GuestAuthen/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postData),
-    });
-    const result = await response.json();
-    const decode = jwtDecode(result.data);
-    const tokenValue = {
-      name: decode[
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"
-      ],
-      email:
-        decode[
-          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-        ],
-      username:
-        decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-      id: decode[
-        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
-      ],
-    };
-    const objValue = JSON.stringify(tokenValue);
-    if (result.isSuccess) {
-      sessionStorage.setItem("token", objValue);
+    var result = await sessionContext.handleLogin(postData);
+    if (result === true) {
       onLogin();
     }
   }

@@ -23,7 +23,7 @@ const UserInfo = () => {
   });
 
   const [readonly, setReadonly] = useState(true);
-  const [nameBtn, setNameBtn] = useState("Thay đổi thông tin");
+  const [nameBtn, setNameBtn] = useState("Đổi thông tin");
   const [count, setCount] = useState(0);
   const [provinces, setProvince] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -31,6 +31,8 @@ const UserInfo = () => {
   const [content, setContent] = useState("");
   const [show, setShow] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+
   //ref
   const homeRef = useRef(null);
   const phoneRef = useRef(null);
@@ -53,7 +55,6 @@ const UserInfo = () => {
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     const result = JSON.parse(token);
-    console.log(result);
 
     if (token) {
       const id = result.id;
@@ -100,7 +101,7 @@ const UserInfo = () => {
         console.error(error);
       }
     } else {
-      console.log("co loi");
+      console.error();
     }
 
     const getProvinces = async () => {
@@ -177,6 +178,7 @@ const UserInfo = () => {
       setCount(count + 1);
       setReadonly(false);
       setNameBtn("Xác nhận");
+      setShowButton(true);
     } else {
       const updateInfo = async () => {
         const updatedInfo = {
@@ -198,7 +200,8 @@ const UserInfo = () => {
           setContent("Cập nhật thông tin thành công.");
           setSuccess(true);
           setReadonly(true);
-          setNameBtn("Thay đổi thông tin");
+          setShowButton(false);
+          setNameBtn("Đổi thông tin");
           setCount(0);
         } else {
           setContent("Có lỗi khi cập nhật thông tin: ", result.error);
@@ -207,12 +210,28 @@ const UserInfo = () => {
       updateInfo();
     }
   };
+
+  const huyUpdate = () => {
+    setShow(false);
+    setShowButton(false);
+    setCount(0);
+    setReadonly(true);
+    setNameBtn("Đổi thông tin");
+  };
+
   return (
     <Container className="container">
       <Row className="row-1 mt-2">
         <h4>THÔNG TIN 🤵</h4>
         <button className="btn-updateInfo" onClick={onBtnClick}>
           {nameBtn}
+        </button>
+        <button
+          style={showButton ? { display: "block" } : { display: "none" }}
+          className="btn-huy"
+          onClick={huyUpdate}
+        >
+          Huỷ
         </button>
       </Row>
       <hr />
