@@ -1,116 +1,81 @@
-import { useState } from 'react';
-import './VerticalMenu.css';
+import { useEffect, useState } from "react";
+import "./VerticalMenu.css";
+import callApi from "../../utlis/request";
+import PropTypes from "prop-types";
 
-const VerticalMenu = () => {
-  const [activeRoles, setActiveRoles] = useState([]);
+const VerticalMenu = ({ selectedCateDetailId }) => {
+  const [lstCate, setLstCate] = useState([]);
+  const [lstCateDetail, setLstCateDetail] = useState([]);
 
-  const handleToggle = (role) => {
-    if (activeRoles.includes(role)) {
-      setActiveRoles(activeRoles.filter(r => r !== role)); // Đóng menu khi ấn lại vào menu đã mở
-    } else {
-      setActiveRoles([...activeRoles, role]); // Mở menu mới khi ấn vào menu chưa mở
-    }
-  };
+  useEffect(() => {
+    const getLstCate = async () => {
+      const response = await callApi("Cate/List-Category", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  const isRoleActive = (role) => {
-    return activeRoles.includes(role);
+      const result = await response.json();
+      if (result.isSuccess === true) {
+        setLstCate(result.data);
+        console.log("ok");
+      } else {
+        console.log(result.error);
+      }
+    };
+    getLstCate();
+  }, []);
+
+  useEffect(() => {
+    const getLstCateDetail = async () => {
+      const response = await callApi("Cate/List-Category-Product", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+      if (result.isSuccess === true) {
+        setLstCateDetail(result.data);
+      }
+    };
+    getLstCateDetail();
+  }, []);
+
+  const toggleSubMenu = (index) => {
+    setLstCate((prevLstCate) =>
+      prevLstCate.map((cate, i) => ({
+        ...cate,
+        isActive: i === index ? !cate.isActive : false, // Chuyển đổi isActive cho cate được nhấp
+      }))
+    );
   };
 
   return (
-    <div id="left">
-      <div id="danhmuc" className="danhmuc">
-        <ul>
-          <li>
-            <div
-              className="flex-toggle"
-              style={{ display: 'flex', alignItems: 'center' }}
-              onClick={() => handleToggle(0)}
-            >
-              <div data-toggle="" role="0" className="box-i">
-                <i className="fa fa-caret-right" aria-hidden="true"></i>
-              </div>
-              <a href="pa-te">PATE</a>
-            </div>
-            <ul
-              data-role="0"
-              style={{
-                display: isRoleActive(0) ? 'block' : 'none',
-                paddingLeft: '20px'
-              }}
-            >
-              <li>
-                <div
-                  className="flex-toggle"
-                  style={{ display: 'flex', alignItems: 'center' }}
-                >
-                  <div data-toggle="" role="0" className="box-i">
-                    <i className="fa fa-caret-right" aria-hidden="true"></i>
-                  </div>
-                  <a href="cho-meo">Pate cho mèo</a>
-                </div>
+    <div className="style_for">
+      {lstCate.map((cate, index) => (
+        <ul
+          key={index}
+          onClick={() => toggleSubMenu(index)}
+          className={cate.isActive ? "active" : ""}
+        >
+          <span>❤️</span> {cate.name}
+          {lstCateDetail
+            .filter((fill) => fill.categoryId === cate.id)
+            .map((cateD, index) => (
+              <li key={index} className="mt-2" onClick={() => selectedCateDetailId(cateD.id)}>
+                <span>♥</span> {cateD.name}
               </li>
-              <li>
-                <div
-                  className="flex-toggle"
-                  style={{ display: 'flex', alignItems: 'center' }}
-                >
-                  <div data-toggle="" role="0" className="box-i">
-                    <i className="fa fa-caret-right" aria-hidden="true"></i>
-                  </div>
-                  <a href="cho-cho">Pate cho chó</a>
-                </div>
-              </li>
-            </ul>
-          </li>
+            ))}
         </ul>
-
-        <ul>
-          <li>
-            <div
-              className="flex-toggle"
-              style={{ display: 'flex', alignItems: 'center' }}
-              onClick={() => handleToggle(2)}
-            >
-              <div data-toggle="" role="0" className="box-i">
-                <i className="fa fa-caret-right" aria-hidden="true"></i>
-              </div>
-              <a href="pa-te">Thức ăn hạt</a>
-            </div>
-            <ul
-              data-role="2"
-              style={{
-                display: isRoleActive(2) ? 'block' : 'none',
-                paddingLeft: '20px'
-              }}
-            >
-              <li>
-                <div
-                  className="flex-toggle"
-                  style={{ display: 'flex', alignItems: 'center' }}
-                >
-                  <div data-toggle="" role="0" className="box-i">
-                    <i className="fa fa-caret-right" aria-hidden="true"></i>
-                  </div>
-                  <a href="cho-meo">Hạt cho mèo</a>
-                </div>
-              </li>
-              <li>
-                <div
-                  className="flex-toggle"
-                  style={{ display: 'flex', alignItems: 'center' }}
-                >
-                  <div data-toggle="" role="0" className="box-i">
-                    <i className="fa fa-caret-right" aria-hidden="true"></i>
-                  </div>
-                  <a href="cho-cho">Hạt cho chó</a>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
+      ))}
     </div>
   );
+};
+
+VerticalMenu.propTypes = {
+  selectedCateDetailId: PropTypes.func,
 };
 
 export default VerticalMenu;

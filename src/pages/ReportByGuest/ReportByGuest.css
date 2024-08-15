@@ -1,0 +1,32 @@
+.total {
+    border: 1px solid black;
+    width: 50%;
+    height: 50%;
+    margin-left: 25%;
+    margin-top: 10%;
+}
+
+.total_form{
+    justify-self: center;
+}
+
+.star{
+    justify-self: center;
+}
+
+.comment {
+    justify-self: center;
+    width: 75%;
+    height: 30%;
+}
+
+.input_area {
+    font-size: 1.3rem;
+}
+
+.btn_gui {
+    width: 20%;
+    justify-self: center;
+    height: 150%;
+    font-size: 1.2rem;
+}

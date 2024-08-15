@@ -30,7 +30,6 @@ const StarRating = () => {
           </label>
         );
       })}
-      <p>Rating: {rating} stars</p>
     </div>
   );
 };

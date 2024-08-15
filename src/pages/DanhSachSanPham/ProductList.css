@@ -3,6 +3,10 @@
   flex-wrap: wrap; /* Cho phép các card xuống dòng khi không đủ chỗ */
 }
 
+.style_full {
+  height: 100vh;
+}
+
 .card {
   flex: 1 0 25%; /* Mỗi card chiếm 25% chiều rộng và có thể co giãn */
   margin-bottom: 1rem; /* Khoảng cách giữa các card */
@@ -31,4 +35,11 @@
 .pagination {
   display: flex;
   justify-content: center;
+}
+
+h1,h2 {
+  cursor: pointer;
+}
+.l {
+  height: 140vh;
 }

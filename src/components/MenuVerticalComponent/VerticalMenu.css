@@ -1,61 +1,36 @@
-#left {
-    width: 250px;
-    background-color: #f1f1f1;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .tieude {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .danhmuc ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .flex-toggle {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    margin-bottom: 8px;
-  }
-  
-  .box-i {
-    margin-right: 10px;
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .box-i.active {
-    transform: rotate(90deg);
-  }
-  
-  .sub-menu {
-    display: none;
-    padding-left: 20px;
-  }
-  
-  .sub-menu.active {
-    display: block;
-  }
-  
-  .sub-menu li {
-    margin-bottom: 5px;
-    text-decoration: none;
-  }
-  
-  .sub-menu a {
-    color: #333;
-    transition: color 0.3s;
-  }
-  
-  .sub-menu a:hover {
-    color: #007bff;
-  }
-  a{
-    text-decoration: none;
-    color: #333;
-    font-weight: normal;
-  }
+.style_for{
+  background-color: rgb(245, 245, 245);
+  border-radius: 10px;
+  font-size: 1.1rem;
+  height: 110vh;
+  margin-top: 10%;
+  display: flex;
+  flex-direction: column;
+  line-height: 200%;
+}
+
+.style_for ul {
+  cursor: pointer;
+}
+
+.style_for li {
+  display: none;
+  padding-left: 20px;
+  color: black;
+}
+
+.style_for ul.active {
+  color: yellowgreen;
+}
+
+.style_for ul:hover {
+  color: red;
+}
+
+.style_for ul.active li {
+  display: block;
+}
+
+.style_for ul li:hover{
+  color: rebeccapurple;
+}

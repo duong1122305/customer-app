@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import Register from "../../pages/Register/Register";
 import Login from "../../pages/Login/Login";
 import Search from "../SearchComponent/Search";
+import callApi from "../../utlis/request";
 
 export default function Header() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -29,7 +30,8 @@ export default function Header() {
   const [isToggleVisible, setIsToggleVisible] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [username, setUsername] = useState("");
- 
+  const [avartar, setAvatar] = useState("");
+
   useEffect(() => {
     const handleResize = () => {
       setScreenWidth(window.innerWidth);
@@ -65,20 +67,44 @@ export default function Header() {
   const handleLogin = useCallback(() => {
     setIsLogin(true);
   }, []);
+
+  const token = sessionStorage.getItem("token");
+
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
     const result = JSON.parse(token);
-    if(token){
+
+    if (token) {
       setIsLogin(true);
       setUsername(result.username);
+      const id = result.id;
+
+      try {
+        const findInfo = async () => {
+          const response = await callApi(`GuestManager/find-by-id?id=${id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const responseResult = await response.json();
+          if (responseResult.isSuccess === true) {
+            setAvatar(responseResult.data.avatarUrl);
+          } else {
+            console.error(responseResult.error);
+          }
+        };
+
+        findInfo();
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }, [isLogin, username])
+  }, [token]);
 
   const handleLogout = useCallback(() => {
     setIsLogin(false);
-    sessionStorage.removeItem('token');
+    sessionStorage.removeItem("token");
   }, []);
-
 
   return (
     <div>
@@ -147,7 +173,14 @@ export default function Header() {
                 alignItems: "center",
               }}
             >
-              <i className="fa-solid fa-user" style={{ color: "#fff" }}></i>
+              <Image
+                src={
+                  avartar == null
+                    ? "https://dersteira.at/img/nh-nn-trng-fb.jpg"
+                    : avartar
+                }
+                style={{ borderRadius: "10px", width: "30px", height: "30px" }}
+              />
               <NavDropdown title={username} className="dropdown">
                 <NavDropdown.Item as={Link} to="/profile">
                   Thông tin
@@ -279,7 +312,7 @@ export default function Header() {
       </Navbar>
       <Register show={registerShow} onHide={() => setRegisterShow(false)} />
       <Login
-      style
+        style
         show={loginShow}
         onHide={() => setLoginShow(false)}
         onLogin={handleLogin}
