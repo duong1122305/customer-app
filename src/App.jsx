@@ -16,6 +16,7 @@ import Expired from "./pages/Register/Expired";
 import Duplicate from "./pages/Register/Duplicate";
 import Success from "./pages/Register/Success";
 import ReportByGuest from "./pages/ReportByGuest/ReportByGuest";
+import NotThingLayout from "./NotThingLayout";
 
 function App() {
   useEffect(() => {
@@ -58,6 +59,8 @@ function App() {
             <Route path="/expired" element={<Expired />} />
             <Route path="/duplicate" element={<Duplicate />} />
             <Route path="/success" element={<Success />} />
+          </Route>
+          <Route path="/" element={<NotThingLayout />}>
             <Route path="/report" element={<ReportByGuest />} />
           </Route>
         </Routes>

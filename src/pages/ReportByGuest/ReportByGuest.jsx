@@ -1,9 +1,13 @@
+import { FloatingLabel, Form } from "react-bootstrap";
+import StarRating from "../../components/StarRatingComponent/StarRating";
 
 const ReportByGuest = () => {
     return (
-        <div>
-            <h1>ok</h1>
-        </div>
+        <>
+            <Form>
+                <StarRating />
+            </Form>
+        </>
     );
 };
 

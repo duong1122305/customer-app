@@ -17,6 +17,8 @@ const Banner = (props) => {
               alt={`Banner ${index + 1}`}
               style={{
                 height: "auto",
+                margin: 0,
+                padding: 0
               }}
             />
           </CarouselItem>

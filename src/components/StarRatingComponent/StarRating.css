@@ -1,0 +1,24 @@
+.star-rating {
+    display: flex;
+    align-items: center;
+  }
+  
+  .star {
+    font-size: 2rem;
+    color: grey;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .star.on {
+    color: gold;
+  }
+  
+  .star.off {
+    color: grey;
+  }
+  
+  input[type="radio"] {
+    display: none;
+  }
+  
