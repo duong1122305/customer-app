@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import callApi from "../utlis/request";
 import { jwtDecode } from "jwt-decode";
 import PropTypes from "prop-types";
@@ -7,7 +7,19 @@ const SessionContext = createContext();
 
 function SessionProvider({ children }) {
   const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    
+    if(sessionStorage.getItem("token") !== null){
+      setIsLogin(true);
+    }
+    else{
+      setIsLogin(false);
+    }
+  }, [isLogin]);
+
   const handleLogin = async (postData) => {
+   
     const response = await callApi("GuestAuthen/login", {
       method: "POST",
       headers: {
@@ -16,6 +28,7 @@ function SessionProvider({ children }) {
       body: JSON.stringify(postData),
     });
     const result = await response.json();
+    
     const decode = jwtDecode(result.data);
     const tokenValue = {
       name: decode[
@@ -32,17 +45,22 @@ function SessionProvider({ children }) {
       ],
     };
     const objValue = JSON.stringify(tokenValue);
+    // console.log(result);
+
     if (result.isSuccess === true) {
       setIsLogin(true);
       sessionStorage.setItem("token", objValue);
       return true;
     }
-    return false;
+    else{
+      return false;
+    }
   };
 
   const returnValue = {
     isLogin,
     handleLogin,
+    setIsLogin
   };
 
   return (

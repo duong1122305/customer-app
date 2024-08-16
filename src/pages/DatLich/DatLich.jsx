@@ -1,4 +1,4 @@
-import { useContext} from "react";
+import { useContext, useEffect} from "react";
 import "./DatLich.css";
 import { Col, Container, Image, Row } from "react-bootstrap";
 import IsLogin from "./IsLogin/IsLogin";
@@ -16,13 +16,20 @@ const DatLich = () => {
   //     setIsLogin(false);
   //   }
   // }, [token]);
+  // useEffect(() => {
+  //   if(!sessionContext.isLogin){
+  //     window.location.href = "/"
+  //   }
+  // }, [sessionContext.isLogin])
+  console.log(sessionContext);
+  
   return (
     <>
       <div className="bookHead">
         <Image className="image" src="/assets/image/ok.png" />
       </div>
       <Container className="booking">
-        <Col className="col-full">{sessionContext.isLogin ? <IsLogin /> : <NotLogin />}</Col>
+        <Col className="col-full">{sessionStorage.getItem("token") !== null && sessionContext.isLogin !== false ? <IsLogin /> : <NotLogin />}</Col>
         <Col className="col-last">
           <Row>
             <h5>

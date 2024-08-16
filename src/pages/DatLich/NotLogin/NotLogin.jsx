@@ -38,6 +38,7 @@ const NotLogin = () => {
   const phoneRef = useRef(null);
   const speRef = useRef(null);
   const voucherIdRef = useRef(null);
+  const genRef = useRef(null);
 
   const handleShowPopup = () => {
     setShow(true);
@@ -135,7 +136,7 @@ const NotLogin = () => {
       nameGuest: nameRef.current.value,
       namePet: bossNameRef.current.value,
       speciesId: speRef.current.value,
-      genderPet: data.genderPet,
+      genderPet: genRef.current.value === 'true',
       idBooking: 23, // Update if needed
       ...(voucherIdRef.current?.value && {
         voucherId: voucherIdRef.current.value,
@@ -176,6 +177,11 @@ const NotLogin = () => {
     setShowRequest(true);
   };
 
+  const handleGenderChange = (event) => {
+    const selectedGender = event.target.value === 'true'; // Chuyển đổi chuỗi thành boolean
+    setData({ ...data, genderPet: selectedGender });
+  };
+
   return (
     <div>
       <Form onSubmit={handleShowAccept}>
@@ -214,29 +220,12 @@ const NotLogin = () => {
         <FloatingLabel label="Tên của boss">
           <Form.Control type="text" ref={bossNameRef} />
         </FloatingLabel>
-        <div>
-          <label htmlFor="genderPet" className="mb-2">
-            Giới
-          </label>
-          <div>
-            <Form.Check
-              type="radio"
-              label="Đực"
-              name="genderPet"
-              checked={data.genderPet === true}
-              onChange={() => setData({ ...data, genderPet: true })}
-              htmlFor="genderPet"
-            />
-            <Form.Check
-              type="radio"
-              label="Cái"
-              name="genderPet"
-              checked={data.genderPet === false}
-              onChange={() => setData({ ...data, genderPet: false })}
-              htmlFor="genderPet"
-            />
-          </div>
-        </div>
+        <FloatingLabel label="Giới">
+          <Form.Select ref={genRef} onChange={handleGenderChange}>
+            <option value={true}>Đực</option>
+            <option value={false}>Cái</option>
+          </Form.Select>
+        </FloatingLabel>
         <FloatingLabel label="Ngày làm dịch vụ">
           <Form.Control type="date" ref={dateRef} />
         </FloatingLabel>

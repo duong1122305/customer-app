@@ -74,17 +74,19 @@ const IsLogin = () => {
 
   useEffect(() => {
     const getPet = async () => {
-      const response = await callApi(`PetManager/get-pet-by-guest?id=${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const resResult = await response.json();
-      if (resResult.isSuccess === true) {
-        setLstPet(resResult.data);
-      } else {
-        console.log("Khong co data");
+      if (id !== null) {
+        const response = await callApi(`PetManager/get-pet-by-guest?id=${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const resResult = await response.json();
+        if (resResult.isSuccess === true) {
+          setLstPet(resResult.data);
+        } else {
+          console.log("Khong co data");
+        }
       }
     };
 

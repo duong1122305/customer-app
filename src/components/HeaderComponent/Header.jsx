@@ -11,12 +11,13 @@ import {
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Header.css";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Register from "../../pages/Register/Register";
 import Login from "../../pages/Login/Login";
 import Search from "../SearchComponent/Search";
 import callApi from "../../utlis/request";
+import { SessionContext } from "../../contex/SessionContex";
 
 export default function Header() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -31,6 +32,8 @@ export default function Header() {
   const [isLogin, setIsLogin] = useState(false);
   const [username, setUsername] = useState("");
   const [avartar, setAvatar] = useState("");
+
+  const sessionContext = useContext(SessionContext)
 
   useEffect(() => {
     const handleResize = () => {
@@ -102,9 +105,11 @@ export default function Header() {
   }, [token]);
 
   const handleLogout = useCallback(() => {
-    setIsLogin(false);
+    if(sessionContext.isLogin){
+      sessionContext.setIsLogin(false);
+    }
     sessionStorage.removeItem("token");
-  }, []);
+  }, [sessionContext]);
 
   return (
     <div>
@@ -157,7 +162,7 @@ export default function Header() {
               </Nav.Item>
             </div>
             <Nav className="me-auto"></Nav>
-            <Nav style={{ display: isLogin ? "none" : "flex" }}>
+            <Nav style={{ display: sessionContext.isLogin ? "none" : "flex" }}>
               <Nav.Item onClick={handleShowRegister}>
                 <Nav.Link>Đăng ký</Nav.Link>
               </Nav.Item>
@@ -167,7 +172,7 @@ export default function Header() {
             </Nav>
             <Nav
               style={{
-                display: isLogin ? "flex" : "none",
+                display: sessionContext.isLogin ? "flex" : "none",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
