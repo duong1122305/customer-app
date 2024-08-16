@@ -13,6 +13,7 @@ import "./BookingInfoChild.css";
 import moment from "moment";
 import PropTypes from "prop-types";
 import Announcement from "../../../../components/AnnouncementComponent/Announcement";
+import AcceptRequest from "../../../../components/AcceptRequestComponent/AcceptRequest";
 
 const BookingInfoChild = ({ conditions }) => {
   const token = sessionStorage.getItem("token");
@@ -25,6 +26,7 @@ const BookingInfoChild = ({ conditions }) => {
   const [searchEndDate, setSearchEndDate] = useState("");
   const [content, setContent] = useState("");
   const [showAnnounce, setShowAnnounce] = useState(false);
+  const [showAccept, setShowAccept] = useState(false);
 
   const [groupedBookings, setGroupedBookings] = useState({});
   const [lstBooking, setLstBooking] = useState([
@@ -46,9 +48,12 @@ const BookingInfoChild = ({ conditions }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  const [currentDropdownPage, setCurrentDropdownPage] = useState(1);
+  const dropdownsPerPage = 8;
+
   const filteredGroupedBookings = Object.entries(groupedBookings).filter(
     ([date, bookings]) => {
-      if (!searchStartDate || !searchEndDate) return true; // Show all if no range
+      if (!searchStartDate || !searchEndDate) return true; // Hiển thị tất cả nếu không có khoảng ngày
       if (searchEndDate < searchStartDate) {
         setShowAnnounce(true);
         setContent("Khoảng ngày của bạn đã chọn sai!!!");
@@ -133,6 +138,46 @@ const BookingInfoChild = ({ conditions }) => {
     }
   };
 
+  const indexOfLastDropdown = currentDropdownPage * dropdownsPerPage;
+  const indexOfFirstDropdown = indexOfLastDropdown - dropdownsPerPage;
+  const currentDropdowns = filteredGroupedBookings.slice(
+    indexOfFirstDropdown,
+    indexOfLastDropdown
+  );
+
+  // Hàm xử lý thay đổi trang dropdown
+  const handleDropdownPageChange = (pageNumber) => {
+    setCurrentDropdownPage(pageNumber);
+  };
+
+  const cancelBooking = async (idBookingDetail) => {
+    try {
+      const response = await callApi("Booking/canel-booking", {
+        method:"PATCH",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body: idBookingDetail,
+      });
+      const result = await response.json();
+      if(result.isSuccess === true) {
+        setContent("Huỷ thành công");
+        setShowAnnounce(true);
+      }else{
+        setContent("Không thể huỷ lịch");
+        setShowAnnounce(true);
+      }
+    } catch (error) {
+      console.error(error);
+      
+    }
+  }
+
+  const handleAccept = (id) => {
+    setShowAccept(true);
+    return id;
+  }
+
   return (
     <div>
       <div className="d-flex">
@@ -158,12 +203,11 @@ const BookingInfoChild = ({ conditions }) => {
         </FloatingLabel>
       </div>
 
-      {filteredGroupedBookings.map(([date, bookings]) => {
+      {currentDropdowns.map(([date, bookings]) => {
         const indexOfLastItem = currentPage * itemsPerPage;
         const indexOfFirstItem = indexOfLastItem - itemsPerPage;
         const currentItems = bookings.slice(indexOfFirstItem, indexOfLastItem);
-
-        // Function to handle page changes
+        // Hàm xử lý thay đổi trang
         const handlePageChange = (pageNumber) => {
           setCurrentPage(pageNumber);
         };
@@ -189,7 +233,7 @@ const BookingInfoChild = ({ conditions }) => {
                     <th>Thời gian làm</th>
                     <th>Thành tiền</th>
                     <th>Trạng thái</th>
-                    <th>Sửa/Huỷ</th>
+                    <th>Huỷ</th>
                   </tr>
                 </thead>
                 <tbody className="text-center">
@@ -219,8 +263,13 @@ const BookingInfoChild = ({ conditions }) => {
                         <td>{booking.totalPrice} VNĐ</td>
                         <td>{getStatusString(booking.status)}</td>
                         <td>
-                          <Button>Sửa</Button>
-                          <Button variant="danger">Huỷ</Button>
+                          <Button
+                            disabled={booking.status !== 1 ? true : false}
+                            variant="danger"
+                            onClick={() => handleAccept(booking.id)}
+                          >
+                            Huỷ
+                          </Button>
                         </td>
                       </tr>
                     ))
@@ -257,10 +306,47 @@ const BookingInfoChild = ({ conditions }) => {
           </Dropdown>
         );
       })}
+      <div className="d-flex justify-content-center mt-3">
+        <Pagination>
+          <Pagination.Prev
+            onClick={() => handleDropdownPageChange(currentDropdownPage - 1)}
+            disabled={currentDropdownPage === 1}
+          />
+          {Array.from(
+            {
+              length: Math.ceil(
+                filteredGroupedBookings.length / dropdownsPerPage
+              ),
+            },
+            (_, i) => (
+              <Pagination.Item
+                key={i + 1}
+                active={i + 1 === currentDropdownPage}
+                onClick={() => handleDropdownPageChange(i + 1)}
+              >
+                {i + 1}
+              </Pagination.Item>
+            )
+          )}
+          <Pagination.Next
+            onClick={() => handleDropdownPageChange(currentDropdownPage + 1)}
+            disabled={
+              currentDropdownPage ===
+              Math.ceil(filteredGroupedBookings.length / dropdownsPerPage)
+            }
+          />
+        </Pagination>
+      </div>
       <Announcement
         show={showAnnounce}
         content={content}
         onClose={() => setShowAnnounce(false)}
+      />
+      <AcceptRequest 
+        show={showAccept}
+        content="Xác nhận huỷ lịch ?"
+        onClose={() => setShowAccept(false)}
+        onAccept={cancelBooking}
       />
     </div>
   );

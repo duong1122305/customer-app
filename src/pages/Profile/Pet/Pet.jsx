@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import callApi from "../../../utlis/request";
+import moment from "moment";
 
 const Pet = () => {
   const [lstPet, setLstPet] = useState([]);
   const token = sessionStorage.getItem("token");
   const tokenResult = JSON.parse(token);
   const id = tokenResult.id;
-  console.log(id);
   useEffect(() => {
     const getPet = async () => {
       const response = await callApi(
@@ -37,6 +37,7 @@ const Pet = () => {
           <th>Pet Name</th>
           <th>Ngày sinh</th>
           <th>Giới</th>
+          <th>#</th>
         </tr>
       </thead>
       <tbody>
@@ -44,8 +45,11 @@ const Pet = () => {
           <tr key={pet.id}>
             <td>{index + 1}</td>
             <td>{pet.name}</td>
-            <td>{pet.birthday}</td>
+            <td>{moment(pet.birthday).format('DD-MM-YYYY')}</td>
             <td>{pet.gender ? "Đực" : "Cái"}</td>
+            <td>
+              <Button style={{height:"30px"}}>Sửa</Button>
+            </td>
           </tr>
         ))}
       </tbody>

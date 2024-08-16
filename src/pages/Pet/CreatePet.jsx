@@ -8,6 +8,7 @@ import {
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import Announcement from "../../components/AnnouncementComponent/Announcement";
+import callApi from "../../utlis/request";
 
 const CreatePet = ({ show, onHide, sendData }) => {
   const petSpe = useRef(null);
@@ -26,14 +27,14 @@ const CreatePet = ({ show, onHide, sendData }) => {
   useEffect(() => {
     const layDanhSachLoaiThuCung = async () => {
       try {
-        const response = await fetch(
-          "https://localhost:7039/api/PetSpecies/get-all"
+        const response = await callApi(
+          "PetSpecies/get-all"
         );
         const result = await response.json();
         if (result.isSuccess) {
           setLstPetSpecies(result.data);
         } else {
-          console.log("ko");
+          console.log("Chào bạn");
         }
       } catch (error) {
         console.error(error);
@@ -59,8 +60,8 @@ const CreatePet = ({ show, onHide, sendData }) => {
     };
 
     try {
-      const response = await fetch(
-        "https://localhost:7039/api/PetManager/create-pet",
+      const response = await callApi(
+        "PetManager/create-pet",
         {
           method: "POST",
           headers: {
@@ -79,7 +80,6 @@ const CreatePet = ({ show, onHide, sendData }) => {
         onHide(); // Đóng modal khi thành công
       } else {
         setContent("Oops!!! Có chút trục trặc mất rùi");
-        console.log("loi");
       }
     } catch (error) {
       console.error(error);
