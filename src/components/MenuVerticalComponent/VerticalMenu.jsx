@@ -19,7 +19,6 @@ const VerticalMenu = ({ selectedCateDetailId }) => {
       const result = await response.json();
       if (result.isSuccess === true) {
         setLstCate(result.data);
-        console.log("ok");
       } else {
         console.log(result.error);
       }

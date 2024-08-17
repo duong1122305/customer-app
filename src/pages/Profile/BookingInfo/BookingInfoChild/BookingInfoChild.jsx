@@ -27,10 +27,12 @@ const BookingInfoChild = ({ conditions }) => {
   const [content, setContent] = useState("");
   const [showAnnounce, setShowAnnounce] = useState(false);
   const [showAccept, setShowAccept] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   const [groupedBookings, setGroupedBookings] = useState({});
   const [lstBooking, setLstBooking] = useState([
     {
+      idBooking: "",
       petName: "",
       serviceName: [],
       serviceId: [],
@@ -42,6 +44,12 @@ const BookingInfoChild = ({ conditions }) => {
       status: 0,
     },
   ]);
+
+  const [dataCancel, setDataCancel] = useState({
+    idBokingOrDetail: null,
+    token: null,
+    reason: "Khách hủy",
+  });
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -83,6 +91,7 @@ const BookingInfoChild = ({ conditions }) => {
       );
 
       const result = await response.json();
+
       if (result.isSuccess === true) {
         if (result.data.length > 0) {
           const filteredData = result.data
@@ -108,7 +117,7 @@ const BookingInfoChild = ({ conditions }) => {
       }
     };
     getBooking();
-  }, [id, conditions]);
+  }, [conditions]);
 
   useEffect(() => {
     // Cập nhật groupedBookings khi searchDate thay đổi
@@ -150,33 +159,37 @@ const BookingInfoChild = ({ conditions }) => {
     setCurrentDropdownPage(pageNumber);
   };
 
-  const cancelBooking = async (idBookingDetail) => {
+  const cancelBooking = async (idBooking) => {
+    const lastData = {
+      ...dataCancel,
+      idBokingOrDetail: idBooking
+    };
+    
     try {
-      const response = await callApi("Booking/canel-booking", {
-        method:"PATCH",
-        headers:{
-          "Content-Type":"application/json"
+      const response = await callApi("Booking/Cancel-BookingDetail-ByGuest", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body: idBookingDetail,
+        body: JSON.stringify(lastData),
       });
       const result = await response.json();
-      if(result.isSuccess === true) {
+      if (result.isSuccess === true) {
         setContent("Huỷ thành công");
         setShowAnnounce(true);
-      }else{
-        setContent("Không thể huỷ lịch");
+      } else {
+        setContent(result.error);
         setShowAnnounce(true);
       }
     } catch (error) {
       console.error(error);
-      
     }
-  }
+  };
 
   const handleAccept = (id) => {
+    setSelectedId(id);
     setShowAccept(true);
-    return id;
-  }
+  };
 
   return (
     <div>
@@ -246,7 +259,7 @@ const BookingInfoChild = ({ conditions }) => {
                   ) : (
                     currentItems.map((booking, index) => (
                       <tr key={index}>
-                        <td>{index + 1}</td>
+                        <td>{booking.idBooking}</td>
                         <td>
                           <ol className="text-start">
                             {booking.serviceName.map((name, indexName) => (
@@ -266,7 +279,7 @@ const BookingInfoChild = ({ conditions }) => {
                           <Button
                             disabled={booking.status !== 1 ? true : false}
                             variant="danger"
-                            onClick={() => handleAccept(booking.id)}
+                            onClick={() => handleAccept(booking.idBooking)}
                           >
                             Huỷ
                           </Button>
@@ -342,11 +355,11 @@ const BookingInfoChild = ({ conditions }) => {
         content={content}
         onClose={() => setShowAnnounce(false)}
       />
-      <AcceptRequest 
+      <AcceptRequest
         show={showAccept}
         content="Xác nhận huỷ lịch ?"
         onClose={() => setShowAccept(false)}
-        onAccept={cancelBooking}
+        onAccept={() => cancelBooking(selectedId)}
       />
     </div>
   );

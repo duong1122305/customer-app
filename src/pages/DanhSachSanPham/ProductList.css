@@ -1,3 +1,7 @@
+.container-fluid{
+  margin-bottom: 5%;
+}
+
 .row {
   display: flex; /* Kích hoạt flexbox cho container chứa các card */
   flex-wrap: wrap; /* Cho phép các card xuống dòng khi không đủ chỗ */
