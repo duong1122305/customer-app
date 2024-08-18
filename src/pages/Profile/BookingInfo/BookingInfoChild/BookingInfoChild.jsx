@@ -18,6 +18,7 @@ import AcceptRequest from "../../../../components/AcceptRequestComponent/AcceptR
 const BookingInfoChild = ({ conditions }) => {
   const token = sessionStorage.getItem("token");
   const id = JSON.parse(token).id;
+  console.log(id);
 
   const searchStartDateRef = useRef(null);
   const searchEndDateRef = useRef(null);
@@ -32,17 +33,11 @@ const BookingInfoChild = ({ conditions }) => {
   const [groupedBookings, setGroupedBookings] = useState({});
   const [lstBooking, setLstBooking] = useState([
     {
-      idBooking: "",
-      petName: "",
-      serviceName: [],
-      serviceId: [],
+      idBooking: null,
       bookingTime: "",
-      startDate: "",
-      endDate: "",
-      startTime: "",
-      totalPrice: 0,
       status: 0,
-    },
+      lstBookingDetail: [],
+    }
   ]);
 
   const [dataCancel, setDataCancel] = useState({
@@ -94,12 +89,23 @@ const BookingInfoChild = ({ conditions }) => {
 
       if (result.isSuccess === true) {
         if (result.data.length > 0) {
-          const filteredData = result.data
-            .filter((item) => item !== null)
-            .filter((item) =>
-              conditions !== undefined ? item.status === conditions : true
-            );
+          // Làm phẳng chi tiết đặt chỗ và lọc ra các đặt chỗ null
+          const flattenedBookings = result.data.flatMap((booking) =>
+            booking.lstBookingDetail
+              .filter((detail) => detail !== null) // Lọc ra các chi tiết null
+              .map((detail) => ({
+                ...booking, // Bao gồm dữ liệu cấp đặt chỗ
+                ...detail, // Bao gồm dữ liệu cấp chi tiết
+              }))
+          );
+
+          // Lọc dựa trên điều kiện
+          const filteredData = flattenedBookings.filter((item) =>
+            conditions !== undefined ? item.status === conditions : true
+          );
+
           setLstBooking(filteredData);
+
           const newGroupedBookings = filteredData.reduce((acc, booking) => {
             const date = booking.bookingTime;
             if (!acc[date]) {
@@ -117,7 +123,7 @@ const BookingInfoChild = ({ conditions }) => {
       }
     };
     getBooking();
-  }, [conditions]);
+  }, [id]);
 
   useEffect(() => {
     // Cập nhật groupedBookings khi searchDate thay đổi
@@ -130,7 +136,7 @@ const BookingInfoChild = ({ conditions }) => {
       return acc;
     }, {});
     setGroupedBookings(newGroupedBookings);
-  }, [lstBooking, searchStartDate]);
+  }, [searchStartDate]);
 
   const getStatusString = (status) => {
     switch (status) {
@@ -162,9 +168,9 @@ const BookingInfoChild = ({ conditions }) => {
   const cancelBooking = async (idBooking) => {
     const lastData = {
       ...dataCancel,
-      idBokingOrDetail: idBooking
+      idBokingOrDetail: idBooking,
     };
-    
+
     try {
       const response = await callApi("Booking/Cancel-BookingDetail-ByGuest", {
         method: "PATCH",
@@ -175,7 +181,7 @@ const BookingInfoChild = ({ conditions }) => {
       });
       const result = await response.json();
       if (result.isSuccess === true) {
-        setContent("Huỷ thành công");
+        setContent(result.data);
         setShowAnnounce(true);
       } else {
         setContent(result.error);
@@ -260,15 +266,7 @@ const BookingInfoChild = ({ conditions }) => {
                     currentItems.map((booking, index) => (
                       <tr key={index}>
                         <td>{booking.idBooking}</td>
-                        <td>
-                          <ol className="text-start">
-                            {booking.serviceName.map((name, indexName) => (
-                              <li key={indexName} className="mb-1">
-                                {name}
-                              </li>
-                            ))}
-                          </ol>
-                        </td>
+                        <td>{booking.serviceName}</td>
                         <td>{booking.petName}</td>
                         <td>{booking.bookingTime}</td>
                         <td>{booking.startDate}</td>
@@ -277,7 +275,7 @@ const BookingInfoChild = ({ conditions }) => {
                         <td>{getStatusString(booking.status)}</td>
                         <td>
                           <Button
-                            disabled={booking.status !== 1 ? true : false}
+                            disabled={booking.status === 3 ? true : false}
                             variant="danger"
                             onClick={() => handleAccept(booking.idBooking)}
                           >
