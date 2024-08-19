@@ -170,7 +170,7 @@ const BookingInfoChild = ({ conditions }) => {
       ...dataCancel,
       idBokingOrDetail: idBooking,
     };
-
+    console.log(idBooking);
     try {
       const response = await callApi("Booking/Cancel-BookingDetail-ByGuest", {
         method: "PATCH",
@@ -277,7 +277,7 @@ const BookingInfoChild = ({ conditions }) => {
                           <Button
                             disabled={booking.status === 3 ? true : false}
                             variant="danger"
-                            onClick={() => handleAccept(booking.idBooking)}
+                            onClick={() => handleAccept(booking.idBookingDetail)}
                           >
                             Huỷ
                           </Button>

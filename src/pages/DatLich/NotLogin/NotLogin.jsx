@@ -6,6 +6,7 @@ import callApi from "../../../utlis/request";
 import Announcement from "../../../components/AnnouncementComponent/Announcement";
 import AcceptRequest from "../../../components/AcceptRequestComponent/AcceptRequest";
 import moment from "moment";
+import SearchBooking from "../../BookingNotLogin/SearchBooking";
 
 const NotLogin = () => {
   const [show, setShow] = useState(false);
@@ -28,6 +29,7 @@ const NotLogin = () => {
     lstBookingDetail: [{}],
   });
   const [selectedVoucherId, setSelectedVoucherId] = useState(null);
+  const [showSearch, setShowSearch] = useState(false);
 
   //ref
   const nameRef = useRef(null);
@@ -46,6 +48,10 @@ const NotLogin = () => {
   const handleClosePopup = () => {
     setShow(false);
   };
+
+  const handleShowSearch = () => {
+    setShowSearch(true);
+  }
 
   const handleVoucherChange = (event) => {
     setSelectedVoucherId(event.target.value);
@@ -184,6 +190,10 @@ const NotLogin = () => {
 
   return (
     <div>
+      <div>
+        <h5>Bạn có thể tìm kiếm lịch đã đặt tại đây !!</h5>
+        <Button onClick={handleShowSearch}>Lịch đã đặt</Button>
+      </div>
       <Form onSubmit={handleShowAccept}>
         <Button onClick={handleShowPopup}>Danh sách dịch vụ</Button>
         <TableServices
@@ -268,6 +278,10 @@ const NotLogin = () => {
         onClose={() => setShowRequest(false)}
         content="Xác nhận đặt lịch ?"
         onAccept={handleBooking}
+      />
+      <SearchBooking
+          show={showSearch}
+          close={() => setShowSearch(false)}
       />
     </div>
   );
