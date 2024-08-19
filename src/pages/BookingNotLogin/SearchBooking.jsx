@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef } from "react";
 import {
   Button,
   ButtonGroup,
@@ -7,16 +7,12 @@ import {
   Modal,
 } from "react-bootstrap";
 import PropTypes from "prop-types";
-import BookingNotLogin from "./BookingNotLogin";
 
 const SearchBooking = ({ show, close }) => {
   const searchRef = useRef(null);
-  const [showPopup, setShowPopup] = useState(false);
-  const [result, setResult] = useState("");
 
   const handleShow = () => {
-    setShowPopup(true);
-    setResult(searchRef.current.value);
+    window.location.href = `/no-account/${searchRef.current.value}`;
   };
 
   return (
@@ -36,18 +32,14 @@ const SearchBooking = ({ show, close }) => {
           </Form>
         </Modal.Body>
       </Modal>
-      <BookingNotLogin
-        show={showPopup}
-        phoneOrEmail={result}
-        close={() => setShowPopup(false)}
-      />
     </div>
   );
 };
 
 SearchBooking.propTypes = {
-  show: PropTypes.func,
+  show: PropTypes.bool,
   close: PropTypes.func,
+  isPopup: PropTypes.bool,
 };
 
 export default SearchBooking;

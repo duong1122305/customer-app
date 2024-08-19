@@ -2,15 +2,29 @@ import { useEffect, useState } from "react";
 import { Button, Pagination, Table } from "react-bootstrap";
 import callApi from "../../../utlis/request";
 import moment from "moment";
+import UpdatePet from "./UpdatePet";
 
 const Pet = () => {
   const [lstPet, setLstPet] = useState([]);
+  const [idPet, setIdPet] = useState(null);
+  const [show, setShow] = useState(false);
+  const [dataChange, setDataChange] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [petsPerPage] = useState(15);
 
   const token = sessionStorage.getItem("token");
   const tokenResult = JSON.parse(token);
   const id = tokenResult.id;
+
+  const handleGetIdPet = (idPet) => {
+    setIdPet(idPet);
+    setShow(true);
+  }
+
+  const handleDataChange = (data) => {
+    setDataChange(data);
+  }
+
   useEffect(() => {
     const getPet = async () => {
       const response = await callApi(`PetManager/get-pet-by-guest?id=${id}`, {
@@ -27,7 +41,10 @@ const Pet = () => {
       }
     };
     getPet();
-  }, [id]);
+    if(dataChange){
+      getPet();
+    }
+  }, [id, dataChange]);
 
   const indexOfLastPet = currentPage * petsPerPage;
   const indexOfFirstPet = indexOfLastPet - petsPerPage;
@@ -55,7 +72,7 @@ const Pet = () => {
               <td>{moment(pet.birthday).format("DD-MM-YYYY")}</td>
               <td>{pet.gender ? "Đực" : "Cái"}</td>
               <td>
-                <Button style={{ height: "30px" }}>Sửa</Button>
+                <Button style={{ height: "30px" }} onClick={() => handleGetIdPet(pet.id)}>Sửa</Button>
               </td>
             </tr>
           ))}
@@ -82,6 +99,12 @@ const Pet = () => {
           onClick={() => paginate(Math.ceil(lstPet.length / petsPerPage))}
         />
       </Pagination>
+      <UpdatePet 
+        show={show && idPet !== null}
+        onHide={() => setShow(false)}
+        id={idPet}
+        onDataChange={handleDataChange}
+      />
     </>
   );
 };

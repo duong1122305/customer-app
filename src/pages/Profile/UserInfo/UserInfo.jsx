@@ -32,11 +32,13 @@ const UserInfo = () => {
   const [show, setShow] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showButton, setShowButton] = useState(false);
-
+  const [errors, setErrors] = useState({
+    name: "",
+    phoneNumber: "",
+  });
   //ref
   const homeRef = useRef(null);
   const phoneRef = useRef(null);
-  const nameRef = useRef(null);
 
   //value
   const [selectedProvinces, setSelectedProvinces] = useState({
@@ -180,34 +182,58 @@ const UserInfo = () => {
       setNameBtn("Xác nhận");
       setShowButton(true);
     } else {
-      const updateInfo = async () => {
-        const updatedInfo = {
-          ...info,
-          name: nameRef.current.value,
-          phoneNumber: phoneRef.current.value,
-          address: `${selectedWard.id}!${homeRef.current.value}!${selectedWard.name}, ${selectedDistricts.name}, ${selectedProvinces.name}`,
+      const newErrors = {};
+
+      if (info.name.trim() === "") {
+        newErrors.name = "Họ tên không được để trống";
+      } else if (info.name.length > 50) {
+        newErrors.name = "Họ tên không vượt quá 50 ký tự";
+      }
+
+      const phoneRegex =
+        /^(03[2-9]|05[689]|07[06-9]|08[1-689]|09[0-46-9])\d{7}$/;
+      if (!phoneRegex.test(info.phoneNumber)) {
+        newErrors.phoneNumber = "Số điện thoại không hợp lệ";
+      }
+      setErrors(newErrors);
+
+      if (Object.keys(newErrors).length === 0) {
+        const updateInfo = async () => {
+          let updatedAddress = info.address;
+          if (
+            homeRef.current.value !== "" ||
+            selectedProvinces.id !== "89" ||
+            selectedDistricts.id !== "886" ||
+            selectedWard.id !== "30337"
+          ) {
+            updatedAddress = `${selectedWard.id}!${homeRef.current.value}!${selectedWard.name}, ${selectedDistricts.name}, ${selectedProvinces.name}`;
+          }
+          const updatedInfo = {
+            ...info,
+            address: updatedAddress,
+          };
+          const response = await callApi("GuestManager/update-guest", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedInfo),
+          });
+          const result = await response.json();
+          if (result.isSuccess === true) {
+            setShow(true);
+            setContent("Cập nhật thông tin thành công.");
+            setSuccess(true);
+            setReadonly(true);
+            setShowButton(false);
+            setNameBtn("Đổi thông tin");
+            setCount(0);
+          } else {
+            setContent("Có lỗi khi cập nhật thông tin: ", result.error);
+          }
         };
-        const response = await callApi("GuestManager/update-guest", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedInfo),
-        });
-        const result = await response.json();
-        if (result.isSuccess === true) {
-          setShow(true);
-          setContent("Cập nhật thông tin thành công.");
-          setSuccess(true);
-          setReadonly(true);
-          setShowButton(false);
-          setNameBtn("Đổi thông tin");
-          setCount(0);
-        } else {
-          setContent("Có lỗi khi cập nhật thông tin: ", result.error);
-        }
-      };
-      updateInfo();
+        updateInfo();
+      }
     }
   };
 
@@ -252,11 +278,16 @@ const UserInfo = () => {
                 value={info.name}
                 disabled={readonly}
                 onChange={(e) => setInfo({ ...info, name: e.target.value })}
-                ref={nameRef}
               />
+              {errors.name && <div className="text-danger">{errors.name}</div>}
             </div>
             <div className="input-mt">
-              <label className="mb-2">Địa chỉ</label>
+              <label className="mb-2">
+                Địa chỉ{" "}
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  *Bạn hãy chọn lại địa chỉ nếu muốn
+                </span>{" "}
+              </label>
               <FloatingLabel label="Số nhà, Đường" className="mb-2">
                 <Form.Control disabled={readonly} ref={homeRef} />
               </FloatingLabel>
@@ -306,29 +337,22 @@ const UserInfo = () => {
                 }
                 ref={phoneRef}
               />
+              {errors.phoneNumber && (
+                <div className="text-danger">{errors.phoneNumber}</div>
+              )}
             </div>
             <div className="input-mt">
               <label>Giới tính</label>
               <div style={{ display: "flex" }} className="in-mt">
-                <Form.Check
-                  type="radio"
-                  label={"Nam"}
-                  htmlFor="gender"
-                  name="gender"
-                  checked={info.gender === true}
-                  onChange={() => setInfo({ ...info, gender: true })}
-                  disabled={readonly}
-                />
-                <Form.Check
-                  type="radio"
-                  label={"Nữ"}
-                  name="gender"
-                  checked={info.gender === false}
-                  onChange={() => setInfo({ ...info, gender: false })}
-                  style={{ marginLeft: "10px" }}
-                  htmlFor="gender"
-                  disabled={readonly}
-                />
+                <Form.Select
+                  value={info.gender ? "true" : "false"}
+                  onChange={(e) =>
+                    setInfo({ ...info, gender: e.target.value === "true" })
+                  }
+                >
+                  <option value={true}>Nam</option>
+                  <option value={false}>Nữ</option>
+                </Form.Select>
               </div>
             </div>
           </Row>
@@ -340,17 +364,14 @@ const UserInfo = () => {
               <Image
                 src={
                   info.avatarUrl == null
-                    ? "https://dersteira.at/img/nh-nn-trng-fb.jpg"
+                    ? info.gender === true
+                      ? "https://dersteira.at/img/nh-nn-trng-fb.jpg"
+                      : "https://s3v2.interdata.vn:9000/s3-586-15343-storage/dienthoaigiakho/wp-content/uploads/2024/01/31133420/avatar-trang-nu-8.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=oqObxFrKFQqIQVrGJO1k%2F20240819%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240819T172442Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604800&X-Amz-Signature=c0a1731a5373756294d7bbb81650dff382478aa8b5f184d36d0d777a24dfc37b"
                     : info.avatarUrl
                 }
                 roundedCircle
                 className="avatar"
               />
-              <input
-                className="btn-upload"
-                type="file"
-                disabled={readonly}
-              ></input>
             </div>
           </div>
           <hr style={{ marginTop: "50px" }} />

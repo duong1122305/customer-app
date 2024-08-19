@@ -17,6 +17,7 @@ import Duplicate from "./pages/Register/Duplicate";
 import Success from "./pages/Register/Success";
 import ReportByGuest from "./pages/ReportByGuest/ReportByGuest";
 import NotThingLayout from "./NotThingLayout";
+import BookingNotLogin from "./pages/BookingNotLogin/BookingNotLogin";
 
 function App() {
   useEffect(() => {
@@ -53,6 +54,7 @@ function App() {
             <Route path="/product/:id" element={<SanPhamChiTiet />} />
             <Route path="/forgot-password" element={<QuenMatKhau />} />
             <Route path="/redirect" element={<Redirect />} />
+            <Route path="/no-account/:phoneOrEmail" element={<BookingNotLogin />} />
           </Route>
           <Route path="/" element={<BlankLayout />}>
             <Route path="/profile" element={<Profile />} />

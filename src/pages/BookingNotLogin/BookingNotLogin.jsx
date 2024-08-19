@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, Modal, Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import callApi from "../../utlis/request";
-import PropTypes from "prop-types";
+import { useLocation, useParams } from "react-router-dom";
 
-const BookingNotLogin = ({ phoneOrEmail, show, close }) => {
+const BookingNotLogin = () => {
   const [lstBooking, setLstBooking] = useState([
     {
       idBooking: 0,
@@ -12,6 +12,25 @@ const BookingNotLogin = ({ phoneOrEmail, show, close }) => {
       lstBookingDetail: [],
     },
   ]);
+  const location = useLocation();
+  const param = location.pathname.split('/');
+  var phoneOrEmail = useParams();
+  phoneOrEmail = param[param.length - 1];
+
+  const getStatusString = (status) => {
+    switch (status) {
+      case 0:
+        return "Hoàn thành";
+      case 1:
+        return "Chưa hoàn thành";
+      case 2:
+        return "Đang làm";
+      case 3:
+        return "Đã huỷ";
+      default:
+        return "Không xác định";
+    }
+  };
 
   useEffect(() => {
     try {
@@ -28,7 +47,6 @@ const BookingNotLogin = ({ phoneOrEmail, show, close }) => {
           );
           const result = await response.json();
           if (result.isSuccess === true) {
-            console.log("ok");
             setLstBooking(result.data);
           } else {
             console.log(result.error);
@@ -45,52 +63,43 @@ const BookingNotLogin = ({ phoneOrEmail, show, close }) => {
 
   return (
     <div>
-      <Modal show={show} onHide={close}>
-        <Modal.Body>
-          <Table>
-            <thead>
-              <tr>
-                <th>STT</th>
-                <th>Tên dịch vụ</th>
-                <th>Boss</th>
-                <th>Thời gian đặt</th>
-                <th>Ngày làm</th>
-                <th>Thời gian làm</th>
-                <th>Thành tiền</th>
-                <th>Trạng thái</th>
-                <th>Huỷ</th>
+      <Table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Dịch vụ</th>
+            <th>Boss</th>
+            <th>Thời gian đặt</th>
+            <th>Ngày làm</th>
+            <th>Thời gian làm</th>
+            <th>Thành tiền</th>
+            <th>Trạng thái</th>
+            <th>Huỷ</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lstBooking.map((item, index) =>
+            item.lstBookingDetail.map((item1) => (
+              <tr key={Math.random()}>
+                <td>{index + 1}</td>
+                <td>{item1.serviceName}</td>
+                <td>{item1.petName}</td>
+                <td>{item.bookingTime}</td>
+                <td>{item1.startDate}</td>
+                <td>{item1.startTime}</td>
+                <td>{item1.totalPrice}</td>
+                <td>{getStatusString(item.status)}</td>
+                <td>
+                  <Button variant="danger" disabled={item.status === 3 || item.status === 0 ? true : false}>Huỷ</Button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {lstBooking.map((item, index) =>
-                item.lstBookingDetail.map((item1) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item1.serviceName}</td>
-                    <td>{item1.petName}</td>
-                    <td>{item.bookingTime}</td>
-                    <td>{item1.startDate}</td>
-                    <td>{item1.startTime}</td>
-                    <td>{item1.totalPrice}</td>
-                    <td>{item.status}</td>
-                    <td>
-                      <Button variant="danger">Huỷ</Button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </Table>
-        </Modal.Body>
-      </Modal>
+            ))
+          )}
+        </tbody>
+      </Table>
     </div>
   );
 };
 
-BookingNotLogin.propTypes = {
-  phoneOrEmail: PropTypes.string.isRequired,
-  show: PropTypes.func,
-  close: PropTypes.func,
-};
 
 export default BookingNotLogin;

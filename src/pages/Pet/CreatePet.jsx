@@ -9,6 +9,7 @@ import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import Announcement from "../../components/AnnouncementComponent/Announcement";
 import callApi from "../../utlis/request";
+import AcceptRequest from "../../components/AcceptRequestComponent/AcceptRequest";
 
 const CreatePet = ({ show, onHide, sendData }) => {
   const petSpe = useRef(null);
@@ -16,14 +17,15 @@ const CreatePet = ({ show, onHide, sendData }) => {
   const petGender = useRef(null);
   const petWeight = useRef(null);
   const petNeu = useRef(null);
-  const petVaccine = useRef(null);
   const petNote = useRef(null);
   const petBirth = useRef(null);
   const petColor = useRef(null);
   const [showAlert, setShowAlert] = useState(false);
   const [content, setContent] = useState("");
+  const [showRequest, setShowRequest] = useState(false);
 
   const [lstPetSpecies, setLstPetSpecies] = useState([]);
+
   useEffect(() => {
     const layDanhSachLoaiThuCung = async () => {
       try {
@@ -43,8 +45,8 @@ const CreatePet = ({ show, onHide, sendData }) => {
     layDanhSachLoaiThuCung();
   }, []); // Mảng phụ thuộc trống đảm bảo rằng hàm này chỉ chạy một lần khi mount
 
-  const handleCreatePet = async (event) => {
-    event.preventDefault(); // Ngăn chặn hành vi gửi form mặc định
+  const handleCreatePet = async () => {
+    //event.preventDefault(); // Ngăn chặn hành vi gửi form mặc định
 
     const thuCungMoi = {
       ownerId: JSON.parse(sessionStorage.getItem("token")).id,
@@ -55,7 +57,6 @@ const CreatePet = ({ show, onHide, sendData }) => {
       weight: parseFloat(petWeight.current.value),
       neutered: petNeu.current.value === "true",
       originalColor: petColor.current.value,
-      vaccinated: petVaccine.current.value === "true",
       note: petNote.current.value,
     };
 
@@ -70,6 +71,7 @@ const CreatePet = ({ show, onHide, sendData }) => {
           body: JSON.stringify(thuCungMoi),
         }
       );
+      console.log(thuCungMoi)
 
       const result = await response.json();
 
@@ -77,7 +79,7 @@ const CreatePet = ({ show, onHide, sendData }) => {
         setShowAlert(true);
         setContent("Boss của bạn đã được thêm!!!");
         sendData(true);
-        onHide(); // Đóng modal khi thành công
+        onHide();
       } else {
         setContent("Oops!!! Có chút trục trặc mất rùi");
       }
@@ -86,11 +88,16 @@ const CreatePet = ({ show, onHide, sendData }) => {
     }
   };
 
+  const handleShowRequest = (event) => {
+    event.preventDefault();
+    setShowRequest(true);
+  }
+
   return (
     <div>
       <Modal show={show} onHide={onHide} centered>
         <Modal.Body>
-          <Form method="post" onSubmit={handleCreatePet}>
+          <Form method="post">
             <FloatingLabel label="Boss thuộc">
               <Form.Select ref={petSpe}>
                 {lstPetSpecies.length > 0 ? (
@@ -125,12 +132,6 @@ const CreatePet = ({ show, onHide, sendData }) => {
                 <option value={false}>Chưa triệt sản</option>
               </Form.Select>
             </FloatingLabel>
-            <FloatingLabel label="Boss đã tiêm phòng">
-              <Form.Select ref={petVaccine}>
-                <option value={true}>Đã tiêm phòng</option>
-                <option value={false}>Chưa tiêm phòng</option>
-              </Form.Select>
-            </FloatingLabel>
             <FloatingLabel label="Màu lông của boss">
               <Form.Control type="text" ref={petColor} />
             </FloatingLabel>
@@ -138,7 +139,7 @@ const CreatePet = ({ show, onHide, sendData }) => {
               <Form.Control as="textarea" ref={petNote} />
             </FloatingLabel>
             <ButtonGroup>
-              <Button type="submit">Xác nhận boss</Button>
+              <Button onClick={handleShowRequest}>Xác nhận boss</Button>
               <Button type="reset">Nhập lại</Button>
               <Button type="button" onClick={onHide}>
                 Đóng
@@ -151,6 +152,12 @@ const CreatePet = ({ show, onHide, sendData }) => {
         show={showAlert}
         content={content}
         onClose={() => setShowAlert(false)}
+      />
+      <AcceptRequest 
+        show={showRequest}
+        onClose={() => setShowRequest(false)}
+        onAccept={handleCreatePet}
+        content="Xác nhận thêm boss này <3"
       />
     </div>
   );

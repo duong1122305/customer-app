@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   Button,
   Dropdown,
@@ -40,7 +40,7 @@ const BookingInfoChild = ({ conditions }) => {
     }
   ]);
 
-  const [dataCancel, setDataCancel] = useState({
+  const [dataCancel] = useState({
     idBokingOrDetail: null,
     token: null,
     reason: "Khách hủy",
@@ -54,9 +54,9 @@ const BookingInfoChild = ({ conditions }) => {
   const [currentDropdownPage, setCurrentDropdownPage] = useState(1);
   const dropdownsPerPage = 8;
 
-  const filteredGroupedBookings = Object.entries(groupedBookings).filter(
-    ([date, bookings]) => {
-      if (!searchStartDate || !searchEndDate) return true; // Hiển thị tất cả nếu không có khoảng ngày
+  const filteredGroupedBookings = useMemo(() => {
+    return Object.entries(groupedBookings).filter(([date]) => {
+      if (!searchStartDate || !searchEndDate) return true;
       if (searchEndDate < searchStartDate) {
         setShowAnnounce(true);
         setContent("Khoảng ngày của bạn đã chọn sai!!!");
@@ -70,8 +70,8 @@ const BookingInfoChild = ({ conditions }) => {
         bookingDate.isSameOrAfter(startDate, "day") &&
         bookingDate.isSameOrBefore(endDate, "day")
       );
-    }
-  );
+    });
+  }, [groupedBookings, searchStartDate, searchEndDate]);
 
   useEffect(() => {
     const getBooking = async () => {
@@ -197,6 +197,9 @@ const BookingInfoChild = ({ conditions }) => {
     setShowAccept(true);
   };
 
+  const MemoizedAnnouncement = memo(Announcement);
+  const MemoizedAcceptRequest = memo(AcceptRequest);
+
   return (
     <div>
       <div className="d-flex">
@@ -253,6 +256,7 @@ const BookingInfoChild = ({ conditions }) => {
                     <th>Thành tiền</th>
                     <th>Trạng thái</th>
                     <th>Huỷ</th>
+                    <th>Huỷ toàn bộ</th>
                   </tr>
                 </thead>
                 <tbody className="text-center">
@@ -348,12 +352,12 @@ const BookingInfoChild = ({ conditions }) => {
           />
         </Pagination>
       </div>
-      <Announcement
+      <MemoizedAnnouncement
         show={showAnnounce}
         content={content}
         onClose={() => setShowAnnounce(false)}
       />
-      <AcceptRequest
+      <MemoizedAcceptRequest
         show={showAccept}
         content="Xác nhận huỷ lịch ?"
         onClose={() => setShowAccept(false)}
