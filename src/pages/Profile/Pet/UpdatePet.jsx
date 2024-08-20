@@ -164,7 +164,7 @@ const UpdatePet = ({ onHide, show, id, onDataChange }) => {
               />
             </FloatingLabel>
             <ButtonGroup>
-              <Button onClick={handleShowRequest}>Xác nhận boss</Button>
+              <Button onClick={handleShowRequest}>Xác nhận</Button>
               <Button type="reset">Nhập lại</Button>
               <Button type="button" onClick={onHide}>
                 Đóng

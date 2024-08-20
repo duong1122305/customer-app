@@ -18,7 +18,6 @@ import AcceptRequest from "../../../../components/AcceptRequestComponent/AcceptR
 const BookingInfoChild = ({ conditions }) => {
   const token = sessionStorage.getItem("token");
   const id = JSON.parse(token).id;
-  console.log(id);
 
   const searchStartDateRef = useRef(null);
   const searchEndDateRef = useRef(null);
@@ -29,6 +28,7 @@ const BookingInfoChild = ({ conditions }) => {
   const [showAnnounce, setShowAnnounce] = useState(false);
   const [showAccept, setShowAccept] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [isSuccessApi, setIsSuccessApi] = useState(false);
 
   const [groupedBookings, setGroupedBookings] = useState({});
   const [lstBooking, setLstBooking] = useState([
@@ -123,7 +123,10 @@ const BookingInfoChild = ({ conditions }) => {
       }
     };
     getBooking();
-  }, [id]);
+    if(isSuccessApi){
+      getBooking();
+    }
+  }, [id, isSuccessApi]);
 
   useEffect(() => {
     // Cập nhật groupedBookings khi searchDate thay đổi
@@ -181,8 +184,9 @@ const BookingInfoChild = ({ conditions }) => {
       });
       const result = await response.json();
       if (result.isSuccess === true) {
-        setContent(result.data);
+        setContent("Huỷ dịch vụ thành công <3");
         setShowAnnounce(true);
+        setIsSuccessApi(true);
       } else {
         setContent(result.error);
         setShowAnnounce(true);
@@ -267,8 +271,8 @@ const BookingInfoChild = ({ conditions }) => {
                       </td>
                     </tr>
                   ) : (
-                    currentItems.map((booking, index) => (
-                      <tr key={index}>
+                    currentItems.map((booking) => (
+                      <tr key={Math.random()}>
                         <td>{booking.idBooking}</td>
                         <td>{booking.serviceName}</td>
                         <td>{booking.petName}</td>
@@ -279,7 +283,7 @@ const BookingInfoChild = ({ conditions }) => {
                         <td>{getStatusString(booking.status)}</td>
                         <td>
                           <Button
-                            disabled={booking.status === 3 ? true : false}
+                            disabled={booking.status === 3 || booking.status === 0 ? true : false}
                             variant="danger"
                             onClick={() => handleAccept(booking.idBookingDetail)}
                           >
@@ -359,7 +363,7 @@ const BookingInfoChild = ({ conditions }) => {
       />
       <MemoizedAcceptRequest
         show={showAccept}
-        content="Xác nhận huỷ lịch ?"
+        content="Xác nhận huỷ dịch vụ này ?"
         onClose={() => setShowAccept(false)}
         onAccept={() => cancelBooking(selectedId)}
       />
