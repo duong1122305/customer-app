@@ -63,7 +63,7 @@ function App() {
             <Route path="/success" element={<Success />} />
           </Route>
           <Route path="/" element={<NotThingLayout />}>
-            <Route path="/report" element={<ReportByGuest />} />
+            <Route path="/report/:id" element={<ReportByGuest />} />
           </Route>
         </Routes>
       </div>

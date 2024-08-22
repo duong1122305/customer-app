@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "./StarRating.css";
+import PropTypes from "prop-types";
 
-const StarRating = () => {
+const StarRating = ({ getStar }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
 
@@ -16,7 +17,10 @@ const StarRating = () => {
               type="radio"
               name="rating"
               value={ratingValue}
-              onClick={() => setRating(ratingValue)}
+              onClick={() => {
+                setRating(ratingValue);
+                getStar(ratingValue);
+              }}
             />
             <span
               className={`star ${
@@ -32,6 +36,10 @@ const StarRating = () => {
       })}
     </div>
   );
+};
+
+StarRating.propTypes = {
+  getStar: PropTypes.func,
 };
 
 export default StarRating;
