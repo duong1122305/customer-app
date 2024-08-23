@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './OTPVerificationC.css'; // Import CSS file for styling
-import Reset from './Reset'; // Import Reset component for password reset
+import { useState, useEffect, useRef } from "react";
+import "./OTPVerificationC.css"; // Import CSS file for styling
+import Reset from "./Reset"; // Import Reset component for password reset
+import PropTypes from "prop-types";
 
 const OTPVerification = ({ email }) => {
   const [timerCount, setTimerCount] = useState(60); // Countdown timer
-  const [otpInput, setOtpInput] = useState(['', '', '', '', '', '']); // OTP input array
+  const [otpInput, setOtpInput] = useState(["", "", "", "", "", ""]); // OTP input array
   const [disableResend, setDisableResend] = useState(false); // Disable resend OTP button state
   const [otpVerified, setOtpVerified] = useState(false); // State to track OTP verification
 
@@ -37,8 +38,8 @@ const OTPVerification = ({ email }) => {
     setTimeout(() => {
       setDisableResend(true); // Disable resend button
       setTimerCount(60); // reset time gửi lại mã
-      startTimer(); 
-      alert('Mã xác thực đã được gửi về email của bạn');
+      startTimer();
+      alert("Mã xác thực đã được gửi về email của bạn");
     }, 1500);
   };
 
@@ -60,14 +61,14 @@ const OTPVerification = ({ email }) => {
     // Ensure only digits are entered
     const regex = /^[0-9]*$/;
     if (!regex.test(value)) {
-      return; 
+      return;
     }
 
     const updatedOtpInput = [...otpInput];
     updatedOtpInput[index] = value;
     setOtpInput(updatedOtpInput);
 
-    if (value !== '') {
+    if (value !== "") {
       focusNextInput(index); // Move focus to the next input if value is entered
     } else {
       focusPreviousInput(index); // Move focus to the previous input if value is deleted
@@ -77,12 +78,12 @@ const OTPVerification = ({ email }) => {
   // Function to verify OTP
   const verifyOTP = (e) => {
     e.preventDefault();
-    const enteredOTP = otpInput.join('');
+    const enteredOTP = otpInput.join("");
 
-    if (enteredOTP === '123456') {
+    if (enteredOTP === "123456") {
       setOtpVerified(true); // Set OTP verification state to true
     } else {
-      alert('Mã OTP không chính xác. Vui lòng thử lại!');
+      alert("Mã OTP không chính xác. Vui lòng thử lại!");
     }
   };
 
@@ -114,13 +115,17 @@ const OTPVerification = ({ email }) => {
               Xác nhận OTP
             </button>
             <div className="resend-container" style={{ marginTop: 10 }}>
-              <p style={{ marginTop: 20, marginRight: 10 }}>Chưa nhận được mã?</p>
+              <p style={{ marginTop: 20, marginRight: 10 }}>
+                Chưa nhận được mã?
+              </p>
               <button
                 onClick={resendOTP}
-                className={`resend-button ${disableResend ? 'disabled' : ''}`}
+                className={`resend-button ${disableResend ? "disabled" : ""}`}
                 disabled={disableResend}
               >
-                {disableResend ? `Gửi lại OTP trong ${timerCount}s` : 'Gửi lại OTP'}
+                {disableResend
+                  ? `Gửi lại OTP trong ${timerCount}s`
+                  : "Gửi lại OTP"}
               </button>
             </div>
           </div>
@@ -130,6 +135,10 @@ const OTPVerification = ({ email }) => {
       )}
     </div>
   );
+};
+
+OTPVerification.propTypes = {
+  email: PropTypes.string.isRequired,
 };
 
 export default OTPVerification;

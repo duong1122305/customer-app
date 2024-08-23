@@ -8,6 +8,8 @@ import callApi from "../../utlis/request";
 const ReportByGuest = () => {
   const [star, setStar] = useState(0);
   const commentRef = useRef(null);
+  const [isDisable, setIsDisable] = useState(false);
+
   //get param in url
   const location = useLocation();
   const param = location.pathname.split("/");
@@ -42,7 +44,7 @@ const ReportByGuest = () => {
       });
       const result = await response.json();
       if (result.isSuccess) {
-        console.log("ok");
+        setIsDisable(true);
       } else {
         console.log(result.error);
       }
@@ -53,7 +55,7 @@ const ReportByGuest = () => {
 
   return (
     <div className="total">
-      <div className="total_form">
+      <div className="total_form" style={isDisable ? {display:"none"} : {display: "block"}}>
         <Form>
           <FloatingLabel className="star">
             <StarRating getStar={handleGetStar} />
@@ -63,8 +65,6 @@ const ReportByGuest = () => {
             <Form.Control
               as="textarea"
               className="input_area"
-              cols={10}
-              rows={10}
               ref={commentRef}
             />
           </label>
@@ -72,6 +72,12 @@ const ReportByGuest = () => {
             Gửi
           </Button>
         </Form>
+      </div>
+      <div>
+        <div style={isDisable ? {display: "block"} : {display:"none"}} className="text-center">
+          <h1>Cảm ơn bạn đã đánh giá 🩷</h1>
+          <Button onClick={() => {window.location.href = "/"}} className="mt-2">Quay về trang chủ</Button>
+        </div>
       </div>
     </div>
   );

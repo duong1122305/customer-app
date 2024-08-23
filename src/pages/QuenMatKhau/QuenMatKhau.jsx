@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import OTPVerification from './OTPVerification'; // Import component OTPVerification
 import './QuenMatKhau.css'; // Import CSS file for styling
 
