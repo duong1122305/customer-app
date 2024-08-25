@@ -251,7 +251,7 @@ const NotLogin = () => {
             >
               {lstVoucher.map((vouchers, index) => (
                 <option key={index} value={vouchers.id}>
-                  {vouchers.voucherName}
+                  {vouchers.voucherName} | {vouchers.discountPercent}%
                 </option>
               ))}
             </Form.Select>

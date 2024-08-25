@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { faCalendar, faHouse, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faCalendar, faHouse, faPassport, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Button, Nav } from "react-bootstrap";
@@ -9,6 +9,7 @@ import Pet from "../Pet/Pet";
 import { useNavigate } from 'react-router-dom';
 import BookingInfo from '../BookingInfo/BookingInfo';
 import { faAdjust } from '@fortawesome/free-solid-svg-icons/faAdjust';
+import ChangePass from '../ChangePass/ChangePass';
 
 const Sidebar = ({ onItemClick }) => {
   const navigate = useNavigate();
@@ -50,6 +51,9 @@ const Sidebar = ({ onItemClick }) => {
       </Nav.Link>
       <Nav.Link onClick={() => onItemClick(<BookingInfo />)}>
         <FontAwesomeIcon icon={faCalendar} /> Lịch của bạn
+      </Nav.Link>
+      <Nav.Link onClick={() => onItemClick(<ChangePass />)}>
+        <FontAwesomeIcon icon={faPassport} /> Đổi mật khẩu
       </Nav.Link>
 
       <Button variant="link" className="sign-out" onClick={toFirst}>

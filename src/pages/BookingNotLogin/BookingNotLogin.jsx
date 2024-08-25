@@ -4,6 +4,7 @@ import callApi from "../../utlis/request";
 import { useLocation, useParams } from "react-router-dom";
 import AcceptRequest from "../../components/AcceptRequestComponent/AcceptRequest";
 import Annoucement from "../../components/AnnouncementComponent/Announcement";
+import "./BookingNotLogin.css";
 
 const BookingNotLogin = () => {
   const [lstBooking, setLstBooking] = useState([
@@ -61,12 +62,9 @@ const BookingNotLogin = () => {
           const result = await response.json();
           if (result.isSuccess === true) {
             setLstBooking(result.data);
-            setShowAnnouce(true);
-            setContent("Huỷ thành công");
           } else {
             setShowAnnouce(true);
             setContent(result.error);
-            console.log(result.error);
           }
         };
         getBooking();
@@ -102,7 +100,7 @@ const BookingNotLogin = () => {
         setContent("Huỷ dịch vụ thành công");
       } else {
         setShowAnnouce(true);
-        setContent(result.error);
+        setContent("Huỷ thất bại");
       }
     } catch (error) {
       console.error(error);
@@ -110,8 +108,10 @@ const BookingNotLogin = () => {
   };
 
   return (
-    <div>
-      <Table>
+    <div className="ok">
+    <h4>Các dịch vụ đã đặt</h4>
+    <p style={{fontSize:"11px", color:"red"}}>*Bạn có thể huỷ từng dịch vụ một</p>
+      <Table striped bordered>
         <thead>
           <tr>
             <th>STT</th>

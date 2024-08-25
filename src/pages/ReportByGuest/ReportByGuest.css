@@ -13,6 +13,10 @@
     justify-self: center;
 }
 
+p{
+    font-size: 0.8rem;
+}
+
 .comment {
     justify-self: center;
     width: 75%;
@@ -25,7 +29,7 @@
 }
 
 .btn_gui {
-    width: 20%;
+    width: 10%;
     justify-self: center;
     height: 120%;
     font-size: 1.0rem;

@@ -10,6 +10,7 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
     serviceDetails: []
   }]);
   const [selectedServices, setSelectedServices] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCheckboxChange = (serviceId) => {
     setSelectedServices((prevSelected) => {
@@ -20,6 +21,17 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
       }
     });
   };
+
+  const filteredServices = searchQuery
+  ? lstServices
+      .map((service) => ({
+        ...service,
+        serviceDetails: service.serviceDetails.filter((detail) =>
+          detail.description.toLowerCase().includes(searchQuery.toLowerCase())
+        ),
+      }))
+      .filter((service) => service.serviceDetails.length > 0) // Only keep services with matching details
+  : lstServices;
   
   useEffect(() => {
     const handleServices = async () => {
@@ -53,8 +65,10 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
             className="mb-2"
             type="text"
             placeholder="Tìm kiếm ..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
-          {lstServices.map((services, index) => (
+          {filteredServices.map((services, index) => (
             <Dropdown key={index}>
               <Dropdown.Toggle
                 variant="secondary"
@@ -64,36 +78,31 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
                 {services.serviceName}
               </Dropdown.Toggle>
               <Dropdown.Menu className="w-100">
-                <Table>
+                <Table striped bordered style={{width:"100%"}}>
                   <thead>
                     <tr>
                       <td>STT</td>
                       <td>Kiểu</td>
                       <td>Giá</td>
-                      <td>Khoảng thời gian làm</td>
+                      <td>Khoảng thời gian làm (dự kiến)</td>
                       <td>Chọn</td>
                     </tr>
                   </thead>
                   <tbody>
-                    {services.serviceDetails
-                      .map((serviceDetail, stt) => (
-                        <tr key={stt}>
-                          <td>{stt + 1}</td>
-                          <td>{serviceDetail.description}</td>
-                          <td>{serviceDetail.price}</td>
-                          <td>{serviceDetail.duration}</td>
-                          <td>
-                            <Form.Check
-                              checked={selectedServices.includes(
-                                serviceDetail.id
-                              )}
-                              onChange={() =>
-                                handleCheckboxChange(serviceDetail.id)
-                              }
-                            />
-                          </td>
-                        </tr>
-                      ))}
+                    {services.serviceDetails.map((serviceDetail, stt) => (
+                      <tr key={stt}>
+                        <td>{stt + 1}</td>
+                        <td>{serviceDetail.description}</td>
+                        <td>{serviceDetail.price}</td>
+                        <td>{serviceDetail.duration}</td>
+                        <td>
+                          <Form.Check
+                            checked={selectedServices.includes(serviceDetail.id)}
+                            onChange={() => handleCheckboxChange(serviceDetail.id)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </Table>
               </Dropdown.Menu>

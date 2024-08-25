@@ -2,12 +2,19 @@ import { useState, useEffect, useRef } from "react";
 import "./OTPVerificationC.css"; // Import CSS file for styling
 import Reset from "./Reset"; // Import Reset component for password reset
 import PropTypes from "prop-types";
+import callApi from "../../utlis/request";
 
-const OTPVerification = ({ email }) => {
+const OTPVerification = ({ emailSend }) => {
   const [timerCount, setTimerCount] = useState(60); // Countdown timer
   const [otpInput, setOtpInput] = useState(["", "", "", "", "", ""]); // OTP input array
   const [disableResend, setDisableResend] = useState(false); // Disable resend OTP button state
   const [otpVerified, setOtpVerified] = useState(false); // State to track OTP verification
+  const [data] = useState({
+    verifyCode: "",
+    email: emailSend,
+  });
+  console.log(emailSend);
+  const [code, setCode] = useState("");
 
   const inputRefs = useRef([]); // Ref to hold references to all OTP input elements
 
@@ -76,14 +83,32 @@ const OTPVerification = ({ email }) => {
   };
 
   // Function to verify OTP
-  const verifyOTP = (e) => {
+  const verifyOTP = async (e) => {
     e.preventDefault();
     const enteredOTP = otpInput.join("");
-
-    if (enteredOTP === "123456") {
-      setOtpVerified(true); // Set OTP verification state to true
-    } else {
-      alert("Mã OTP không chính xác. Vui lòng thử lại!");
+    console.log(enteredOTP);
+    
+    const newData = {
+      ...data,
+      verifyCode: enteredOTP,
+    }
+    console.log(newData);
+    try {
+      const response = await callApi(`GuestManager/check-verify-code?confirmCode=${newData.verifyCode}&email=${newData.email}`, {
+        method: "POST",
+        headers: {
+          "Content-Type":"application/json"
+        },
+      });
+      const result = await response.json();
+      if(result.isSuccess){
+        setOtpVerified(true);
+        setCode(result.data)
+      }else{
+        console.error(result.error);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -131,14 +156,14 @@ const OTPVerification = ({ email }) => {
           </div>
         </div>
       ) : (
-        <Reset />
+        <Reset verifyCode={code}/>
       )}
     </div>
   );
 };
 
 OTPVerification.propTypes = {
-  email: PropTypes.string.isRequired,
+  emailSend: PropTypes.string,
 };
 
 export default OTPVerification;

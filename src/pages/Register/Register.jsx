@@ -157,7 +157,7 @@ const Register = (props) => {
       const result = await response.json();
       if (result.isSuccess == true) {
         setShowAnnoun(true);
-        setContentAnnoun("Đăng ký thành công");
+        setContentAnnoun("Mã xác minh đã gửi tới email của bạn");
         handleClose();
       } else {
         setShowAnnoun(true);

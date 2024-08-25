@@ -1,14 +1,15 @@
 import { Button, FloatingLabel, Form } from "react-bootstrap";
 import StarRating from "../../components/StarRatingComponent/StarRating";
 import "./ReportByGuest.css";
-import { useRef, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import callApi from "../../utlis/request";
 
 const ReportByGuest = () => {
   const [star, setStar] = useState(0);
   const commentRef = useRef(null);
   const [isDisable, setIsDisable] = useState(false);
+  const navigate = useNavigate(); 
 
   //get param in url
   const location = useLocation();
@@ -24,16 +25,15 @@ const ReportByGuest = () => {
 
   const handleGetStar = (selectedRating) => {
     setStar(selectedRating); // Update the state in the parent
-    console.log("Selected rating:", selectedRating);
   };
 
-  const handleRating = async () => {
+  const handleRating = async (e) => {
+    e.preventDefault();
     const data = {
       ...rating,
       comment: commentRef.current.value,
       rate: star,
     };
-    console.log(data);
     try {
       const response = await callApi("Report/create-report", {
         method: "POST",
@@ -53,10 +53,20 @@ const ReportByGuest = () => {
     }
   };
 
+  useEffect(() => {
+    if (isDisable) {
+      const timer = setTimeout(() => {
+        navigate("/", { replace: true }); // Chuyển hướng và thay thế trang hiện tại
+      }, 1000); 
+
+      return () => clearTimeout(timer); // Dọn dẹp timeout khi component unmount
+    }
+  }, [isDisable, navigate]);
+
   return (
     <div className="total">
       <div className="total_form" style={isDisable ? {display:"none"} : {display: "block"}}>
-        <Form>
+        <Form onSubmit={handleRating}>
           <FloatingLabel className="star">
             <StarRating getStar={handleGetStar} />
           </FloatingLabel>
@@ -68,7 +78,7 @@ const ReportByGuest = () => {
               ref={commentRef}
             />
           </label>
-          <Button className="btn_gui" onClick={handleRating}>
+          <Button className="btn_gui" type="submit">
             Gửi
           </Button>
         </Form>
@@ -76,7 +86,6 @@ const ReportByGuest = () => {
       <div>
         <div style={isDisable ? {display: "block"} : {display:"none"}} className="text-center">
           <h1>Cảm ơn bạn đã đánh giá 🩷</h1>
-          <Button onClick={() => {window.location.href = "/"}} className="mt-2">Quay về trang chủ</Button>
         </div>
       </div>
     </div>

@@ -29,25 +29,25 @@ function SessionProvider({ children }) {
     });
     const result = await response.json();
     
-    const decode = jwtDecode(result.data);
-    const tokenValue = {
-      name: decode[
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"
-      ],
-      email:
-        decode[
-          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-        ],
-      username:
-        decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-      id: decode[
-        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
-      ],
-    };
-    const objValue = JSON.stringify(tokenValue);
     // console.log(result);
-
+    
     if (result.isSuccess === true) {
+      const decode = jwtDecode(result.data);
+      const tokenValue = {
+        name: decode[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata"
+        ],
+        email:
+          decode[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+          ],
+        username:
+          decode["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+        id: decode[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ],
+      };
+      const objValue = JSON.stringify(tokenValue);
       setIsLogin(true);
       sessionStorage.setItem("token", objValue);
       return true;

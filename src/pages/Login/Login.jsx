@@ -4,12 +4,15 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Nav } from "react-bootstrap";
 import { SessionContext } from "../../contex/SessionContex";
+import Announcement from "../../components/AnnouncementComponent/Announcement";
 
 const Login = ({ onHide, onLogin, ...props }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
   const sessionContext = useContext(SessionContext);
+  const [show, setShow] = useState(false);
+  const [content, setContent] = useState("");
 
   const handleClose = () => {
     // Xoá dữ liệu đã nhập khi đóng modal
@@ -43,10 +46,16 @@ const Login = ({ onHide, onLogin, ...props }) => {
     var result = await sessionContext.handleLogin(postData);
     if (result === true) {
       onLogin();
+      setShow(true);
+      setContent("Đăng nhập thành công");
+    }else{
+      setShow(true);
+      setContent("Đăng nhập thất bại");
     }
   }
 
   return (
+    <>
     <Modal
       {...props}
       size="md"
@@ -94,7 +103,7 @@ const Login = ({ onHide, onLogin, ...props }) => {
             className="text-align-end"
             style={{ textAlign: "end", marginTop: 10 }}
           >
-            <Nav.Link as={Link} to="/forgot-password">
+            <Nav.Link as={Link} to="/forgot-password" onClick={()=> onHide()}>
               Quên mật khẩu
             </Nav.Link>
           </Form.Group>
@@ -106,6 +115,12 @@ const Login = ({ onHide, onLogin, ...props }) => {
         </Form>
       </Modal.Body>
     </Modal>
+    <Announcement 
+      onClose={() => setShow(false)}
+      show={show}
+      content={content}
+    />
+    </>
   );
 };
 

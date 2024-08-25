@@ -190,9 +190,6 @@ export default function Header() {
                 <NavDropdown.Item as={Link} to="/profile">
                   Thông tin
                 </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/">
-                  Đổi mật khẩu
-                </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item as={Link} to="/" onClick={handleLogout}>
                   Đăng xuất

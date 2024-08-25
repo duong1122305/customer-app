@@ -248,7 +248,7 @@ const BookingInfoChild = ({ conditions }) => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="w-100">
-              <Table bordered responsive>
+              <Table bordered responsive striped>
                 <thead className="text-center">
                   <tr>
                     <th>STT</th>
