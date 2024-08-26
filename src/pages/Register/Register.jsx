@@ -74,16 +74,6 @@ const Register = (props) => {
     } else if (trimmedPassword !== trimmedConfirmPassword) {
       setShowError(true);
     } else {
-      console.log(
-        "Email:",
-        trimmedEmail,
-        "Password:",
-        trimmedPassword,
-        "Confirm Password:",
-        trimmedConfirmPassword,
-        "File",
-        selectedFile
-      );
       const postData = {
         name: name,
         gender: true,
