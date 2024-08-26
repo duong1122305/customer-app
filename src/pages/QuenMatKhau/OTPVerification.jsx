@@ -33,11 +33,27 @@ const OTPVerification = ({ emailSend }) => {
   };
 
   // Function to resend OTP
-  const resendOTP = () => {
+  const resendOTP = async (e) => {
     if (disableResend) return;
-
-    // Simulate sending email to receive OTP
-    simulateSendEmail();
+    e.preventDefault();
+    try {
+      console.log(emailSend);
+      const response = await callApi(`GuestManager/forgot-pass?email=${emailSend}`, {
+        method: "POST",
+        headers: {
+          "Content-Type" : "application/json",
+        },
+      });
+      const result = await response.json()
+      if(result.isSuccess){
+        simulateSendEmail();
+        console.log("ok");
+      }else{
+        console.log(result.error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const simulateSendEmail = () => {
@@ -136,6 +152,7 @@ const OTPVerification = ({ emailSend }) => {
                 />
               ))}
             </div>
+            <p>{emailSend}</p>
             <button onClick={verifyOTP} className="button">
               Xác nhận OTP
             </button>

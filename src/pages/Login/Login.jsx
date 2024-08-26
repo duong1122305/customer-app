@@ -36,18 +36,18 @@ const Login = ({ onHide, onLogin, ...props }) => {
       };
       handleLogin(postData);
       // Sau khi đăng nhập thành công thì có thể ẩn modal và xoá dữ liệu
-      setUsername("");
-      setPassword("");
-      onHide();
     }
   };
-
+  
   async function handleLogin(postData) {
     var result = await sessionContext.handleLogin(postData);
     if (result === true) {
       onLogin();
       setShow(true);
       setContent("Đăng nhập thành công");
+      setUsername("");
+      setPassword("");
+      onHide();
     }else{
       setShow(true);
       setContent("Đăng nhập thất bại");

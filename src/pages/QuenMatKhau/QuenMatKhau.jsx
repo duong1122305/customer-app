@@ -43,7 +43,7 @@ const ForgotPassword = () => {
     <div className="forgot-password-container">
       <div className="card-tl2">
         <div className="form-container">
-          <h2 className="title">Quên mật khẩu</h2>
+          <h2 className="title" style={step === 2 ? {display:"none"} : {display:"block"}}>Quên mật khẩu</h2>
           {step === 1 && (
             <Form onSubmit={handleSendEmail}>
               <Form.Control

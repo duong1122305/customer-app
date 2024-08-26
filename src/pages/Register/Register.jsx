@@ -21,6 +21,7 @@ const Register = (props) => {
   const [provinces, setProvince] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
+  const [errors, setError] = useState({});
 
   const [selectedProvinces, setSelectedProvinces] = useState({
     id: "89",
@@ -50,30 +51,56 @@ const Register = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const trimmedName = name.trim();
-    const trimmedPhone = phone.trim();
-    const trimmedEmail = email.trim();
-    const trimmedUsername = username.trim();
-    const trimmedPassword = password.trim();
-    const trimmedConfirmPassword = confirmPassword.trim();
+    const newError = {};
 
-    if (!trimmedEmail || !trimmedPassword || !trimmedConfirmPassword) {
-      setShowError(true);
-    } else if (!trimmedName) {
-      setShowError(true);
-    } else if (
-      !trimmedPhone ||
-      trimmedPhone.length < 10 ||
-      trimmedPhone.length > 10
+    const regex = /[^a-zA-Z\s]/g;
+    if (name.trim().length < 0 || name.trim().length === 0) {
+      newError.name = "Tên không được để trống";
+    } else if (name.trim().length < 3 || name.trim().length > 50) {
+      newError.name = "Tên không được nhỏ hơn 3 hoặc lớn hơn 50 ký tự";
+    } else if (!regex.test(name.trim())) {
+      newError.name = "Tên không được chứa ký tự đặc biệt và số";
+    }
+
+    if (password.trim().length < 0 || name.trim().length === 0) {
+      newError.password = "Mật khẩu không được để trống";
+    } else if (password.trim().length < 6 || password.trim().length > 20) {
+      newError.password = "Mật khẩu phải từ 6 đến 20 ký tự";
+    }
+
+    const phoneRegex = /^(03[2-9]|05[689]|07[06-9]|08[1-689]|09[0-46-9])\d{7}$/;
+    if (phone.trim().length < 0 || phone.trim().length > 11) {
+      newError.phone = "SĐT không được để trống";
+    } else if (!phoneRegex.test(phone)) {
+      newError.phoneNumber = "SĐT không hợp lệ";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email.trim().length < 0 || email.trim().length === 0) {
+      newError.email = "Email không được để trống";
+    } else if (!emailRegex.test(email)) {
+      newError.email = "Email không hợp lệ";
+    }
+
+    if (username.trim().length < 0 || username.trim().length === 0) {
+      newError.userName = "Tên tài khoản không được để trống";
+    } else if (username.trim().length < 5 || username.trim().length > 20) {
+      newError.userName =
+        "Tên tài khoản không được nhỏ hơn 5 hoặc quá 20 ký tự";
+    }
+
+    if (
+      confirmPassword.trim().length < 0 ||
+      confirmPassword.trim().length === 0
     ) {
-      setShowError(true);
-    } else if (!trimmedUsername) {
-      setShowError(true);
-    } else if (trimmedPassword.length < 6 || trimmedPassword.length > 20) {
-      setShowError(true);
-    } else if (trimmedPassword !== trimmedConfirmPassword) {
-      setShowError(true);
-    } else {
+      newError.confirmPassword = "Không được để trống trường này";
+    } else if (confirmPassword.trim() !== password.trim()) {
+      newError.confirmPassword = "Mật khẩu không khớp";
+    }
+
+    setError(newError);
+
+    if (Object.keys(newError).length === 0) {
       const postData = {
         name: name,
         gender: true,
@@ -167,13 +194,13 @@ const Register = (props) => {
     setShowError(false);
   };
 
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  // const toggleShowPassword = () => {
+  //   setShowPassword(!showPassword);
+  // };
 
-  const toggleShowConfirmPassword = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
+  // const toggleShowConfirmPassword = () => {
+  //   setShowConfirmPassword(!showConfirmPassword);
+  // };
 
   const handleProvincesChange = (event) => {
     const selectedOption = provinces.find(
@@ -225,11 +252,8 @@ const Register = (props) => {
                 placeholder="Nhập họ và tên"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                isInvalid={showError && !name.trim()}
               />
-              <Form.Control.Feedback type="invalid">
-                Vui lòng nhập họ và tên của bạn.
-              </Form.Control.Feedback>
+              {errors.name && <div className="text-danger">{errors.name}</div>}
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPhone">
               <Form.Label>SĐT</Form.Label>
@@ -238,15 +262,15 @@ const Register = (props) => {
                 placeholder="Nhập SĐT"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                isInvalid={
-                  (showError && !phone.trim()) ||
-                  (phone.trim() && phone.length < 10) ||
-                  phone.length > 10
-                }
+                // isInvalid={
+                //   (showError && !phone.trim()) ||
+                //   (phone.trim() && phone.length < 10) ||
+                //   phone.length > 10
+                // }
               />
-              <Form.Control.Feedback type="invalid">
-                Vui lòng nhập SĐT của bạn, SĐT phải đủ 10 ký tự.
-              </Form.Control.Feedback>
+              {errors.phoneNumber && (
+                <div className="text-danger">{errors.phoneNumber}</div>
+              )}
             </Form.Group>
             <Form.Group>
               <Form.Label>Địa chỉ</Form.Label>
@@ -290,11 +314,11 @@ const Register = (props) => {
                 placeholder="Nhập tên đăng nhập"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                isInvalid={showError && !username.trim()}
+                // isInvalid={showError && !username.trim()}
               />
-              <Form.Control.Feedback type="invalid">
-                Vui lòng nhập tên đăng nhập.
-              </Form.Control.Feedback>
+              {errors.userName && (
+                <div className="text-danger">{errors.userName}</div>
+              )}
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email</Form.Label>
@@ -303,68 +327,48 @@ const Register = (props) => {
                 placeholder="Nhập email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                isInvalid={showError && !email.trim()}
+                // isInvalid={showError && !email.trim()}
               />
-              <Form.Control.Feedback type="invalid">
-                Vui lòng nhập địa chỉ email.
-              </Form.Control.Feedback>
+              {errors.email && (
+                <div className="text-danger">{errors.email}</div>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Mật khẩu</Form.Label>
-              <div className="input-group">
-                <Form.Control
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Nhập mật khẩu (6-8 ký tự)"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  isInvalid={
-                    (showError && !password.trim()) ||
-                    (password.trim() &&
-                      (password.length < 6 || password.length > 20))
-                  }
-                  style={{ flex: 1 }}
-                />
-                <Button
-                  variant="outline-secondary"
-                  onClick={toggleShowPassword}
-                  className="password-toggle-btn"
-                  style={{ marginLeft: -1 }}
-                >
-                  {showPassword ? "Ẩn" : "Hiện"}
-                </Button>
-                <Form.Control.Feedback type="invalid">
-                  Vui lòng nhập mật khẩu từ 6-20 ký tự.
-                </Form.Control.Feedback>
-              </div>
+              <Form.Control
+                type={showPassword ? "text" : "password"}
+                placeholder="Nhập mật khẩu (6-8 ký tự)"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                // isInvalid={
+                //   (showError && !password.trim()) ||
+                //   (password.trim() &&
+                //     (password.length < 6 || password.length > 20))
+                // }
+                style={{ flex: 1 }}
+              />
+              {errors.password && (
+                <div className="text-danger">{errors.password}</div>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
               <Form.Label>Nhập lại mật khẩu</Form.Label>
-              <div className="input-group">
-                <Form.Control
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Nhập lại mật khẩu"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  isInvalid={
-                    (showError && !confirmPassword.trim()) ||
-                    (confirmPassword.trim() && confirmPassword !== password)
-                  }
-                  style={{ flex: 1 }}
-                />
-                <Button
-                  variant="outline-secondary"
-                  onClick={toggleShowConfirmPassword}
-                  className="password-toggle-btn"
-                  style={{ marginLeft: -1 }}
-                >
-                  {showConfirmPassword ? "Ẩn" : "Hiện"}
-                </Button>
-                <Form.Control.Feedback type="invalid">
-                  Vui lòng nhập lại mật khẩu và phải khớp với mật khẩu đã nhập.
-                </Form.Control.Feedback>
-              </div>
+              <Form.Control
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Nhập lại mật khẩu"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                // isInvalid={
+                //   (showError && !confirmPassword.trim()) ||
+                //   (confirmPassword.trim() && confirmPassword !== password)
+                // }
+                style={{ flex: 1 }}
+              />
+              {errors.confirmPassword && (
+                <div className="text-danger">{errors.confirmPassword}</div>
+              )}
             </Form.Group>
             <Form.Group>
               <Form.Label>Thêm ảnh</Form.Label>
@@ -380,6 +384,7 @@ const Register = (props) => {
                 Đăng ký
               </Button>
               <Button type="reset">Nhập lại</Button>
+              <Button onClick={handleClose}>Đóng</Button>
             </div>
           </Form>
         </Modal.Body>
