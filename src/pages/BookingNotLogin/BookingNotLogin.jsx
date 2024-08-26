@@ -45,7 +45,7 @@ const BookingNotLogin = () => {
         return "Không xác định";
     }
   };
-
+const [isTrue,setIsTrue] =useState(false);
   useEffect(() => {
     try {
       if (phoneOrEmail !== null || phoneOrEmail !== undefined) {
@@ -62,12 +62,16 @@ const BookingNotLogin = () => {
           const result = await response.json();
           if (result.isSuccess === true) {
             setLstBooking(result.data);
+            
           } else {
             setShowAnnouce(true);
             setContent(result.error);
           }
         };
         getBooking();
+        if  (isTrue){
+          getBooking();
+        }
       } else {
         console.error();
       }
@@ -79,6 +83,8 @@ const BookingNotLogin = () => {
   const handleShowAccept = (id) => {
     setShowAccept(true);
     setIdBooking(id);
+    console.log(id);
+    
   };
 
   const handleCancelBookingDetail = async (id) => {
@@ -98,9 +104,10 @@ const BookingNotLogin = () => {
       if (result.isSuccess) {
         setShowAnnouce(true);
         setContent("Huỷ dịch vụ thành công");
+        setIsTrue(true);
       } else {
         setShowAnnouce(true);
-        setContent("Huỷ thất bại");
+        setContent(result.error);
       }
     } catch (error) {
       console.error(error);
@@ -143,7 +150,7 @@ const BookingNotLogin = () => {
                     disabled={
                       item1.status === 3 || item1.status === 0 ? true : false
                     }
-                    onClick={() => handleShowAccept(item1.id)}
+                    onClick={() => handleShowAccept(item1.idBookingDetail)}
                   >
                     Huỷ
                   </Button>

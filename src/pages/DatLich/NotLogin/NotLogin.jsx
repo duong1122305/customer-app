@@ -81,7 +81,7 @@ const NotLogin = () => {
 
       const result = await response.json();
       if (result.isSuccess === true) {
-        setLstPet(result.data);
+        setLstPet(result.data.filter(c => c.isDelete !=1));
       } else {
         console.log(result.error);
       }

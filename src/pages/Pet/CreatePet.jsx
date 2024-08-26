@@ -38,7 +38,7 @@ const CreatePet = ({ show, onHide, sendData }) => {
         const response = await callApi("PetSpecies/get-all");
         const result = await response.json();
         if (result.isSuccess) {
-          setLstPetSpecies(result.data);
+          setLstPetSpecies(result.data.filter(c => c.isDelete !=1));
         } else {
           console.log("Chào bạn");
         }
