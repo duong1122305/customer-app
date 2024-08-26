@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Button, Pagination, Table } from "react-bootstrap";
+import { Button, Container, Pagination, Table } from "react-bootstrap";
 import callApi from "../../../utlis/request";
 import moment from "moment";
 import UpdatePet from "./UpdatePet";
+import "./Pet.css";
+import CreatePet from "../../Pet/CreatePet";
 
 const Pet = () => {
   const [lstPet, setLstPet] = useState([]);
@@ -11,6 +13,8 @@ const Pet = () => {
   const [dataChange, setDataChange] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [petsPerPage] = useState(15);
+  const [showCreate, setShowCreate] = useState(false);
+  const [ifTrue, setIfTrue] = useState(false);
 
   const token = sessionStorage.getItem("token");
   const tokenResult = JSON.parse(token);
@@ -24,6 +28,10 @@ const Pet = () => {
   const handleDataChange = (data) => {
     setDataChange(data);
   }
+
+  const getDataFromChild = (dataChild) => {
+    setIfTrue(dataChild);
+  };
 
   useEffect(() => {
     const getPet = async () => {
@@ -44,7 +52,10 @@ const Pet = () => {
     if(dataChange){
       getPet();
     }
-  }, [id, dataChange]);
+    if(ifTrue){
+      getPet();
+    }
+  }, [id, dataChange, ifTrue]);
 
   const indexOfLastPet = currentPage * petsPerPage;
   const indexOfFirstPet = indexOfLastPet - petsPerPage;
@@ -52,9 +63,15 @@ const Pet = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const handleShowCreate = () => {
+    setShowCreate(true);
+  }
+
   return (
-    <>
-      <Table striped bordered hover>
+    <Container className="con_pet">
+    <p className="text-danger mt-2">* Tải lại trang nếu không thấy sự thay đổi sau khi cập nhật</p>
+    <Button onClick={handleShowCreate} className="mb-2">Thêm pet</Button>
+      <Table striped bordered hover className="w-100">
         <thead>
           <tr>
             <th>STT</th>
@@ -105,7 +122,12 @@ const Pet = () => {
         id={idPet}
         onDataChange={handleDataChange}
       />
-    </>
+      <CreatePet 
+        show={showCreate}
+        onHide={() => setShowCreate(false)}
+        sendData={getDataFromChild}
+      />
+    </Container>
   );
 };
 

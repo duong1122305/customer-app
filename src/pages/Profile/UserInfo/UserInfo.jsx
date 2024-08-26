@@ -246,7 +246,7 @@ const UserInfo = () => {
   };
 
   return (
-    <Container className="container">
+    <Container className="container_user">
       <Row className="row-1 mt-2">
         <h4>THÔNG TIN 🤵</h4>
         <button className="btn-updateInfo" onClick={onBtnClick}>
@@ -262,7 +262,7 @@ const UserInfo = () => {
       </Row>
       <hr />
       <Row className="row-2">
-        <Col style={{ border: "1px solid black" }} className="col-1">
+        <Col className="col-1">
           <Row>
             <h6 style={{ color: "gray" }}>THÔNG TIN NGƯỜI DÙNG</h6>
             <p style={{ fontSize: "13px", color: "gray" }}>
@@ -349,6 +349,7 @@ const UserInfo = () => {
                   onChange={(e) =>
                     setInfo({ ...info, gender: e.target.value === "true" })
                   }
+                  disabled={readonly}
                 >
                   <option value={true}>Nam</option>
                   <option value={false}>Nữ</option>
@@ -357,7 +358,7 @@ const UserInfo = () => {
             </div>
           </Row>
         </Col>
-        <Col style={{ border: "1px solid black" }}>
+        <Col style={{ borderLeft: "1px solid black" }}>
           <div>
             <h5>Ảnh đại diện</h5>
             <div className="container-avatar">

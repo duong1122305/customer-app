@@ -27,7 +27,8 @@ const UpdatePet = ({ onHide, show, id, onDataChange }) => {
     note: "",
   });
 
-  const handleShowRequest = () => {
+  const handleShowRequest = (e) => {
+    e.preventDefault();
     setShowAccept(true);
   };
 
@@ -78,12 +79,13 @@ const UpdatePet = ({ onHide, show, id, onDataChange }) => {
   }, [id]);
 
   const handleUpdatePet = async () => {
+    const formattedPet = { ...pet, birthday: new Date(pet.birthday).toISOString().slice(0, 10) };
     const respone = await callApi("PetManager/update-pet", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(pet),
+      body: JSON.stringify(formattedPet),
     });
     const result = await respone.json();
     if (result.isSuccess) {
@@ -100,7 +102,7 @@ const UpdatePet = ({ onHide, show, id, onDataChange }) => {
     <div>
       <Modal show={show} onHide={onHide} centered>
         <Modal.Body>
-          <Form method="post">
+          <Form method="post" onSubmit={handleShowRequest}>
             <FloatingLabel label="Boss thuộc">
               <Form.Select
                 value={pet.speciesId}
@@ -127,7 +129,7 @@ const UpdatePet = ({ onHide, show, id, onDataChange }) => {
             <FloatingLabel label="Boss là ...">
               <Form.Select
                 value={pet.gender}
-                onChange={(e) => setPet({ ...pet, gender: e.target.value })}
+                onChange={(e) => setPet({ ...pet, gender: e.target.value === "true" })}
               >
                 <option value={true}>Đực</option>
                 <option value={false}>Cái</option>
@@ -150,7 +152,7 @@ const UpdatePet = ({ onHide, show, id, onDataChange }) => {
             <FloatingLabel label="Boss đã triệt sản">
               <Form.Select
                 value={pet.neutered}
-                onChange={(e) => setPet({ ...pet, neutered: e.target.value })}
+                onChange={(e) => setPet({ ...pet, neutered: e.target.value === "true" })}
               >
                 <option value={true}>Đã triệt sản</option>
                 <option value={false}>Chưa triệt sản</option>
@@ -164,7 +166,7 @@ const UpdatePet = ({ onHide, show, id, onDataChange }) => {
               />
             </FloatingLabel>
             <ButtonGroup>
-              <Button onClick={handleShowRequest}>Xác nhận</Button>
+              <Button type="submit">Xác nhận</Button>
               <Button type="reset">Nhập lại</Button>
               <Button type="button" onClick={onHide}>
                 Đóng

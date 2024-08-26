@@ -51,12 +51,13 @@ const CreatePet = ({ show, onHide, sendData }) => {
 
   const handleCreatePet = async () => {
     const newErrors = {};
+  
     if (petName.current.value.trim() === "") {
       newErrors.name = "Tên không được để trống";
     } else if (petName.current.value.length > 50) {
       newErrors.name = "Tên không được quá 50 ký tự";
     }
-
+  
     if (
       petWeight.current.value < 0 ||
       petWeight.current.value === null ||
@@ -64,25 +65,26 @@ const CreatePet = ({ show, onHide, sendData }) => {
     ) {
       newErrors.weight = "Cân nặng chưa chọn hoặc cân nặng không lớn hơn 0";
     }
-
+  
     if (petBirth.current.value === undefined) {
       newErrors.birthday = "Ngày sinh boss không được để trống";
     }
-
+  
     if (
       petGender.current.value === null ||
       petGender.current.value === undefined
     ) {
       newErrors.gender = "Phải chọn giới của boss";
     }
-
+  
     if (petNeu.current.value === null || petNeu.current.value === undefined) {
       newErrors.neu = "Không được để trống trường này nha";
     }
-
+  
     setVali(newErrors);
-
-    if (Object.keys(vali).length === 0) {
+  
+    // Kiểm tra đối tượng newErrors thay vì vali
+    if (Object.keys(newErrors).length === 0) {
       const thuCungMoi = {
         ownerId: JSON.parse(sessionStorage.getItem("token")).id,
         speciesId: parseInt(petSpe.current.value, 10),
@@ -93,7 +95,7 @@ const CreatePet = ({ show, onHide, sendData }) => {
         neutered: petNeu.current.value === "true",
         note: petNote.current.value,
       };
-
+  
       try {
         const response = await callApi("PetManager/create-pet", {
           method: "POST",
@@ -102,10 +104,9 @@ const CreatePet = ({ show, onHide, sendData }) => {
           },
           body: JSON.stringify(thuCungMoi),
         });
-        console.log(thuCungMoi);
-
+  
         const result = await response.json();
-
+  
         if (result.isSuccess) {
           setShowAlert(true);
           setContent("Boss của bạn đã được thêm!!!");
@@ -129,7 +130,7 @@ const CreatePet = ({ show, onHide, sendData }) => {
     <div>
       <Modal show={show} onHide={onHide} centered>
         <Modal.Body>
-          <Form method="post">
+          <Form method="post" onSubmit={handleShowRequest}>
             <FloatingLabel label="Boss thuộc">
               <Form.Select ref={petSpe}>
                 {lstPetSpecies.length > 0 ? (
@@ -173,7 +174,7 @@ const CreatePet = ({ show, onHide, sendData }) => {
               <Form.Control as="textarea" ref={petNote} />
             </FloatingLabel>
             <ButtonGroup>
-              <Button onClick={handleShowRequest}>Xác nhận boss</Button>
+              <Button type="submit">Xác nhận boss</Button>
               <Button type="reset">Nhập lại</Button>
               <Button type="button" onClick={onHide}>
                 Đóng

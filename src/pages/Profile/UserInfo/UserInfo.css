@@ -1,6 +1,6 @@
-/* .container{
-    height: 100%;
-} */
+.container_user{
+    height: 100vh;
+}
 
 .row-1{
     display: flex;
@@ -55,17 +55,6 @@
 .avatar{
     height: 150px;
     width: 150px;
-}
-
-.btn-upload{
-    background-color: black;
-    border-radius: 50%;
-    height: 40px;
-    width: 40px;
-    position: absolute;
-    bottom: -10px;
-    right: 180px;
-    content: none;
 }
 
 .text-infomation label{

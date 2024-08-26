@@ -1,54 +1,44 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import "./OTPVerificationC.css"; // Import CSS file for styling
 import Reset from "./Reset"; // Import Reset component for password reset
 import PropTypes from "prop-types";
 import callApi from "../../utlis/request";
+import { Form } from "react-bootstrap";
 
 const OTPVerification = ({ emailSend }) => {
   const [timerCount, setTimerCount] = useState(60); // Countdown timer
-  const [otpInput, setOtpInput] = useState(["", "", "", "", "", ""]); // OTP input array
   const [disableResend, setDisableResend] = useState(false); // Disable resend OTP button state
   const [otpVerified, setOtpVerified] = useState(false); // State to track OTP verification
+  const otpRef = useRef(null);
   const [data] = useState({
     verifyCode: "",
     email: emailSend,
   });
-  console.log(emailSend);
+  const [errors, setErrors] = useState({});
+  const [res, setRes] = useState("");
+  const [isSend, setIsSend] = useState("");
+
   const [code, setCode] = useState("");
-
-  const inputRefs = useRef([]); // Ref to hold references to all OTP input elements
-
-  // Function to set focus on the next OTP input field
-  const focusNextInput = (index) => {
-    if (index < otpInput.length - 1) {
-      inputRefs.current[index + 1].focus();
-    }
-  };
-
-  // Function to set focus on the previous OTP input field
-  const focusPreviousInput = (index) => {
-    if (index > 0) {
-      inputRefs.current[index - 1].focus();
-    }
-  };
-
   // Function to resend OTP
   const resendOTP = async (e) => {
     if (disableResend) return;
     e.preventDefault();
     try {
       console.log(emailSend);
-      const response = await callApi(`GuestManager/forgot-pass?email=${emailSend}`, {
-        method: "POST",
-        headers: {
-          "Content-Type" : "application/json",
-        },
-      });
-      const result = await response.json()
-      if(result.isSuccess){
+      const response = await callApi(
+        `GuestManager/forgot-pass?email=${emailSend}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const result = await response.json();
+      if (result.isSuccess) {
         simulateSendEmail();
         console.log("ok");
-      }else{
+      } else {
         console.log(result.error);
       }
     } catch (error) {
@@ -62,7 +52,7 @@ const OTPVerification = ({ emailSend }) => {
       setDisableResend(true); // Disable resend button
       setTimerCount(60); // reset time gửi lại mã
       startTimer();
-      alert("Mã xác thực đã được gửi về email của bạn");
+      setIsSend("Mã xác minh đã được gửi lại");
     }, 1500);
   };
 
@@ -80,58 +70,61 @@ const OTPVerification = ({ emailSend }) => {
   };
 
   // Function to handle OTP input changes
-  const handleOTPChange = (index, value) => {
-    // Ensure only digits are entered
+  const handleOTPChange = (value) => {
+    const newError = {};
+
     const regex = /^[0-9]*$/;
     if (!regex.test(value)) {
-      return;
+      newError.otp = "Mã otp chỉ chứa ký tự số";
+    } else if (value.trim().length < 6) {
+      newError.otp = "Mã otp phải đủ 6 ký tự";
+    } else if (value.trim().length > 6) {
+      newError.otp = "Mã otp chỉ chứa 6 ký tự";
     }
 
-    const updatedOtpInput = [...otpInput];
-    updatedOtpInput[index] = value;
-    setOtpInput(updatedOtpInput);
+    setErrors(newError);
 
-    if (value !== "") {
-      focusNextInput(index); // Move focus to the next input if value is entered
-    } else {
-      focusPreviousInput(index); // Move focus to the previous input if value is deleted
+    if (Object.keys(newError).length === 0) {
+      return true;
     }
   };
 
   // Function to verify OTP
   const verifyOTP = async (e) => {
     e.preventDefault();
-    const enteredOTP = otpInput.join("");
-    console.log(enteredOTP);
-    
-    const newData = {
-      ...data,
-      verifyCode: enteredOTP,
-    }
-    console.log(newData);
-    try {
-      const response = await callApi(`GuestManager/check-verify-code?confirmCode=${newData.verifyCode}&email=${newData.email}`, {
-        method: "POST",
-        headers: {
-          "Content-Type":"application/json"
-        },
-      });
-      const result = await response.json();
-      if(result.isSuccess){
-        setOtpVerified(true);
-        setCode(result.data)
-      }else{
-        console.error(result.error);
+
+    if (handleOTPChange(otpRef.current.value)) {
+      const newData = {
+        ...data,
+        verifyCode: otpRef.current.value,
+      };
+      try {
+        const response = await callApi(
+          `GuestManager/check-verify-code?confirmCode=${newData.verifyCode}&email=${newData.email}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const result = await response.json();
+        if (result.isSuccess) {
+          setOtpVerified(true);
+          const trimmedCode = result.data.trimStart().trimEnd();
+          const replaceCode = trimmedCode.replace(/\s/g, "+");
+          const finalCode = encodeURIComponent(replaceCode);
+          setCode(finalCode);
+          setRes("");
+        } else {
+          setRes(result.error);
+          console.error(result.error);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
   };
-
-  useEffect(() => {
-    // Focus on the first input field when component mounts
-    inputRefs.current[0].focus();
-  }, []);
 
   return (
     <div className="otp-verification-container">
@@ -140,19 +133,22 @@ const OTPVerification = ({ emailSend }) => {
           <div className="form-container">
             <h2 className="title">Xác nhận OTP</h2>
             <div className="otp-input-container">
-              {Array.from({ length: 6 }, (_, index) => (
-                <input
-                  key={index}
-                  maxLength="1"
-                  className="otp-input"
-                  type="text"
-                  value={otpInput[index]}
-                  onChange={(e) => handleOTPChange(index, e.target.value)}
-                  ref={(el) => (inputRefs.current[index] = el)} // Store reference to each input element
-                />
-              ))}
+              <Form.Control
+                ref={otpRef}
+                onChange={() => handleOTPChange(otpRef.current.value)}
+              />
             </div>
-            <p>{emailSend}</p>
+            {errors.otp && (
+              <span className="text-danger mb-2">{errors.otp}</span>
+            )}
+            {res !== "" ? (
+              <span className="text-danger mb-2">{res}</span>
+            ) : (
+              <span style={{ display: "none" }}></span>
+            )}
+            <p>
+              <b>Email:</b> {emailSend}
+            </p>
             <button onClick={verifyOTP} className="button">
               Xác nhận OTP
             </button>
@@ -170,10 +166,15 @@ const OTPVerification = ({ emailSend }) => {
                   : "Gửi lại OTP"}
               </button>
             </div>
+            {isSend !== "" ? (
+              <span className="text-danger">{isSend}</span>
+            ) : (
+              <span style={{ display: "none" }}></span>
+            )}
           </div>
         </div>
       ) : (
-        <Reset verifyCode={code}/>
+        <Reset verifyCode={code} />
       )}
     </div>
   );

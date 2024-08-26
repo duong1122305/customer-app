@@ -48,6 +48,7 @@ const ChangePass = () => {
 
   return (
     <div className="change_pass">
+    <h4>Đổi mật khẩu</h4>
       <Form onSubmit={handleChangePass}>
         <FloatingLabel label="Mật khẩu cũ">
           <Form.Control ref={oldPassRef} />
