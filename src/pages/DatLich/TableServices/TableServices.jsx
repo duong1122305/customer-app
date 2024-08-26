@@ -78,7 +78,7 @@ const TableServices = ({ show, onClosed, onServicesSelected }) => {
                 {services.serviceName}
               </Dropdown.Toggle>
               <Dropdown.Menu className="w-100">
-                <Table striped bordered style={{width:"100%"}}>
+                <Table striped bordered style={{width:"95%", justifySelf:"center"}}>
                   <thead>
                     <tr>
                       <td>STT</td>

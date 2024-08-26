@@ -130,8 +130,8 @@ const Footer = () => {
             
           </Row>
           <Row>
-          <span><span> Mở cửa:</span> 08:00 </span>
-          <span><span>Đóng cửa:</span> 21:00 </span>
+          <span><span> Mở cửa:</span> 07:00 </span>
+          <span><span>Đóng cửa:</span> 22:30 </span>
           </Row>
         </Col>
       </Row>

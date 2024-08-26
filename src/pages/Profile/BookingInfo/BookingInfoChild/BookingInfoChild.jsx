@@ -173,7 +173,6 @@ const BookingInfoChild = ({ conditions }) => {
       ...dataCancel,
       idBokingOrDetail: idBooking,
     };
-    console.log(idBooking);
     try {
       const response = await callApi("Booking/Cancel-BookingDetail-ByGuest", {
         method: "PATCH",

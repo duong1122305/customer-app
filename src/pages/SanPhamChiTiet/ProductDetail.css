@@ -1,0 +1,22 @@
+.total_container_product {
+  height: 100vh;
+  border: 1px solid black;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+}
+
+.image {
+  width: 50%;
+}
+
+.figure {
+    box-shadow: 5px 4px 5px 4px;
+}
+
+.content {
+  border-left: 3px solid #ccc;
+  max-height: 160%;
+}

@@ -156,8 +156,8 @@ export default function Header() {
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item style={{ marginRight: 20 }}>
-                <Nav.Link as={Link} to="/blog">
-                  Sự kiện
+                <Nav.Link as={Link} to="/rate">
+                  Đánh giá
                 </Nav.Link>
               </Nav.Item>
             </div>

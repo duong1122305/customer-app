@@ -331,7 +331,7 @@ const Register = (props) => {
                   isInvalid={
                     (showError && !password.trim()) ||
                     (password.trim() &&
-                      (password.length < 6 || password.length > 8))
+                      (password.length < 6 || password.length > 20))
                   }
                   style={{ flex: 1 }}
                 />
