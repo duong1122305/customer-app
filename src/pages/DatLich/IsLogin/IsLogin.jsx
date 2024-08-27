@@ -320,7 +320,7 @@ const IsLogin = () => {
         </FloatingLabel>
         <ButtonGroup>
           <Button type="submit">Gửi yêu cầu</Button>
-          <Button variant="warning" onClick={()=>window.location.reload()}>
+          <Button variant="warning" type="reset" onClick={() => setSelectedServicesForForm([])}>
             Chọn lại
           </Button>
           <Button variant="warning" onClick={handleCreatePet}>

@@ -72,7 +72,7 @@ const ProductDetail = () => {
                   <Button>Loại: {item.name}</Button>
                 </div>
               ))}
-            <p className="mt-3">
+            <p className="mt-2">
               Mô tả: <b>{data.productDescription}</b>
             </p>
           </Col>
