@@ -175,7 +175,12 @@ const IsLogin = () => {
         setShowAccept(false);
       } else {
         setShowAnnoucement(true);
-        setContent(result.error);
+        if(result.error === "Khoảng thời gian chọn không trong giờ làm việc")
+          {
+          setContent("Khoảng thời gian bạn sử dụng dịch vụ không phù hợp, vui lòng liên hệ hotline để được tư vấn!");
+        }else{
+          setContent(result.error);
+        }
       }
     } catch (error) {
       console.error("Error occurred during booking:", error);
@@ -315,7 +320,7 @@ const IsLogin = () => {
         </FloatingLabel>
         <ButtonGroup>
           <Button type="submit">Gửi yêu cầu</Button>
-          <Button variant="warning" type="reset">
+          <Button variant="warning" onClick={()=>window.location.reload()}>
             Chọn lại
           </Button>
           <Button variant="warning" onClick={handleCreatePet}>
