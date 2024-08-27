@@ -64,9 +64,11 @@ const CreatePet = ({ show, onHide, sendData }) => {
       petWeight.current.value === undefined
     ) {
       newErrors.weight = "Cân nặng chưa chọn hoặc cân nặng không lớn hơn 0";
+    }else if(petWeight.current.value > 50){
+      newErrors.weight = "Cân nặng không được vượt quá 50kg";
     }
   
-    if (petBirth.current.value === undefined) {
+    if (petBirth.current.value === undefined || petBirth.current.value === null || petBirth.current.value === "") {
       newErrors.birthday = "Ngày sinh boss không được để trống";
     }
   

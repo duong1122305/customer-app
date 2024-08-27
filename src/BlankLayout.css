@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
     width: 100%;
     background-image: url("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f49e9371-d784-4bbd-a6db-286fb2601e1e/dg2240j-d7af78db-b98f-47e6-8c2d-e9eb5b5e2e2e.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2Y0OWU5MzcxLWQ3ODQtNGJiZC1hNmRiLTI4NmZiMjYwMWUxZVwvZGcyMjQwai1kN2FmNzhkYi1iOThmLTQ3ZTYtOGMyZC1lOWViNWI1ZTJlMmUucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.wP44VJAtvXmLSJdf5vMIQ0zAexofJMeQzgAHafOr_uo");
     background-repeat: no-repeat;

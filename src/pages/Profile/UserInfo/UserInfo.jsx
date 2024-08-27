@@ -195,6 +195,10 @@ const UserInfo = () => {
       if (!phoneRegex.test(info.phoneNumber)) {
         newErrors.phoneNumber = "Số điện thoại không hợp lệ";
       }
+
+      if(homeRef.current.value.trim().length === 0){
+        newErrors.home = "Không được để trống ô này";
+      }
       setErrors(newErrors);
 
       if (Object.keys(newErrors).length === 0) {
@@ -283,14 +287,15 @@ const UserInfo = () => {
             </div>
             <div className="input-mt">
               <label className="mb-2">
-                Địa chỉ{" "}
+                Địa chỉ {""}
                 <span style={{ color: "red", fontSize: "12px" }}>
                   *Bạn hãy chọn lại địa chỉ nếu muốn
-                </span>{" "}
+                </span>
               </label>
               <FloatingLabel label="Số nhà, Đường" className="mb-2">
                 <Form.Control disabled={readonly} ref={homeRef} />
               </FloatingLabel>
+              {errors.home && <div className="text-danger">{errors.home}</div>}
               <FloatingLabel label="Tỉnh/Thành" className="mb-2">
                 <Form.Select
                   onChange={handleProvincesChange}
